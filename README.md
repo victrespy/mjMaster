@@ -20,10 +20,30 @@ Si acabas de clonar este repositorio desde Git en un equipo nuevo:
    chmod +x init.sh
    ```
 
-2. Ejecuta el script para instalar dependencias y levantar todo:
+2. Ejecuta el script para instalar dependencias, levantar contenedores y cargar datos de prueba:
    ```bash
-   ./init.sh
+   sudo ./init.sh
    ```
+
+---
+
+## 🛠️ Automatización y Base de Datos
+
+Hemos incluido scripts en la carpeta `backend/` para facilitar las tareas comunes de desarrollo. Ejecútalos desde la raíz del proyecto o desde la carpeta `backend/`.
+
+### Scripts de Utilidad (en `backend/`)
+- **`./clean-cache.sh`**: Limpia la caché de Symfony dentro del contenedor.
+- **`./make-migration.sh`**: Genera una nueva migración basada en los cambios de tus entidades.
+- **`./migrate.sh`**: Aplica las migraciones pendientes a la base de datos.
+- **`./load-fixtures.sh`**: Borra la base de datos y carga los datos de prueba iniciales.
+
+> **Nota**: Si tu usuario no está en el grupo `docker`, recuerda ejecutarlos con `sudo`.
+
+### Datos de Prueba (Fixtures)
+El proyecto viene con usuarios preconfigurados para pruebas:
+- **Admin**: `admin@example.com` (Password: `admin123`) - Rol: `ROLE_ADMIN`
+- **User**: `user@example.com` (Password: `user123`) - Rol: `ROLE_USER`
+- **Guest**: `guest@example.com` (Password: `guest123`) - Rol: `ROLE_GUEST`
 
 ---
 
@@ -38,21 +58,11 @@ Para mantener el proyecto ordenado, **nunca trabajes directamente en la rama `ma
    ```
 
 2. **Crea una Rama (Branch)** para tu tarea:
-   *En PHPStorm: Click en la rama (esquina inferior derecha) -> New Branch.*
-   
-   O vía terminal:
    ```bash
-   # Para nuevas funcionalidades
    git checkout -b feature/nombre-funcionalidad
-   
-   # Para corrección de errores
-   git checkout -b fix/descripcion-error
    ```
 
-3. **Desarrolla tus cambios**:
-   Modifica el código, crea componentes, etc.
-
-4. **Guarda y Sube**:
+3. **Desarrolla tus cambios**, haz commit y sube la rama:
    ```bash
    git add .
    git commit -m "Descripción clara de lo que hice"
@@ -65,7 +75,7 @@ Para mantener el proyecto ordenado, **nunca trabajes directamente en la rama `ma
 
 ### Acceso Seguro (HTTPS)
 - **Frontend**: [https://localhost:8443](https://localhost:8443)
-- **Backend API**: [https://localhost:9443/api/hello](https://localhost:9443/api/hello)
+- **Backend API**: [https://localhost:9443/api](https://localhost:9443/api)
 - **Base de Datos**: Puerto `5432` (User: `app_user`, Pass: `app_password`, DB: `app_db`)
 
 ### Comandos Backend (Symfony)
@@ -75,49 +85,31 @@ docker compose exec backend php bin/console [comando]
 ```
 - Crear Entidad: `make:entity`
 - Crear Controlador: `make:controller`
-- Rutas: Editar `backend/config/routes.yaml`
-
-### Comandos Frontend (React)
-```bash
-docker compose exec frontend npm install [paquete]
-```
 
 ---
 
 ## 📦 Estructura del Repositorio
 
 ### Backend (`backend/`)
-- `src/Controller/`: Controladores de la API.
 - `src/Entity/`: Entidades de Doctrine (Base de Datos).
-- `config/routes.yaml`: Definición de rutas.
+- `src/DataFixtures/`: Datos de prueba para la base de datos.
+- `src/Repository/`: Lógica de consulta a la base de datos.
 
 ### Frontend (`frontend/`)
-- `src/components/`: Componentes reutilizables pequeños (Botones, Inputs).
-- `src/layout/`: Componentes estructurales (Header, Footer).
-- `src/pages/`: Vistas completas (Home, Dashboard).
-- `src/App.jsx`: Componente raíz y Layout principal.
+- `src/components/`: Componentes reutilizables.
+- `src/pages/`: Vistas completas.
+- `src/App.jsx`: Componente raíz y rutas.
 
-**Estilos (CSS Modules):**
-Se recomienda usar CSS Modules para evitar conflictos de estilos.
-- Crea un archivo `NombreComponente.module.css` junto a tu componente.
-- Importalo: `import styles from './NombreComponente.module.css'`.
-- Úsalo: `className={styles.miClase}`.
-
-### Infraestructura
-- `docker-compose.yml`: Orquestación.
-- `Caddyfile`: Configuración del Proxy HTTPS.
-- `setup.sh`: Script para crear el proyecto desde cero (scaffolding).
-- `init.sh`: Script para instalar dependencias tras clonar (bootstrapping).
+---
 
 ## 🔧 Solución de Problemas
 
-**Compatibilidad con Fedora (SELinux)**
-La configuración de Docker (`docker-compose.yml`) incluye el flag `:z` en los volúmenes para ser compatible con sistemas que usan SELinux (como Fedora).
+**Permisos de Docker (Linux)**
+Si recibes errores de "permission denied" al usar Docker, añade tu usuario al grupo docker:
+```bash
+sudo usermod -aG docker $USER
+# Reinicia sesión para aplicar cambios
+```
 
 **Puerto ocupado**
-Si el puerto 8888 o 8443 está ocupado, edita `docker-compose.yml`.
-
-**Permisos en Linux**
-```bash
-sudo chown -R $USER:$USER backend/ frontend/
-```
+Si el puerto 8888, 8443 o 9443 está ocupado, edita `docker-compose.yml`.
