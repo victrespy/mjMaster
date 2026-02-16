@@ -1,0 +1,4 @@
+# Configuración manual de rutas (Fallback)
+api_hello:
+    path: /api/hello
+    controller: App\Controller\ApiController::index
