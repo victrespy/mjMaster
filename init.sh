@@ -12,9 +12,7 @@ docker compose up -d --build
 
 # 2. Instalar dependencias Backend
 echo "Instalando dependencias de Symfony (Composer)..."
-# Usamos install si existe lock, o update si queremos forzar actualización.
-# Para un init limpio, install es mejor si el lock está commiteado.
-# Pero como hemos modificado composer.json manualmente, necesitamos update.
+# Usamos update para asegurar que el composer.lock se sincronice con los cambios manuales en composer.json
 docker compose exec backend composer update
 
 # 3. Instalar dependencias Frontend
@@ -33,9 +31,8 @@ echo "Ejecutando migraciones de base de datos..."
 docker compose exec backend php bin/console doctrine:migrations:migrate --no-interaction
 
 # 5. Cargar Fixtures (Datos de prueba)
-# Comentado si no tienes fixtures aún, descomentar cuando las tengas
-# echo "Cargando datos de prueba (Fixtures)..."
-# docker compose exec backend php bin/console doctrine:fixtures:load --no-interaction
+echo "Cargando datos de prueba (Fixtures)..."
+docker compose exec backend php bin/console doctrine:fixtures:load --no-interaction
 
 # 6. Limpiar caché
 echo "Limpiando caché de Symfony..."
