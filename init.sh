@@ -11,12 +11,15 @@ echo "Levantando contenedores Docker..."
 docker compose up -d --build
 
 # 2. Instalar dependencias Backend
-echo "Instalando/Actualizando dependencias de Symfony (Composer)..."
-# Usamos update para asegurar que el composer.lock se sincronice con los cambios manuales en composer.json
+echo "Instalando dependencias de Symfony (Composer)..."
+# Usamos install si existe lock, o update si queremos forzar actualización.
+# Para un init limpio, install es mejor si el lock está commiteado.
+# Pero como hemos modificado composer.json manualmente, necesitamos update.
 docker compose exec backend composer update
 
 # 3. Instalar dependencias Frontend
 echo "Instalando dependencias de React (NPM)..."
+# Esto leerá el package.json actualizado con tailwindcss
 docker compose exec frontend npm install
 
 # 4. Preparar Base de Datos
@@ -30,8 +33,9 @@ echo "Ejecutando migraciones de base de datos..."
 docker compose exec backend php bin/console doctrine:migrations:migrate --no-interaction
 
 # 5. Cargar Fixtures (Datos de prueba)
-echo "Cargando datos de prueba (Fixtures)..."
-docker compose exec backend php bin/console doctrine:fixtures:load --no-interaction
+# Comentado si no tienes fixtures aún, descomentar cuando las tengas
+# echo "Cargando datos de prueba (Fixtures)..."
+# docker compose exec backend php bin/console doctrine:fixtures:load --no-interaction
 
 # 6. Limpiar caché
 echo "Limpiando caché de Symfony..."
@@ -42,4 +46,3 @@ echo "=== ¡Proyecto listo! ==="
 echo "Frontend: https://localhost:8443"
 echo "Backend API: https://localhost:9443/api"
 echo "Backend Hello: https://localhost:9443/api/hello"
-echo "Usuarios de prueba creados: admin@example.com, user@example.com, guest@example.com (pass: admin123, user123, guest123)"

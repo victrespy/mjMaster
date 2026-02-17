@@ -2,6 +2,12 @@
 
 Este proyecto es un esqueleto base para aplicaciones web modernas utilizando **Symfony 8 (Backend)** y **React + Vite (Frontend)**, orquestado con **Docker** y servido vía **HTTPS** mediante Caddy.
 
+## 🚀 Tecnologías Principales
+
+*   **Backend**: Symfony 8, API Platform 4, Doctrine ORM, PostgreSQL.
+*   **Frontend**: React 19, Vite, Tailwind CSS 3.
+*   **Infraestructura**: Docker Compose, Caddy (HTTPS/Proxy).
+
 ## 🚀 Inicio Rápido (Nuevo Proyecto)
 
 Si estás creando el proyecto desde cero:
@@ -22,7 +28,7 @@ Si acabas de clonar este repositorio desde Git en un equipo nuevo:
 
 2. Ejecuta el script para instalar dependencias, levantar contenedores y cargar datos de prueba:
    ```bash
-   sudo ./init.sh
+   ./init.sh
    ```
 
 ---
@@ -75,7 +81,7 @@ Para mantener el proyecto ordenado, **nunca trabajes directamente en la rama `ma
 
 ### Acceso Seguro (HTTPS)
 - **Frontend**: [https://localhost:8443](https://localhost:8443)
-- **Backend API**: [https://localhost:9443/api](https://localhost:9443/api)
+- **Backend API (Swagger)**: [https://localhost:9443/api](https://localhost:9443/api)
 - **Base de Datos**: Puerto `5432` (User: `app_user`, Pass: `app_password`, DB: `app_db`)
 
 ### Comandos Backend (Symfony)
@@ -83,8 +89,18 @@ Ejecutar siempre dentro del contenedor:
 ```bash
 docker compose exec backend php bin/console [comando]
 ```
-- Crear Entidad: `make:entity`
+- Crear Entidad API Platform: `make:entity --api-resource`
 - Crear Controlador: `make:controller`
+
+### Estilos Frontend (Tailwind CSS)
+El proyecto utiliza Tailwind CSS. Puedes usar las clases de utilidad directamente en tus componentes React.
+Ejemplo:
+```jsx
+<h1 className="text-3xl font-bold underline text-blue-600">
+  Hola Mundo!
+</h1>
+```
+Los estilos base se encuentran en `frontend/src/index.css`.
 
 ---
 
@@ -99,6 +115,7 @@ docker compose exec backend php bin/console [comando]
 - `src/components/`: Componentes reutilizables.
 - `src/pages/`: Vistas completas.
 - `src/App.jsx`: Componente raíz y rutas.
+- `tailwind.config.js`: Configuración de Tailwind CSS.
 
 ---
 
