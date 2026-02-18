@@ -11,13 +11,12 @@ echo "Levantando contenedores Docker..."
 docker compose up -d --build
 
 # 2. Instalar dependencias Backend
-echo "Instalando dependencias de Symfony (Composer)..."
-# Usamos update para asegurar que el composer.lock se sincronice con los cambios manuales en composer.json
+echo "Instalando/Actualizando dependencias de Symfony (Composer)..."
 docker compose exec backend composer update
 
 # 3. Instalar dependencias Frontend
 echo "Instalando dependencias de React (NPM)..."
-# Esto leerá el package.json actualizado con tailwindcss
+# Forzamos la instalación para asegurar que paquetes como tailwindcss se registren bien
 docker compose exec frontend npm install
 
 # 4. Preparar Base de Datos
@@ -43,3 +42,4 @@ echo "=== ¡Proyecto listo! ==="
 echo "Frontend: https://localhost:8443"
 echo "Backend API: https://localhost:9443/api"
 echo "Backend Hello: https://localhost:9443/api/hello"
+echo "Usuarios de prueba creados: admin@example.com, user@example.com, guest@example.com (pass: admin123, user123, guest123)"

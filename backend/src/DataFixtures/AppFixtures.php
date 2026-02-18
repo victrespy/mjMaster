@@ -3,7 +3,10 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Order;
+use App\Entity\OrderProduct;
 use App\Entity\Product;
+use App\Entity\Review;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -20,85 +23,109 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $now = new \DateTimeImmutable();
-
-        // --- USERS ---
-        // Crear Admin
+        // --- USUARIOS ---
         $admin = new User();
         $admin->setEmail('admin@example.com');
+        $admin->setName('Grow Master Admin');
         $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setAddress('Calle Admin 123');
-        $admin->setPhone(123456789);
-        $admin->setCreatedAt($now);
-        $admin->setDeleted(false);
         $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin123'));
+        $admin->setAddress('Calle del Humo 420, Madrid');
         $manager->persist($admin);
 
-        // Crear Usuario normal
         $user = new User();
         $user->setEmail('user@example.com');
+        $user->setName('Juan Cultivador');
         $user->setRoles(['ROLE_USER']);
-        $user->setAddress('Avenida Usuario 456');
-        $user->setPhone(987654321);
-        $user->setCreatedAt($now);
-        $user->setDeleted(false);
         $user->setPassword($this->passwordHasher->hashPassword($user, 'user123'));
+        $user->setAddress('Avenida de la Resina 7, Barcelona');
         $manager->persist($user);
 
-        // Crear Invitado
-        $guest = new User();
-        $guest->setEmail('guest@example.com');
-        $guest->setRoles(['ROLE_GUEST']);
-        $guest->setAddress('Plaza Invitado 789');
-        $guest->setPhone(555555555);
-        $guest->setCreatedAt($now);
-        $guest->setDeleted(false);
-        $guest->setPassword($this->passwordHasher->hashPassword($guest, 'guest123'));
-        $manager->persist($guest);
+        // --- CATEGORÍAS ---
+        $catSemillas = new Category();
+        $catSemillas->setName('Semillas');
+        $manager->persist($catSemillas);
 
-        // --- CATEGORIES ---
-        $electronics = new Category();
-        $electronics->setName('Electronics');
-        $electronics->setCreatedAt($now);
-        $electronics->setDeleted(false);
-        $manager->persist($electronics);
+        $catParafernalia = new Category();
+        $catParafernalia->setName('Parafernalia');
+        $manager->persist($catParafernalia);
 
-        $books = new Category();
-        $books->setName('Books');
-        $books->setCreatedAt($now);
-        $books->setDeleted(false);
-        $manager->persist($books);
+        $catCultivo = new Category();
+        $catCultivo->setName('Cultivo');
+        $manager->persist($catCultivo);
 
-        // --- PRODUCTS ---
-        $product1 = new Product();
-        $product1->setName('Smartphone X');
-        $product1->setDescription('Latest model with high-res camera');
-        $product1->setPrice(999.99);
-        $product1->setStock(50);
-        $product1->setCategory($electronics);
-        $product1->setCreatedAt($now);
-        $product1->setDeleted(false);
-        $manager->persist($product1);
+        // --- PRODUCTOS ---
+        // Semillas
+        $prod1 = new Product();
+        $prod1->setName('Amnesia Haze (3 uds)');
+        $prod1->setDescription('Semillas feminizadas de alta calidad con sabor cítrico.');
+        $prod1->setPrice('25.50');
+        $prod1->setStock(100);
+        $prod1->setCategory($catSemillas);
+        $manager->persist($prod1);
 
-        $product2 = new Product();
-        $product2->setName('Laptop Pro');
-        $product2->setDescription('Powerful laptop for developers');
-        $product2->setPrice(1499.50);
-        $product2->setStock(20);
-        $product2->setCategory($electronics);
-        $product2->setCreatedAt($now);
-        $product2->setDeleted(false);
-        $manager->persist($product2);
+        $prod2 = new Product();
+        $prod2->setName('Northern Lights Auto (5 uds)');
+        $prod2->setDescription('Variedad autofloreciente clásica, ideal para principiantes.');
+        $prod2->setPrice('35.00');
+        $prod2->setStock(50);
+        $prod2->setCategory($catSemillas);
+        $manager->persist($prod2);
 
-        $product3 = new Product();
-        $product3->setName('Symfony Guide');
-        $product3->setDescription('The best book to learn Symfony');
-        $product3->setPrice(29.99);
-        $product3->setStock(100);
-        $product3->setCategory($books);
-        $product3->setCreatedAt($now);
-        $product3->setDeleted(false);
-        $manager->persist($product3);
+        // Parafernalia
+        $prod3 = new Product();
+        $prod3->setName('Bong de Vidrio 30cm');
+        $prod3->setDescription('Bong de borosilicato resistente con percolador.');
+        $prod3->setPrice('45.90');
+        $prod3->setStock(15);
+        $prod3->setCategory($catParafernalia);
+        $manager->persist($prod3);
+
+        $prod4 = new Product();
+        $prod4->setName('Grinder Metálico 4 partes');
+        $prod4->setDescription('Grinder de aluminio con polinizador y espátula.');
+        $prod4->setPrice('12.00');
+        $prod4->setStock(200);
+        $prod4->setCategory($catParafernalia);
+        $manager->persist($prod4);
+
+        // Cultivo
+        $prod5 = new Product();
+        $prod5->setName('Kit Fertilizantes Orgánicos');
+        $prod5->setDescription('Pack completo para crecimiento y floración.');
+        $prod5->setPrice('29.95');
+        $prod5->setStock(30);
+        $prod5->setCategory($catCultivo);
+        $manager->persist($prod5);
+
+        // --- RESEÑAS (REVIEWS) ---
+        $review = new Review();
+        $review->setUser($user);
+        $review->setProduct($prod3);
+        $review->setRating(5);
+        $review->setComment('¡Increíble bong! Enfría el humo perfectamente.');
+        $manager->persist($review);
+
+        // --- PEDIDOS (ORDERS) ---
+        $order = new Order();
+        $order->setUser($user);
+        $order->setTotal('57.90');
+        $order->setState('COMPLETED');
+        $manager->persist($order);
+
+        // Productos del pedido
+        $op1 = new OrderProduct();
+        $op1->setOrder($order);
+        $op1->setProduct($prod3); // Bong
+        $op1->setQuantity(1);
+        $op1->setUnitPrice('45.90');
+        $manager->persist($op1);
+
+        $op2 = new OrderProduct();
+        $op2->setOrder($order);
+        $op2->setProduct($prod4); // Grinder
+        $op2->setQuantity(1);
+        $op2->setUnitPrice('12.00');
+        $manager->persist($op2);
 
         $manager->flush();
     }

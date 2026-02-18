@@ -3,43 +3,79 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource]
+#[ORM\Entity]
+#[ORM\Table(name: 'products')]
+#[ApiResource(
+    normalizationContext: ['groups' => ['product:read']],
+    denormalizationContext: ['groups' => ['product:write']]
+)]
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::BIGINT)]
+    #[Groups(['product:read', 'order:read', 'review:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 150)]
+    #[Groups(['product:read', 'product:write', 'order:read', 'review:read'])]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['product:read', 'product:write'])]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?float $price = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['product:read', 'product:write', 'order:read'])]
+    #[Assert\NotBlank]
+    #[Assert\PositiveOrZero]
+    private ?string $price = null;
 
-    #[ORM\Column]
-    private ?int $stock = null;
+    #[ORM\Column(options: ['default' => 0])]
+    #[Groups(['product:read', 'product:write'])]
+    #[Assert\PositiveOrZero]
+    private int $stock = 0;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[Groups(['product:read', 'product:write'])]
     private ?Category $category = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:read', 'product:write'])]
+    private ?string $picture = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $deleted_at = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups(['product:read'])]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column]
-    private ?bool $deleted = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['product:read'])]
+    private ?\DateTimeInterface $deletedAt = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['product:read'])]
+    private bool $deleted = false;
+
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'product')]
+    private Collection $reviews;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->reviews = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -54,7 +90,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -63,26 +98,24 @@ class Product
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
-    public function getStock(): ?int
+    public function getStock(): int
     {
         return $this->stock;
     }
@@ -90,7 +123,6 @@ class Product
     public function setStock(int $stock): static
     {
         $this->stock = $stock;
-
         return $this;
     }
 
@@ -102,35 +134,37 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getPicture(): ?string
     {
-        return $this->created_at;
+        return $this->picture;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setPicture(?string $picture): static
     {
-        $this->created_at = $created_at;
-
+        $this->picture = $picture;
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->deleted_at;
+        return $this->createdAt;
     }
 
-    public function setDeletedAt(?\DateTimeImmutable $deleted_at): static
+    public function getDeletedAt(): ?\DateTimeInterface
     {
-        $this->deleted_at = $deleted_at;
+        return $this->deletedAt;
+    }
 
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
         return $this;
     }
 
-    public function isDeleted(): ?bool
+    public function isDeleted(): bool
     {
         return $this->deleted;
     }
@@ -138,7 +172,14 @@ class Product
     public function setDeleted(bool $deleted): static
     {
         $this->deleted = $deleted;
-
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
     }
 }
