@@ -47,11 +47,39 @@ export const register = async (userData) => {
   }
 };
 
+export const getProfile = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    // Actualizado a /api/me
+    const response = await fetch(`${API_URL}/me`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return null;
+      }
+      throw new Error("Error al obtener perfil");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getProfile:", error);
+    return null;
+  }
+};
+
 export const logout = () => {
   localStorage.removeItem("token");
 };
 
 export const getCurrentUser = () => {
-  // Aquí podríamos decodificar el JWT si quisiéramos saber el rol o email sin llamar a la API
   return localStorage.getItem("token");
 };

@@ -45,7 +45,7 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
       }
     }
 
-    console.log(`🚀 Llamando a API: ${url}`);
+    // console.log(`🚀 Llamando a API: ${url}`);
 
     const response = await fetch(url, {
       method: "GET",

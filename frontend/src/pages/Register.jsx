@@ -8,6 +8,8 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    address: "",
+    phone: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -34,6 +36,8 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        address: formData.address,
+        phone: formData.phone,
       });
       setSuccess(true);
       setTimeout(() => {
@@ -45,7 +49,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center bg-dark-bg">
+    <div className="flex min-h-[80vh] items-center justify-center bg-dark-bg py-12">
       <div className="w-full max-w-md rounded-lg bg-card-bg p-8 shadow-2xl border border-sage-200/20">
         <h2 className="mb-6 text-center text-3xl font-bold text-primary tracking-tight">Crear Cuenta</h2>
         
@@ -61,8 +65,8 @@ const Register = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
             <label className="mb-2 block text-sm font-bold text-gray-300" htmlFor="name">
               Nombre Completo
             </label>
@@ -77,7 +81,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div>
             <label className="mb-2 block text-sm font-bold text-gray-300" htmlFor="email">
               Correo Electrónico
             </label>
@@ -92,7 +96,35 @@ const Register = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div>
+            <label className="mb-2 block text-sm font-bold text-gray-300" htmlFor="phone">
+              Teléfono
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              placeholder="600 123 456"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-gray-300" htmlFor="address">
+              Dirección de Envío
+            </label>
+            <input
+              type="text"
+              id="address"
+              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              placeholder="Calle del Cultivo 420, Madrid"
+              value={formData.address}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
             <label className="mb-2 block text-sm font-bold text-gray-300" htmlFor="password">
               Contraseña
             </label>
@@ -108,7 +140,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="mb-6">
+          <div>
             <label className="mb-2 block text-sm font-bold text-gray-300" htmlFor="confirmPassword">
               Confirmar Contraseña
             </label>
@@ -125,7 +157,7 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full rounded bg-primary px-4 py-3 font-bold text-dark-bg hover:bg-lime-400 focus:outline-none shadow-lg hover:shadow-primary/30 transition-all transform hover:-translate-y-0.5"
+            className="w-full rounded bg-primary px-4 py-3 font-bold text-dark-bg hover:bg-lime-400 focus:outline-none shadow-lg hover:shadow-primary/30 transition-all transform hover:-translate-y-0.5 mt-6"
           >
             Registrarse
           </button>

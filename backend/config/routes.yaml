@@ -1,11 +1,15 @@
-# Configuración manual de rutas (Fallback)
-api_hello:
-    path: /api/hello
-    controller: App\Controller\ApiController::index
+# Cargar rutas definidas en los controladores (Anotaciones #[Route])
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
 
+# Configuración manual de rutas (si es necesaria)
 api_login_check:
     path: /api/login_check
 
+# API Platform (debe ir al final para no "comerse" otras rutas /api)
 api_platform:
     resource: .
     type: api_platform
