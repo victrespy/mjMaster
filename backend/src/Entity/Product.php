@@ -19,8 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['product:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
-    'name' => 'partial',
-    'category' => 'exact' // Filtrar por ID de categoría (ej: ?category=1)
+    'name' => 'ipartial',  // Búsqueda parcial e insensible a mayúsculas (ILIKE)
+    'category' => 'exact'  // Filtrar por ID de categoría
 ])]
 class Product
 {

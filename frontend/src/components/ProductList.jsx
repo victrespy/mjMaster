@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import { getProducts } from '../services/productService';
+import { getProducts, searchProducts } from '../services/productService';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Leemos el parámetro 'category' de la URL (ej: ?category=Semillas)
+  // Leemos los parámetros de la URL
   const categoryFilter = searchParams.get('category');
+  const searchQuery = searchParams.get('search'); // Nuevo: Filtro de búsqueda
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        console.log("🔍 ProductList: Filtrando por categoría:", categoryFilter);
-
-        // Pasamos la categoría al servicio (si existe)
-        const data = await getProducts(1, 30, categoryFilter);
+        setError(null);
+        
+        let data = [];
+        
+        if (searchQuery) {
+          // Si hay búsqueda, usamos searchProducts
+          console.log("🔍 ProductList: Buscando por:", searchQuery);
+          data = await searchProducts(searchQuery);
+        } else {
+          // Si no, usamos getProducts (con o sin categoría)
+          console.log("🔍 ProductList: Filtrando por categoría:", categoryFilter);
+          data = await getProducts(1, 30, categoryFilter);
+        }
+        
         setProducts(data);
       } catch (err) {
         setError(err.message);
@@ -29,7 +40,11 @@ const ProductList = () => {
     };
 
     fetchProducts();
-  }, [categoryFilter]); // Se ejecuta cada vez que cambia la categoría en la URL
+  }, [categoryFilter, searchQuery]); // Se ejecuta cuando cambia categoría o búsqueda
+
+  const clearFilters = () => {
+    setSearchParams({}); // Limpia todos los parámetros de la URL
+  };
 
   if (loading) {
     return (
@@ -49,15 +64,21 @@ const ProductList = () => {
 
   if (products.length === 0) {
     return (
-      <div className="text-center text-gray-400 py-16">
+      <div className="text-center text-gray-400 py-16 bg-card-bg rounded-xl border border-sage-200/10">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto mb-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p className="text-xl font-semibold mb-2">No se encontraron productos</p>
-        {categoryFilter && (
-          <p className="text-sm">
-            No hay productos en la categoría <span className="text-primary font-bold">"{categoryFilter}"</span>.
-          </p>
+        {(categoryFilter || searchQuery) && (
+          <div className="text-sm">
+            <p>No hay resultados para {categoryFilter ? `la categoría "${categoryFilter}"` : `la búsqueda "${searchQuery}"`}.</p>
+            <button 
+              onClick={clearFilters}
+              className="mt-4 text-primary hover:underline font-medium"
+            >
+              Ver todos los productos
+            </button>
+          </div>
         )}
       </div>
     );
@@ -65,18 +86,24 @@ const ProductList = () => {
 
   return (
     <div>
-      {categoryFilter && (
-        <div className="mb-8 flex items-center gap-2">
-          <span className="text-gray-400">Filtrando por:</span>
-          <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30 flex items-center gap-2">
-            {categoryFilter}
-            <button 
-              onClick={() => window.history.back()} // O usar navigate('/products')
-              className="hover:text-white transition-colors"
-              title="Quitar filtro"
-            >
-              ×
-            </button>
+      {/* Cabecera de Filtros Activos */}
+      {(categoryFilter || searchQuery) && (
+        <div className="mb-8 flex items-center justify-between bg-card-bg p-4 rounded-lg border border-sage-200/20">
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">Mostrando resultados de:</span>
+            <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30 flex items-center gap-2">
+              {categoryFilter ? `Categoría: ${categoryFilter}` : `Búsqueda: ${searchQuery}`}
+              <button 
+                onClick={clearFilters}
+                className="hover:text-white transition-colors ml-1"
+                title="Quitar filtro"
+              >
+                ×
+              </button>
+            </span>
+          </div>
+          <span className="text-sm text-gray-500 hidden sm:inline">
+            {products.length} productos encontrados
           </span>
         </div>
       )}
