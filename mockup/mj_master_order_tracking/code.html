@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MJ Master Order Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8cf425",
+                        "background-light": "#f7f8f5",
+                        "background-dark": "#192210",
+                        "sage": {
+                            50: "#f4f7f1",
+                            100: "#e6ede1",
+                            200: "#d0dbcc",
+                            300: "#abba9c",
+                            400: "#869a74",
+                            500: "#697d58",
+                            600: "#516243",
+                            700: "#3f4d35",
+                            800: "#343f2c",
+                            900: "#2d3627",
+                            950: "#171d14",
+                        }
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col">
+<!-- Header Navigation -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-sage-200 dark:border-sage-800">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-sage-100 dark:hover:bg-sage-900 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Order Tracking</h1>
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-sage-100 dark:hover:bg-sage-900 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">share</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Map View Section -->
+<div class="relative w-full aspect-[4/3] bg-sage-200 dark:bg-sage-900 overflow-hidden shadow-inner">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Dark stylized city map with delivery route" data-location="San Francisco, CA" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCNIGebK7F40T7LwI7gMvY4mUgZfQiWDVs_a5oneEfXdvOSfyNdzM5EOd65tUZsLVf5vJhTJ3QruSPPPFL58ApFOKppluOW6wPBxwXGFlprzAhv5KQCtzYsfI-3n4YeeOxWrHNToiISdtR1z8Sp5RfD2QwyfaG85-GnJVOZ5D5PateA8i_ZqGMwFljZOsfuQ4NFPe7nD-lrNHg6chBNkGFb1NgUNEMMcXDK39paxjlVhBmi28V2NL--CSq7_qIxjJCMf562mMGiKFAB');">
+</div>
+<!-- Map Markers Overlay -->
+<div class="absolute top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-12 h-12 bg-primary/20 rounded-full animate-ping"></div>
+<div class="relative z-10 p-2 bg-primary rounded-full shadow-lg border-4 border-background-dark">
+<span class="material-symbols-outlined text-background-dark text-xl">local_shipping</span>
+</div>
+</div>
+</div>
+<div class="absolute bottom-1/4 right-1/4 transform translate-x-1/2 translate-y-1/2">
+<div class="p-2 bg-slate-100 dark:bg-slate-800 rounded-full shadow-lg border-2 border-primary">
+<span class="material-symbols-outlined text-primary text-xl">home</span>
+</div>
+</div>
+<!-- Live Label -->
+<div class="absolute top-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-2 border border-sage-700">
+<span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+<span class="text-xs font-bold text-white uppercase tracking-widest">Live Tracking</span>
+</div>
+</div>
+<!-- Order Summary Detail Card -->
+<div class="px-4 -mt-10 relative z-10">
+<div class="bg-white dark:bg-sage-900/90 backdrop-blur-xl rounded-xl p-5 shadow-2xl border border-sage-200 dark:border-sage-800">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sage-500 dark:text-sage-400 text-xs font-bold uppercase tracking-wider mb-1">Arriving in 15 mins</p>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Out for Delivery</h2>
+</div>
+<button class="bg-primary px-4 py-2 rounded-lg text-background-dark text-sm font-bold shadow-sm hover:brightness-110 active:scale-95 transition-all">
+                        Contact Courier
+                    </button>
+</div>
+<div class="flex items-center gap-3 p-3 bg-sage-50 dark:bg-sage-800/50 rounded-lg border border-sage-100 dark:border-sage-700/50">
+<div class="w-10 h-10 rounded-full bg-sage-200 dark:bg-sage-700 overflow-hidden">
+<img alt="Courier profile photo" class="w-full h-full object-cover" data-alt="Smiling delivery driver headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbE57gP7gbigGW7ds5SOMPZ652PpnhzFrhVOHBzxw3eSM585X6fSdSaEnp_yeAPthXalpGGQchuoBNAT1A3EnMlHY8_siR-3_FvW6CXZy6R8b07lqJHncVqezVA9BBAgMYaRhN46qiJErvf5y_Ur6sivQlp9sC0Sn5nTIie9RrWqTVaI_t3SsveQmkkOcvLxl1w7V7RBEuez4yota7ImCJnz1dSBj0OU7KWK2ol7R_Fe2tpCE4rf4A9WYqKpOj3Uuj4L_fJvxQkOcg"/>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Marcus Jennings</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">Your MJ Master Specialist</p>
+</div>
+<div class="ml-auto flex gap-2">
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-full">call</span>
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-full">chat_bubble</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Progress Timeline -->
+<div class="p-6 mt-4">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">timeline</span>
+                Order Progress
+            </h3>
+<div class="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-z-10 before:h-full before:w-0.5 before:bg-sage-200 dark:before:bg-sage-800">
+<!-- Step 1: Completed -->
+<div class="relative flex items-start gap-4">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-background-dark shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined font-bold">check</span>
+</div>
+<div class="flex flex-col pt-1">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Order Placed</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">October 24, 2023 • 10:45 AM</p>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="relative flex items-start gap-4">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-background-dark shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined font-bold">check</span>
+</div>
+<div class="flex flex-col pt-1">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Processed at Growhub</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">October 24, 2023 • 1:30 PM</p>
+</div>
+</div>
+<!-- Step 3: Current -->
+<div class="relative flex items-start gap-4">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background-dark border-4 border-primary text-primary shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined animate-pulse">local_shipping</span>
+</div>
+<div class="flex flex-col pt-1">
+<p class="text-sm font-bold text-primary">Out for Delivery</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">Heading to your location</p>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="relative flex items-start gap-4">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage-100 dark:bg-sage-800 text-sage-400 dark:text-sage-600">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div class="flex flex-col pt-1 opacity-50">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Delivered</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">Estimated: 3:15 PM</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Delivery Details Section -->
+<div class="px-4 py-6 space-y-4">
+<div class="bg-sage-100/50 dark:bg-sage-900/40 rounded-xl p-4 border border-sage-200 dark:border-sage-800">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-sage-500">location_on</span>
+<h4 class="text-sm font-bold uppercase tracking-widest text-sage-500">Delivery Address</h4>
+</div>
+<p class="text-sm text-slate-900 dark:text-slate-100 font-medium">Alex Thompson</p>
+<p class="text-sm text-sage-500 dark:text-sage-400 leading-relaxed">
+                    1244 High Street, Apt 4B<br/>
+                    San Francisco, CA 94103
+                </p>
+<div class="mt-4 pt-4 border-t border-sage-200 dark:border-sage-800 flex items-center justify-between">
+<span class="text-xs font-medium text-sage-500 italic">"Leave with doorman if not home"</span>
+<button class="text-primary text-xs font-bold uppercase">Edit</button>
+</div>
+</div>
+<!-- Order Items Preview -->
+<div class="bg-sage-100/50 dark:bg-sage-900/40 rounded-xl p-4 border border-sage-200 dark:border-sage-800">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-sage-500">shopping_bag</span>
+<h4 class="text-sm font-bold uppercase tracking-widest text-sage-500">Order MJ-8829</h4>
+</div>
+<p class="text-sm font-bold">$184.50</p>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-sage-200 dark:bg-sage-800 overflow-hidden border border-sage-300 dark:border-sage-700">
+<img alt="Hydroponic Nutrients" class="w-full h-full object-cover" data-alt="Bottle of premium plant nutrients" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPlFVq7Ym9kMsScvi9mVRRF7TgFZjU7UNcJNByghcthQOh9uj_5OPY3qoHte2kyrgEpgwElXrMCIj9UqBFyjFq002OgRORsW_Sv8CUMVsM_2eDYsDv6tQmsFaJnaReoKi8CwDrs7wbJBTLWMLF61W6Fe8tm6AYuRXyKmzK-iwgSqmXTjnCyst9z8NJd5ZHUkPCIgFnjQFS0TYoOArFRor8MTz_8MFLk38dDeJVpAPCZ2tRywiNkP2Wi5ld4qVhFkdS882iubV6VBph"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">FloraSeries Nutrient Kit</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">Qty: 1 • Size: 1 Gallon</p>
+</div>
+<p class="text-sm font-bold">$89.00</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-sage-200 dark:bg-sage-800 overflow-hidden border border-sage-300 dark:border-sage-700">
+<img alt="LED Grow Lights" class="w-full h-full object-cover" data-alt="Small LED grow light unit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpcS2dcG84IQyVlw0kQ4Sf0msrc2dsIYpV9WhVUKWRBhMXJhKW53r9y_fdyA1BEEtOnMH99OwLz1lIlNs52nEzIVTB2NRLwnMEe3uXJRzI45Rm8ZZDL8vkbcs4XwfWzQ_QUcLGgB76qh5uT8Lva4_WGxrvazLVk_4gNFJwwesxvTsJBmyOc0mg3yzSiV3PL7Ufo96--n9M0XgMhV7Byl7zFEF2JaG2tD7HUQl2R45LIwZ7InrEatXaTM22xY2T0dxUcJR4KzvIfnoP"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Full Spectrum Mini LED</p>
+<p class="text-xs text-sage-500 dark:text-sage-400">Qty: 1 • White</p>
+</div>
+<p class="text-sm font-bold">$95.50</p>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-4 mb-10">
+<button class="w-full border-2 border-sage-200 dark:border-sage-800 text-slate-900 dark:text-slate-100 py-4 rounded-xl font-bold hover:bg-sage-100 dark:hover:bg-sage-900 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">help_outline</span>
+                Need help with this order?
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-sage-200 dark:border-sage-800 px-4 pb-6 pt-2 flex justify-around items-center z-50">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-sage-400 dark:text-sage-600 group-hover:text-primary transition-colors">storefront</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-sage-400 dark:text-sage-600">Shop</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">package</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 group relative" href="#">
+<span class="material-symbols-outlined text-sage-400 dark:text-sage-600 group-hover:text-primary transition-colors">shopping_cart</span>
+<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-[8px] text-background-dark flex items-center justify-center rounded-full font-bold">2</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-sage-400 dark:text-sage-600">Cart</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-sage-400 dark:text-sage-600 group-hover:text-primary transition-colors">person</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-sage-400 dark:text-sage-600">Profile</span>
+</a>
+</nav>
+<!-- iOS Home Indicator -->
+<div class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-300 dark:bg-sage-800 rounded-full z-50"></div>
+</body></html>
