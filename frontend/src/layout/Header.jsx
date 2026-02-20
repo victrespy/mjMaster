@@ -7,23 +7,23 @@ const Header = () => {
   const { user, logout } = useAuth();
 
   return (
-    <header className="bg-green-700 shadow-md">
+    <header className="bg-card-bg border-b border-sage-200 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="flex items-center">
-              <img className="h-8 w-8" src={viteLogo} alt="Logo" />
-              <span className="ml-2 text-xl font-bold text-white">MJ Master</span>
+            <Link to="/" className="flex items-center group">
+              <img className="h-8 w-8 transition-transform group-hover:scale-110" src={viteLogo} alt="Logo" />
+              <span className="ml-2 text-xl font-bold text-primary tracking-wide">MJ Master</span>
             </Link>
           </div>
 
           {/* Navegación Principal */}
           <nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <Link to="/" className="text-white hover:text-green-200 px-3 py-2 rounded-md text-sm font-medium">
+            <Link to="/" className="text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
               Catálogo
             </Link>
-            <Link to="/about" className="text-white hover:text-green-200 px-3 py-2 rounded-md text-sm font-medium">
+            <Link to="/about" className="text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
               Nosotros
             </Link>
           </nav>
@@ -32,10 +32,10 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <span className="text-white text-sm">Hola, Usuario</span>
+                <span className="text-gray-300 text-sm">Hola, <span className="text-primary font-semibold">Usuario</span></span>
                 <button
                   onClick={logout}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition"
+                  className="bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-600/50 px-3 py-1 rounded text-sm transition-all"
                 >
                   Salir
                 </button>
@@ -43,7 +43,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/login"
-                className="bg-white text-green-700 hover:bg-gray-100 px-4 py-2 rounded font-bold text-sm transition"
+                className="bg-primary hover:bg-lime-400 text-dark-bg px-4 py-2 rounded font-bold text-sm transition-colors shadow-md hover:shadow-primary/20"
               >
                 Iniciar Sesión
               </Link>

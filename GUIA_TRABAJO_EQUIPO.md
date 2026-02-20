@@ -111,4 +111,24 @@ Es normal que el encargado del Carrito necesite productos, o el de Pedidos neces
 
 ---
 
+## ⚠️ 6. Solución de Problemas Comunes
+
+### Error de Login / Network Error / CORS
+Si al intentar hacer Login recibes un error de red o CORS en la consola:
+1.  Abre [https://localhost:9443/api/hello](https://localhost:9443/api/hello) en una nueva pestaña.
+2.  Verás una advertencia de seguridad ("La conexión no es privada").
+3.  Haz clic en **Avanzado** -> **Continuar a localhost (no seguro)**.
+4.  Vuelve a la aplicación y prueba el Login de nuevo.
+
+### Error "Unable to create token" (Backend)
+Si el backend falla al generar tokens JWT:
+1.  Asegúrate de haber generado las claves JWT en tu máquina:
+    ```bash
+    docker compose exec backend php bin/console lexik:jwt:generate-keypair
+    ```
+2.  Si acabas de hacer `git pull`, instala las nuevas dependencias:
+    ```bash
+    docker compose exec backend composer install
+    ```
+
 ¡Mucho ánimo con el desarrollo! 🚀

@@ -106,3 +106,12 @@ Si Vite falla al cargar Tailwind, asegúrate de que las dependencias estén inst
 ```bash
 sudo docker compose exec frontend npm install
 ```
+
+**⚠️ Error de Login / Network Error (CORS)**
+Si al intentar hacer Login recibes un error de red o CORS en la consola:
+1. Abre [https://localhost:9443/api/hello](https://localhost:9443/api/hello) en una nueva pestaña.
+2. Verás una advertencia de seguridad ("La conexión no es privada").
+3. Haz clic en **Avanzado** -> **Continuar a localhost (no seguro)**.
+4. Vuelve a la aplicación y prueba el Login de nuevo.
+   
+> Esto ocurre porque el navegador bloquea las peticiones al Backend (puerto 9443) si no has aceptado explícitamente su certificado SSL autofirmado.
