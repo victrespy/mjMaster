@@ -25,6 +25,28 @@ export const login = async (email, password) => {
   }
 };
 
+export const register = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/ld+json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData['hydra:description'] || "Error en el registro");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en registro:", error);
+    throw error;
+  }
+};
+
 export const logout = () => {
   localStorage.removeItem("token");
 };
