@@ -1,8 +1,53 @@
 const API_URL = "https://localhost:9443/api";
 
-export const getProducts = async (page = 1, itemsPerPage = 30) => {
+// Función auxiliar para obtener el ID de una categoría por su nombre
+const getCategoryIdByName = async (categoryName) => {
   try {
-    const response = await fetch(`${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`, {
+    console.log(`🔍 Buscando ID para categoría: "${categoryName}"`);
+    const response = await fetch(`${API_URL}/categories?name=${encodeURIComponent(categoryName)}`, {
+      headers: { "Accept": "application/ld+json" }
+    });
+    
+    if (!response.ok) {
+      console.error("❌ Error al buscar categoría:", response.statusText);
+      return null;
+    }
+    
+    const data = await response.json();
+    const members = data['hydra:member'] || data.member || [];
+    
+    if (members.length > 0) {
+      console.log(`✅ ID encontrado: ${members[0].id} para "${categoryName}"`);
+      return members[0].id;
+    }
+    
+    console.warn(`⚠️ No se encontró ninguna categoría con el nombre "${categoryName}"`);
+    return null;
+  } catch (error) {
+    console.error("❌ Error buscando categoría:", error);
+    return null;
+  }
+};
+
+export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = null) => {
+  try {
+    let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
+    
+    if (categoryName) {
+      const categoryId = await getCategoryIdByName(categoryName);
+      
+      if (categoryId) {
+        url += `&category=${categoryId}`;
+      } else {
+        console.warn(`⚠️ Filtrado cancelado: No se pudo obtener ID para "${categoryName}"`);
+        // Si quieres que devuelva vacío cuando no encuentra la categoría, descomenta esto:
+        // return [];
+      }
+    }
+
+    console.log(`🚀 Llamando a API: ${url}`);
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Accept": "application/ld+json",
@@ -10,22 +55,28 @@ export const getProducts = async (page = 1, itemsPerPage = 30) => {
     });
 
     if (!response.ok) {
-      throw new Error("Error al obtener productos");
+      throw new Error(`Error al obtener productos: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return data['hydra:member'];
+    
+    if (data['hydra:member']) {
+      return data['hydra:member'];
+    } else if (data.member) {
+      return data.member;
+    } else if (Array.isArray(data)) {
+      return data;
+    }
+    
+    return [];
   } catch (error) {
     console.error("Error en getProducts:", error);
-    throw error;
+    return [];
   }
 };
 
 export const searchProducts = async (query) => {
   try {
-    // Asumiendo que API Platform tiene habilitado un filtro de búsqueda parcial por nombre
-    // Si no, esto podría requerir configuración en el backend.
-    // Por defecto intentamos filtrar por nombre.
     const response = await fetch(`${API_URL}/products?name=${query}`, {
       method: "GET",
       headers: {
@@ -38,9 +89,18 @@ export const searchProducts = async (query) => {
     }
 
     const data = await response.json();
-    return data['hydra:member'];
+    
+    if (data['hydra:member']) {
+      return data['hydra:member'];
+    } else if (data.member) {
+      return data.member;
+    } else if (Array.isArray(data)) {
+      return data;
+    }
+
+    return [];
   } catch (error) {
     console.error("Error en searchProducts:", error);
-    throw error;
+    return [];
   }
 };

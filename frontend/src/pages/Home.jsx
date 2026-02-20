@@ -1,73 +1,200 @@
-import React, { useState, useEffect } from 'react';
-import reactLogo from '../assets/react.svg';
-import Button from '../components/Button';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { getProducts } from '../services/productService';
+import ProductCard from '../components/ProductCard';
 
 const Home = () => {
-  const [count, setCount] = useState(0);
-  const [backendMessage, setBackendMessage] = useState('Cargando...');
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Usamos la URL correcta del backend (9443)
-    fetch('https://localhost:9443/api/hello')
-      .then(response => {
-        if (!response.ok) throw new Error('Error de red');
-        return response.json();
-      })
-      .then(data => setBackendMessage(data.message || 'Conectado correctamente'))
-      .catch(error => setBackendMessage('Error conectando al backend. ¿Has aceptado el certificado en https://localhost:9443/api/hello?'));
+    const fetchFeatured = async () => {
+      try {
+        // Obtenemos los primeros 4 productos como destacados
+        const data = await getProducts(1, 4);
+        setFeaturedProducts(data);
+      } catch (error) {
+        console.error("Error cargando destacados:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFeatured();
   }, []);
 
-  const isError = backendMessage.includes('Error');
-
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full space-y-8 text-center">
-        
-        {/* Hero Section */}
-        <div className="animate-fade-in-up">
-          <a href="https://react.dev" target="_blank" rel="noreferrer" className="inline-block hover:scale-110 transition-transform duration-300">
-            <img src={reactLogo} className="h-32 w-auto mx-auto animate-spin-slow filter drop-shadow-[0_0_10px_rgba(140,244,37,0.5)]" alt="React logo" />
-          </a>
-          <h1 className="mt-6 text-5xl font-extrabold text-primary tracking-tight">
-            MJ Master <span className="text-gray-100">Growshop</span>
-          </h1>
-          <p className="mt-4 text-xl text-gray-400 max-w-2xl mx-auto">
-            Tu tienda de confianza para el cultivo y parafernalia. Calidad premium, envíos discretos.
-          </p>
-        </div>
-        
-        {/* Backend Status Card */}
-        <div className="bg-card-bg border border-sage-200/20 shadow-xl rounded-xl p-8 transform hover:-translate-y-1 transition-all duration-300">
-          <h2 className="text-lg font-semibold text-gray-200 mb-4 uppercase tracking-wider text-xs">Estado del Sistema</h2>
-          <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold ${isError ? 'bg-red-900/30 text-red-400 border border-red-500/30' : 'bg-green-900/30 text-primary border border-primary/30'}`}>
-            <span className={`w-2 h-2 rounded-full mr-2 ${isError ? 'bg-red-500 animate-pulse' : 'bg-primary animate-pulse'}`}></span>
-            {backendMessage}
-          </div>
+    <div className="flex flex-col min-h-screen">
+      
+      {/* HERO SECTION */}
+      <div className="relative h-[600px] w-full overflow-hidden">
+        {/* Imagen de fondo con overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transform hover:scale-105 transition-transform duration-[20s]"
+          style={{ backgroundImage: "url('/hero.webp')" }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-dark-bg"></div>
         </div>
 
-        {/* Interactive Demo */}
-        <div className="bg-card-bg border border-sage-200/20 shadow-xl rounded-xl p-8 space-y-6">
-          <p className="text-gray-400 text-sm uppercase tracking-wider">Zona de Pruebas</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button 
-              onClick={() => setCount((count) => count + 1)} 
-              variant="primary"
-              className="w-full sm:w-auto"
-            >
-              Contador: {count}
-            </Button>
-            
-            <Button 
-              variant="secondary" 
-              onClick={() => alert('¡Funcionalidad en desarrollo!')}
-              className="w-full sm:w-auto bg-sage-200 text-gray-200 hover:bg-sage-100"
+        {/* Contenido del Hero */}
+        <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-start">
+          <span className="text-primary font-bold tracking-widest uppercase mb-4 animate-fade-in-up">
+            Bienvenido a MJ Master
+          </span>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight max-w-3xl animate-fade-in-up delay-100">
+            Tu Cultivo, <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-lime-400">
+              Nuestra Pasión
+            </span>
+          </h1>
+          <p className="text-gray-300 text-lg md:text-xl mb-8 max-w-xl animate-fade-in-up delay-200">
+            Encuentra las mejores semillas, fertilizantes y parafernalia. 
+            Calidad premium y envíos 100% discretos garantizados.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-300">
+            <Link 
+              to="/products" 
+              className="bg-primary text-dark-bg font-bold px-8 py-4 rounded-lg hover:bg-lime-400 transition-all shadow-[0_0_20px_rgba(140,244,37,0.3)] hover:shadow-[0_0_30px_rgba(140,244,37,0.5)] transform hover:-translate-y-1"
             >
               Ver Catálogo
-            </Button>
+            </Link>
+            <Link 
+              to="/about" 
+              className="border border-gray-500 text-gray-300 font-bold px-8 py-4 rounded-lg hover:bg-white/10 hover:border-white hover:text-white transition-all backdrop-blur-sm"
+            >
+              Sobre Nosotros
+            </Link>
           </div>
         </div>
-
       </div>
+
+      {/* CATEGORÍAS DESTACADAS */}
+      <section className="py-16 bg-dark-bg">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-100">
+            Explora por <span className="text-primary">Categorías</span>
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card Categoría 1 */}
+            <Link to="/products?category=Semillas" className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
+              <img 
+                src="/products/placeholder.avif" 
+                alt="Semillas" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+              />
+              <div className="absolute bottom-0 left-0 p-6 z-20 w-full">
+                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">Semillas</h3>
+                <p className="text-gray-400 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  Feminizadas, Autoflorecientes y CBD
+                </p>
+              </div>
+            </Link>
+
+            {/* Card Categoría 2 */}
+            <Link to="/products?category=Cultivo" className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
+              <img 
+                src="/products/placeholder.avif" 
+                alt="Cultivo" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+              />
+              <div className="absolute bottom-0 left-0 p-6 z-20 w-full">
+                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">Cultivo</h3>
+                <p className="text-gray-400 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  Fertilizantes, Sustratos e Iluminación
+                </p>
+              </div>
+            </Link>
+
+            {/* Card Categoría 3 */}
+            <Link to="/products?category=Parafernalia" className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
+              <img 
+                src="/products/placeholder.avif" 
+                alt="Parafernalia" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+              />
+              <div className="absolute bottom-0 left-0 p-6 z-20 w-full">
+                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">Parafernalia</h3>
+                <p className="text-gray-400 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  Bongs, Grinders y Papel
+                </p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTOS DESTACADOS */}
+      <section className="py-16 bg-card-bg border-y border-sage-200/10">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-100">Novedades</h2>
+              <p className="text-gray-400 mt-2">Lo último en llegar a nuestro catálogo</p>
+            </div>
+            <Link to="/products" className="hidden md:flex items-center text-primary hover:text-white transition-colors font-medium">
+              Ver todo <span className="ml-2">→</span>
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredProducts.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+          
+          <div className="mt-8 text-center md:hidden">
+            <Link to="/products" className="inline-block border border-primary text-primary px-6 py-2 rounded hover:bg-primary hover:text-dark-bg transition-colors">
+              Ver todo el catálogo
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* VENTAJAS / FEATURES */}
+      <section className="py-16 bg-dark-bg">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Calidad Garantizada</h3>
+              <p className="text-gray-400">Seleccionamos solo los mejores productos de los bancos más prestigiosos.</p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Envío Discreto</h3>
+              <p className="text-gray-400">Paquetes sin logotipos ni referencias al contenido. Tu privacidad es sagrada.</p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Envío Rápido 24/48h</h3>
+              <p className="text-gray-400">Recibe tu pedido en tiempo récord en cualquier punto de la península.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 };

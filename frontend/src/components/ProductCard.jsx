@@ -1,8 +1,16 @@
 import React from 'react';
+import { useCart } from '../context/CartContext';
 
 const ProductCard = ({ product }) => {
+  const { addToCart } = useCart();
+  
   // Imagen por defecto si no viene una válida
   const imageUrl = product.picture ? product.picture : '/products/placeholder.avif';
+
+  const handleAddToCart = () => {
+    addToCart(product, 1);
+    // Opcional: Mostrar un toast o notificación aquí
+  };
 
   return (
     <div className="bg-card-bg border border-sage-200 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
@@ -28,9 +36,10 @@ const ProductCard = ({ product }) => {
         <div className="mt-4 flex items-center justify-between">
           <span className="text-xl font-bold text-primary">{parseFloat(product.price).toFixed(2)} €</span>
           <button 
+            onClick={handleAddToCart}
             className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
               product.stock > 0 
-                ? 'bg-primary text-dark-bg hover:bg-lime-400' 
+                ? 'bg-primary text-dark-bg hover:bg-lime-400 active:scale-95 transform transition-transform'
                 : 'bg-gray-600 text-gray-300 cursor-not-allowed'
             }`}
             disabled={product.stock <= 0}
