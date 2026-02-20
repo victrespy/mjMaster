@@ -3,6 +3,9 @@ api_hello:
     path: /api/hello
     controller: App\Controller\ApiController::index
 
+api_login_check:
+    path: /api/login_check
+
 api_platform:
     resource: .
     type: api_platform
