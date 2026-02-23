@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\State\ReviewProcessor;
 use App\State\SoftDeleteProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(),
+        new Post(processor: ReviewProcessor::class),
         new Put(),
         new Patch(),
         new Delete(processor: SoftDeleteProcessor::class)
@@ -154,6 +155,6 @@ class Review
     #[Groups(['review:read', 'product:read'])]
     public function getAuthorName(): ?string
     {
-        return $this->user ? $this->user->getName() : null;
+        return $this->user ? $this->user->getName() : 'Anónimo';
     }
 }
