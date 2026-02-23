@@ -40,12 +40,8 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
         url += `&category=${categoryId}`;
       } else {
         console.warn(`⚠️ Filtrado cancelado: No se pudo obtener ID para "${categoryName}"`);
-        // Si quieres que devuelva vacío cuando no encuentra la categoría, descomenta esto:
-        // return [];
       }
     }
-
-    // console.log(`🚀 Llamando a API: ${url}`);
 
     const response = await fetch(url, {
       method: "GET",
@@ -71,6 +67,36 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
     return [];
   } catch (error) {
     console.error("Error en getProducts:", error);
+    return [];
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const response = await fetch(`${API_URL}/categories`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/ld+json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener categorías");
+    }
+
+    const data = await response.json();
+    
+    if (data['hydra:member']) {
+      return data['hydra:member'];
+    } else if (data.member) {
+      return data.member;
+    } else if (Array.isArray(data)) {
+      return data;
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Error en getCategories:", error);
     return [];
   }
 };
@@ -115,7 +141,6 @@ export const getProductById = async (id) => {
     });
 
     if (response.status === 404) {
-      // Producto no encontrado, devolvemos null sin lanzar error
       return null;
     }
 
@@ -125,9 +150,75 @@ export const getProductById = async (id) => {
 
     return await response.json();
   } catch (error) {
-    // Si es un error de red o similar, lo logueamos pero devolvemos null para que la UI lo maneje
-    console.warn(`Aviso: No se pudo cargar el producto ${id} (posiblemente eliminado o error de red).`);
+    console.warn(`Aviso: No se pudo cargar el producto ${id}.`);
     return null;
+  }
+};
+
+export const createProduct = async (productData) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${API_URL}/products`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/ld+json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(productData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al crear el producto");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en createProduct:", error);
+    throw error;
+  }
+};
+
+export const updateProduct = async (id, productData) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${API_URL}/products/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/merge-patch+json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(productData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al actualizar el producto");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en updateProduct:", error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${API_URL}/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al eliminar el producto");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error en deleteProduct:", error);
+    throw error;
   }
 };
 
