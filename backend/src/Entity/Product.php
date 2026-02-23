@@ -91,6 +91,7 @@ class Product
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'product')]
+    #[Groups(['product:read'])]
     private Collection $reviews;
 
     public function __construct()

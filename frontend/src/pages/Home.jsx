@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts } from '../services/productService';
 import ProductCard from '../components/ProductCard';
+import CategoryList from '../components/CategoryList';
 import Button from '../components/Button';
 
 const Home = () => {
@@ -76,55 +77,9 @@ const Home = () => {
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-100">
             Explora por <span className="text-primary">Categorías</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card Categoría 1 */}
-            <Link to="/products?category=Semillas" className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
-              <img 
-                src="/products/placeholder.avif" 
-                alt="Semillas" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-              />
-              <div className="absolute bottom-0 left-0 p-6 z-20 w-full">
-                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">Semillas</h3>
-                <p className="text-gray-400 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  Feminizadas, Autoflorecientes y CBD
-                </p>
-              </div>
-            </Link>
+          
+          <CategoryList />
 
-            {/* Card Categoría 2 */}
-            <Link to="/products?category=Cultivo" className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
-              <img 
-                src="/products/placeholder.avif" 
-                alt="Cultivo" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-              />
-              <div className="absolute bottom-0 left-0 p-6 z-20 w-full">
-                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">Cultivo</h3>
-                <p className="text-gray-400 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  Fertilizantes, Sustratos e Iluminación
-                </p>
-              </div>
-            </Link>
-
-            {/* Card Categoría 3 */}
-            <Link to="/products?category=Parafernalia" className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
-              <img 
-                src="/products/placeholder.avif" 
-                alt="Parafernalia" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-              />
-              <div className="absolute bottom-0 left-0 p-6 z-20 w-full">
-                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">Parafernalia</h3>
-                <p className="text-gray-400 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  Bongs, Grinders y Papel
-                </p>
-              </div>
-            </Link>
-          </div>
         </div>
       </section>
 

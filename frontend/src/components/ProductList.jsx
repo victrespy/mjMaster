@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from './ProductCard';
+import ProductModal from './ProductModal';
 import { getProducts, searchProducts } from '../services/productService';
 
 const ProductList = () => {
@@ -8,6 +9,7 @@ const ProductList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Leemos los parámetros de la URL
   const categoryFilter = searchParams.get('category');
@@ -45,6 +47,9 @@ const ProductList = () => {
   const clearFilters = () => {
     setSearchParams({}); // Limpia todos los parámetros de la URL
   };
+
+  const openModal = (product) => setSelectedProduct(product);
+  const closeModal = () => setSelectedProduct(null);
 
   if (loading) {
     return (
@@ -110,9 +115,13 @@ const ProductList = () => {
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} onOpen={openModal} />
         ))}
       </div>
+
+      {selectedProduct && (
+        <ProductModal product={selectedProduct} onClose={closeModal} />
+      )}
     </div>
   );
 };

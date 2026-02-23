@@ -2,7 +2,7 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import Button from './Button';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onOpen }) => {
   const { addToCart } = useCart();
   
   // Base URL para las imágenes si son relativas
@@ -19,12 +19,19 @@ const ProductCard = ({ product }) => {
     }
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    // Evitamos que el click en el botón burbujee y abra el modal
+    if (e && e.stopPropagation) e.stopPropagation();
     addToCart(product, 1);
   };
 
   return (
-    <div className="bg-card-bg border border-sage-200 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col h-full group">
+    <div
+      onClick={() => onOpen?.(product)}
+      role="button"
+      tabIndex={0}
+      className="bg-card-bg border border-sage-200 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col h-full group cursor-pointer"
+    >
       <div className="relative h-48 overflow-hidden">
         <img 
           src={imageUrl} 
@@ -40,12 +47,19 @@ const ProductCard = ({ product }) => {
             Agotado
           </div>
         )}
+
+        {/* Aviso de pocas unidades: aparece cuando 0 < stock <= 20 */}
+        {product.stock > 0 && product.stock <= 20 && (
+          <div className="absolute top-0 right-0 bg-amber-500 text-black text-xs font-bold px-2 py-1 m-2 rounded text-right">
+            QUEDAN POCAS UNIDADES
+          </div>
+        )}
       </div>
       
       <div className="p-4 flex-grow flex flex-col justify-between">
         <div>
           <h3 className="text-lg font-bold text-gray-100 mb-1 line-clamp-2">{product.name}</h3>
-          <p className="text-gray-400 text-sm mb-3 line-clamp-3">{product.description}</p>
+          {/* descripción removida de la tarjeta: irá en el modal */}
         </div>
         
         <div className="mt-4 flex items-center justify-between">
