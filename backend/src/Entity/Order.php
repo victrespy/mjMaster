@@ -70,8 +70,9 @@ class Order
     /**
      * @var Collection<int, OrderProduct>
      */
-    #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'order', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'order', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['order:read', 'order:write'])]
+    #[Assert\Valid]
     private Collection $orderProducts;
 
     public function __construct()
@@ -159,6 +160,18 @@ class Order
             $this->orderProducts->add($orderProduct);
             $orderProduct->setOrder($this);
         }
+        return $this;
+    }
+
+    public function removeOrderProduct(OrderProduct $orderProduct): static
+    {
+        if ($this->orderProducts->removeElement($orderProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($orderProduct->getOrder() === $this) {
+                $orderProduct->setOrder(null);
+            }
+        }
+
         return $this;
     }
 }

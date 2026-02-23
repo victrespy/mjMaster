@@ -1,32 +1,34 @@
 const API_URL = "https://localhost:9443/api";
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-  };
-};
-
-export const createOrder = async (cartItems) => {
+export const createOrder = async (orderData, token) => {
   try {
-    // Preparamos los datos para el backend
-    // Solo necesitamos ID y cantidad
-    const itemsToSend = cartItems.map(item => ({
-      productId: item.id,
-      quantity: item.quantity
-    }));
-
-    const response = await fetch(`${API_URL}/checkout`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ items: itemsToSend }),
+    const response = await fetch(`${API_URL}/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/ld+json',
+        'Accept': 'application/ld+json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(orderData)
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error al procesar el pedido");
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Error detallado del servidor:", errorData);
+
+      let errorMessage = 'Error al procesar el pedido';
+
+      if (errorData['hydra:description']) {
+        errorMessage = errorData['hydra:description'];
+      } else if (errorData['detail']) {
+        errorMessage = errorData['detail'];
+      } else if (errorData['violations']) {
+        errorMessage = errorData['violations'].map(v => `${v.propertyPath}: ${v.message}`).join(', ');
+      } else if (response.statusText) {
+        errorMessage = `${response.status} ${response.statusText}`;
+      }
+
+      throw new Error(errorMessage);
     }
 
     return await response.json();

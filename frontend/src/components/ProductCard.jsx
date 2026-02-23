@@ -5,8 +5,19 @@ import Button from './Button';
 const ProductCard = ({ product, onOpen }) => {
   const { addToCart } = useCart();
   
-  // Imagen por defecto si no viene una válida
-  const imageUrl = product.picture ? product.picture : '/products/placeholder.avif';
+  // Base URL para las imágenes si son relativas
+  const API_BASE_URL = "https://localhost:9443";
+  
+  // Procesar la URL de la imagen
+  let imageUrl = '/products/placeholder.avif';
+  if (product.picture) {
+    if (product.picture.startsWith('http')) {
+      imageUrl = product.picture;
+    } else {
+      // Si la ruta empieza por /uploads o similar, concatenamos la base de la API
+      imageUrl = `${API_BASE_URL}${product.picture.startsWith('/') ? '' : '/'}${product.picture}`;
+    }
+  }
 
   const handleAddToCart = (e) => {
     // Evitamos que el click en el botón burbujee y abra el modal
@@ -26,6 +37,10 @@ const ProductCard = ({ product, onOpen }) => {
           src={imageUrl} 
           alt={product.name} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          onError={(e) => {
+            e.target.onerror = null; 
+            e.target.src = '/products/placeholder.avif';
+          }}
         />
         {product.stock <= 0 && (
           <div className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded">
