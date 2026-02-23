@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts } from '../services/productService';
 import ProductCard from '../components/ProductCard';
+import ProductModal from '../components/ProductModal';
 import CategoryList from '../components/CategoryList';
 import Button from '../components/Button';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -23,6 +25,14 @@ const Home = () => {
     };
     fetchFeatured();
   }, []);
+
+  const handleOpenModal = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -103,7 +113,11 @@ const Home = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  onOpen={handleOpenModal} // Pasamos la función para abrir el modal
+                />
               ))}
             </div>
           )}
@@ -152,6 +166,14 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Modal de Producto */}
+      {selectedProduct && (
+        <ProductModal 
+          product={selectedProduct} 
+          onClose={handleCloseModal} 
+        />
+      )}
 
     </div>
   );
