@@ -39,6 +39,7 @@ const Header = () => {
 
   const isAdmin = user && user.roles && user.roles.includes('ROLE_ADMIN');
 
+
   return (
     <header className="bg-card-bg border-b border-sage-200 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
