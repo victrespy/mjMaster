@@ -180,10 +180,18 @@ const ProductModal = ({ product, onClose }) => {
     >
       <div className="bg-card-bg border border-sage-200/20 rounded-xl shadow-2xl max-w-4xl w-full mt-12 overflow-hidden transform transition-all animate-scale-in">
         <div className="flex flex-col sm:flex-row max-h-[90vh]">
-          <div className="sm:w-1/2 w-full h-64 sm:h-auto bg-white/5 relative">
-            <img src={imageUrl} alt={product.name} className="w-full h-full object-contain p-4" />
+          {/* Imagen a la izquierda (o arriba en móvil) */}
+          <div className="sm:w-1/2 w-full h-64 sm:h-auto bg-white/5 relative flex items-center justify-center overflow-hidden">
+            <img 
+              src={imageUrl} 
+              alt={product.name} 
+              className="w-full h-full object-cover" 
+            />
+            {/* Overlay con degradado */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none"></div>
           </div>
 
+          {/* Contenido a la derecha (o abajo en móvil) */}
           <div className="sm:w-1/2 w-full p-6 overflow-y-auto max-h-[90vh] custom-scrollbar">
             <div className="flex items-start justify-between">
               <div>
