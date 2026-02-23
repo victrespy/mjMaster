@@ -33,10 +33,11 @@ const Header = () => {
   // Función para manejar el cierre de sesión
   const handleLogout = () => {
     logout();
-    // Ya no necesitamos limpiar el carrito manualmente, el CartContext lo gestiona por usuario
     closeMenu();
     closeUserMenu();
   };
+
+  const isAdmin = user && user.roles && user.roles.includes('ROLE_ADMIN');
 
   return (
     <header className="bg-card-bg border-b border-sage-200 shadow-lg sticky top-0 z-50">
@@ -117,6 +118,17 @@ const Header = () => {
                           <p className="text-xs text-gray-400 uppercase tracking-wider">Hola,</p>
                           <p className="text-sm font-bold text-primary truncate">{user.name || 'Usuario'}</p>
                         </div>
+                        
+                        {isAdmin && (
+                          <Link
+                            to="/admin"
+                            className="block px-4 py-2 text-sm text-yellow-400 hover:bg-sage-50/10 hover:text-yellow-300 transition-colors border-b border-sage-200/30 font-medium"
+                            onClick={closeUserMenu}
+                          >
+                            ⚙️ Panel Admin
+                          </Link>
+                        )}
+
                         <button
                           onClick={handleLogout}
                           className="w-full text-left block px-4 py-2 text-sm text-gray-300 hover:bg-sage-50/10 hover:text-red-400 transition-colors"
@@ -211,6 +223,17 @@ const Header = () => {
                     <div className="text-sm font-medium leading-none text-gray-400 mt-1">{user.email}</div>
                   </div>
                 </div>
+                
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="block w-full text-center bg-yellow-600/20 text-yellow-400 border border-yellow-600/50 px-3 py-2 rounded-md font-bold mt-2"
+                    onClick={closeMenu}
+                  >
+                    ⚙️ Panel de Administración
+                  </Link>
+                )}
+
                 <Button
                   variant="danger-outline"
                   onClick={handleLogout}
