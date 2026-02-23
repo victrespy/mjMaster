@@ -3,6 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\State\SoftDeleteProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -12,6 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'reviews')]
 #[ORM\UniqueConstraint(name: 'unique_user_product_review', fields: ['user', 'product'])]
 #[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete(processor: SoftDeleteProcessor::class)
+    ],
     normalizationContext: ['groups' => ['review:read']],
     denormalizationContext: ['groups' => ['review:write']]
 )]
