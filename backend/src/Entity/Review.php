@@ -34,17 +34,17 @@ class Review
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Groups(['review:read', 'review:write'])]
+    #[Groups(['review:read', 'review:write', 'product:read'])]
     #[Assert\NotBlank]
     #[Assert\Range(min: 1, max: 5)]
     private ?int $rating = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['review:read', 'review:write'])]
+    #[Groups(['review:read', 'review:write', 'product:read'])]
     private ?string $comment = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['review:read'])]
+    #[Groups(['review:read', 'product:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -134,5 +134,11 @@ class Review
     {
         $this->deleted = $deleted;
         return $this;
+    }
+
+    #[Groups(['review:read', 'product:read'])]
+    public function getAuthorName(): ?string
+    {
+        return $this->user ? $this->user->getName() : null;
     }
 }
