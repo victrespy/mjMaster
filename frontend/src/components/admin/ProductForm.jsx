@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../Button';
 import { getCategories } from '../../services/productService';
+import { uploadImage } from '../../services/uploadService';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -8,11 +9,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     description: '',
     price: '',
     stock: '',
-    category: '', // Será la URI de la categoría (ej: /api/categories/1)
-    picture: ''
+    category: '',
+    picture: '/products/placeholder.avif' // Valor por defecto
   });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -28,7 +30,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         price: product.price || '',
         stock: product.stock || '',
         category: product.category ? product.category['@id'] : '',
-        picture: product.picture || ''
+        picture: product.picture || '/products/placeholder.avif'
       });
     }
   }, [product]);
@@ -38,11 +40,25 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const url = await uploadImage(file);
+      setFormData(prev => ({ ...prev, picture: url }));
+    } catch (error) {
+      alert('Error al subir la imagen');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
-    // Convertir tipos
     const dataToSend = {
       ...formData,
       price: String(formData.price),
@@ -68,89 +84,115 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-bold text-gray-300 mb-1">Nombre</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
-                required
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Columna Izquierda: Datos */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-gray-300 mb-1">Nombre</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-300 mb-1">Categoría</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
+                  required
+                >
+                  <option value="">Seleccionar...</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat['@id']}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-300 mb-1">Precio (€)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-300 mb-1">Stock</label>
+                  <input
+                    type="number"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={handleChange}
+                    className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-300 mb-1">Descripción</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows="3"
+                  className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
+                ></textarea>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-300 mb-1">Categoría</label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
-                required
-              >
-                <option value="">Seleccionar...</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat['@id']}>{cat.name}</option>
-                ))}
-              </select>
+
+            {/* Columna Derecha: Imagen */}
+            <div className="space-y-4">
+              <label className="block text-sm font-bold text-gray-300 mb-1">Imagen del Producto</label>
+
+              <div className="border-2 border-dashed border-sage-200 rounded-lg p-4 flex flex-col items-center justify-center bg-sage-50/5 hover:bg-sage-50/10 transition-colors relative">
+                {uploading ? (
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                ) : (
+                  <img
+                    src={formData.picture}
+                    alt="Preview"
+                    className="h-48 w-full object-contain rounded mb-4"
+                    onError={(e) => e.target.src = '/products/placeholder.avif'}
+                  />
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+
+                <div className="text-center pointer-events-none">
+                  <p className="text-sm text-primary font-bold">Haz clic para subir imagen</p>
+                  <p className="text-xs text-gray-500">JPG, PNG, WEBP</p>
+                </div>
+              </div>
+
+              <div className="text-xs text-gray-500 text-center">
+                Ruta actual: {formData.picture}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-bold text-gray-300 mb-1">Precio (€)</label>
-              <input
-                type="number"
-                step="0.01"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-300 mb-1">Stock</label>
-              <input
-                type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleChange}
-                className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-300 mb-1">Descripción</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="3"
-              className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
-            ></textarea>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-300 mb-1">URL Imagen</label>
-            <input
-              type="text"
-              name="picture"
-              value={formData.picture}
-              onChange={handleChange}
-              placeholder="/products/placeholder.avif"
-              className="w-full bg-sage-50 border border-sage-200 rounded px-3 py-2 text-gray-100 focus:border-primary focus:outline-none"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-3 pt-4 border-t border-sage-200/30">
             <Button type="button" variant="secondary" onClick={onCancel}>
               Cancelar
             </Button>
-            <Button type="submit" variant="primary" disabled={loading}>
+            <Button type="submit" variant="primary" disabled={loading || uploading}>
               {loading ? 'Guardando...' : 'Guardar Producto'}
             </Button>
           </div>
