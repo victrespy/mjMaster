@@ -22,7 +22,7 @@ const ProductModal = ({ product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
 
   // Reviews local state so we can update after posting
-  const [reviews, setReviews] = useState(product.reviews || []);
+  const [reviews, setReviews] = useState([]);
 
   // Review form state
   const [rating, setRating] = useState(0);
@@ -39,21 +39,22 @@ const ProductModal = ({ product, onClose }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  // Solo reseteamos si cambia el ID del producto
   useEffect(() => {
-    // resetear cantidad y reviews cuando cambie el producto
-    setQuantity(1);
-    setReviews(product.reviews || []);
-    setRating(0);
-    setComment('');
-    setErrorMsg(null);
-  }, [product]);
+    if (product) {
+      setQuantity(1);
+      setReviews(product.reviews || []);
+      setRating(0);
+      setComment('');
+      setErrorMsg(null);
+    }
+  }, [product.id]); // Dependencia clave: product.id
 
   if (!product) return null;
 
   const imageUrl = product.picture ? product.picture : '/products/placeholder.avif';
 
   const handleOverlayClick = (e) => {
-    // Si clicas en el overlay fuera del modal, cerramos
     if (e.target === e.currentTarget) onClose();
   };
 
@@ -61,7 +62,6 @@ const ProductModal = ({ product, onClose }) => {
     if (e && e.stopPropagation) e.stopPropagation();
     const qty = Math.max(1, Math.min(quantity, product.stock || Infinity));
     addToCart(product, qty);
-    // Cerrar el modal automáticamente después de añadir
     onClose();
   };
 
@@ -82,9 +82,7 @@ const ProductModal = ({ product, onClose }) => {
   };
 
   // --- Review logic ---
-  // Comprobar si el usuario ya ha reseñado este producto
   const hasReviewed = user && reviews.some((r) => {
-    // r.authorName (backend), or r.user could be IRI or object
     const authorMatch = r.authorName && user.name && r.authorName === user.name;
     const userIdMatch = r.user && (r.user === `/api/users/${user.id}` || r.user?.id === user.id || r.user === user.id);
     return authorMatch || userIdMatch;
@@ -110,7 +108,6 @@ const ProductModal = ({ product, onClose }) => {
         rating: rating,
         comment: comment,
         product: `/api/products/${product.id}`
-        // no enviamos 'user', el backend asignará el usuario autenticado
       };
 
       const res = await fetch(`${API_URL}/reviews`, {
@@ -132,9 +129,13 @@ const ProductModal = ({ product, onClose }) => {
       }
 
       const newReview = await res.json();
-      // Añadir al inicio de la lista local
+      
+      // Asegurarnos de que el autor se muestra correctamente inmediatamente
+      if (!newReview.authorName && user.name) {
+        newReview.authorName = user.name;
+      }
+
       setReviews((prev) => [newReview, ...(prev || [])]);
-      // limpiar formulario
       setRating(0);
       setHoverRating(0);
       setComment('');
@@ -146,56 +147,56 @@ const ProductModal = ({ product, onClose }) => {
     }
   };
 
-  // Simple portal mounting to body
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 p-4 overflow-y-auto backdrop-blur-sm animate-fade-in"
       onClick={handleOverlayClick}
       aria-modal="true"
       role="dialog"
     >
-      <div className="bg-card-bg rounded-lg shadow-xl max-w-4xl w-full mt-12 overflow-hidden">
+      <div className="bg-card-bg border border-sage-200/20 rounded-xl shadow-2xl max-w-4xl w-full mt-12 overflow-hidden transform transition-all animate-scale-in">
         <div className="flex flex-col sm:flex-row max-h-[90vh]">
-          <div className="sm:w-1/2 w-full h-64 sm:h-auto">
-            <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
+          <div className="sm:w-1/2 w-full h-64 sm:h-auto bg-white/5 relative">
+            <img src={imageUrl} alt={product.name} className="w-full h-full object-contain p-4" />
           </div>
 
-          <div className="sm:w-1/2 w-full p-6 overflow-y-auto max-h-[90vh]">
+          <div className="sm:w-1/2 w-full p-6 overflow-y-auto max-h-[90vh] custom-scrollbar">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-100">{product.name}</h2>
-                <p className="text-gray-400 mt-1">{parseFloat(product.price).toFixed(2)} €</p>
+                <h2 className="text-2xl font-bold text-gray-100 leading-tight">{product.name}</h2>
+                <p className="text-xl text-primary font-bold mt-2">{parseFloat(product.price).toFixed(2)} €</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-200 ml-4"
+                className="text-gray-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
                 aria-label="Cerrar"
               >
-                ✕
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
-            <div className="mt-4 space-y-4">
+            <div className="mt-6 space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-200">Descripción</h3>
-                <p className="text-gray-300 mt-2">{product.description || 'Descripción no disponible.'}</p>
+                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Descripción</h3>
+                <p className="text-gray-300 leading-relaxed text-sm">{product.description || 'Descripción no disponible.'}</p>
               </div>
 
-              {/* Bloque de añadir al carrito */}
-              <div className="mt-6 flex items-center justify-between bg-transparent">
-                <div className="text-sm text-gray-400">{product.stock > 0 ? `En stock: ${product.stock}` : 'Sin stock'}</div>
-                <div className="flex items-center gap-3">
-                  <Button onClick={handleAddToCart} className="px-4 py-2" disabled={product.stock <= 0}>
-                    Añadir al carrito
-                  </Button>
-
-                  {/* Control de cantidad */}
-                  <div className="flex items-center bg-slate-800/40 rounded px-2">
+              <div className="p-4 bg-sage-50/5 rounded-lg border border-sage-200/10">
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`text-sm font-medium ${product.stock > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {product.stock > 0 ? `En stock: ${product.stock} uds` : 'Agotado'}
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center bg-dark-bg border border-sage-200/20 rounded-lg">
                     <button
                       onClick={decrement}
-                      className="px-2 text-gray-200"
-                      aria-label="Disminuir cantidad"
+                      className="px-3 py-2 text-gray-400 hover:text-white transition-colors"
                       type="button"
+                      disabled={product.stock <= 0}
                     >
                       −
                     </button>
@@ -205,35 +206,43 @@ const ProductModal = ({ product, onClose }) => {
                       max={product.stock || undefined}
                       value={quantity}
                       onChange={onQuantityChange}
-                      className="w-16 text-center bg-transparent outline-none text-gray-100"
-                      aria-label="Cantidad"
+                      className="w-12 text-center bg-transparent outline-none text-gray-100 font-medium appearance-none"
+                      disabled={product.stock <= 0}
                     />
                     <button
                       onClick={increment}
-                      className="px-2 text-gray-200"
-                      aria-label="Aumentar cantidad"
+                      className="px-3 py-2 text-gray-400 hover:text-white transition-colors"
                       type="button"
+                      disabled={product.stock <= 0}
                     >
                       +
                     </button>
                   </div>
+                  
+                  <Button 
+                    onClick={handleAddToCart} 
+                    className="flex-1 py-2.5 shadow-lg shadow-primary/10" 
+                    disabled={product.stock <= 0}
+                  >
+                    Añadir al Carrito
+                  </Button>
                 </div>
               </div>
 
-              {/* Sección de reseñas con formulario arriba */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-200">Reseñas</h3>
+              <div className="border-t border-sage-200/10 pt-6">
+                <h3 className="text-lg font-bold text-gray-200 mb-4 flex items-center gap-2">
+                  Reseñas <span className="text-sm font-normal text-gray-500">({reviews.length})</span>
+                </h3>
 
-                {/* Formulario */}
                 {user ? (
-                  hasReviewed ? (
-                    <p className="text-sm text-gray-400 mt-2">Ya has escrito una reseña para este producto.</p>
-                  ) : (
-                    <form onSubmit={submitReview} className="mt-3 space-y-3">
-                      {errorMsg && <div className="text-sm text-red-400">{errorMsg}</div>}
+                  !hasReviewed ? (
+                    <form onSubmit={submitReview} className="bg-sage-50/5 p-4 rounded-lg border border-sage-200/10 mb-6">
+                      <h4 className="text-sm font-bold text-gray-300 mb-3">Escribe tu opinión</h4>
+                      
+                      {errorMsg && <div className="mb-3 text-xs text-red-400 bg-red-900/20 p-2 rounded border border-red-500/20">{errorMsg}</div>}
 
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex">
                           {[1,2,3,4,5].map((i) => (
                             <button
                               key={i}
@@ -241,65 +250,67 @@ const ProductModal = ({ product, onClose }) => {
                               onClick={() => setRating(i)}
                               onMouseEnter={() => setHoverRating(i)}
                               onMouseLeave={() => setHoverRating(0)}
-                              className={`text-2xl ${ (hoverRating || rating) >= i ? 'text-yellow-400' : 'text-gray-500' }`}
-                              aria-label={`Puntuación ${i}`}
+                              className={`text-2xl transition-transform hover:scale-110 ${ (hoverRating || rating) >= i ? 'text-yellow-400' : 'text-gray-600' }`}
                             >
                               ★
                             </button>
                           ))}
                         </div>
-
-                        <div className="text-sm text-gray-400">{rating > 0 ? `${rating}/5` : 'Selecciona una puntuación'}</div>
+                        <span className="text-xs text-gray-400 ml-2">{rating > 0 ? ['Malo', 'Regular', 'Bueno', 'Muy bueno', 'Excelente'][rating-1] : ''}</span>
                       </div>
 
-                      <div>
-                        <textarea
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                          rows={3}
-                          className="w-full bg-slate-800/30 text-gray-100 p-2 rounded outline-none"
-                          placeholder="Escribe tu reseña aquí..."
-                        />
-                      </div>
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        rows={3}
+                        className="w-full bg-dark-bg border border-sage-200/20 text-gray-100 p-3 rounded-lg outline-none focus:border-primary/50 transition-colors text-sm mb-3 resize-none"
+                        placeholder="¿Qué te ha parecido este producto?"
+                      />
 
-                      <div className="flex items-center gap-3">
-                        <Button type="submit" className="px-4 py-2" disabled={submitting || rating < 1}>
-                          {submitting ? 'Enviando...' : 'Enviar reseña'}
-                        </Button>
-                        <Button type="button" className="px-4 py-2 bg-gray-600" onClick={() => { setRating(0); setComment(''); setErrorMsg(null); }}>
-                          Limpiar
+                      <div className="flex justify-end gap-2">
+                        <Button type="submit" className="px-4 py-1.5 text-sm" disabled={submitting || rating < 1}>
+                          {submitting ? 'Enviando...' : 'Publicar'}
                         </Button>
                       </div>
                     </form>
+                  ) : (
+                    <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-6 text-center">
+                      <p className="text-sm text-primary">¡Gracias por tu valoración!</p>
+                    </div>
                   )
                 ) : (
-                  <p className="text-sm text-gray-400 mt-2">Inicia sesión para dejar una reseña.</p>
+                  <div className="bg-sage-50/5 p-4 rounded-lg border border-sage-200/10 mb-6 text-center">
+                    <p className="text-sm text-gray-400">
+                      <a href="/login" className="text-primary hover:underline">Inicia sesión</a> para dejar una reseña.
+                    </p>
+                  </div>
                 )}
 
-                {/* Lista de reseñas */}
-                <div className="mt-4 space-y-3">
+                <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                   {reviews && reviews.length > 0 ? (
-                    reviews.map((r) => (
-                      <div key={r.id || r._id || Math.random()} className="bg-slate-800/40 p-3 rounded">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="text-sm font-semibold text-gray-100">{r.author || r.user || r.authorName || 'Anónimo'}</div>
-                            <StarsDisplay value={r.rating || 0} />
+                    reviews.map((r, idx) => (
+                      <div key={r.id || idx} className="bg-dark-bg p-4 rounded-lg border border-sage-200/10">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className="h-6 w-6 rounded-full bg-sage-200/20 flex items-center justify-center text-xs font-bold text-gray-300">
+                              {(r.authorName || r.author || 'A').charAt(0).toUpperCase()}
+                            </div>
+                            <span className="text-sm font-bold text-gray-200">{r.authorName || r.author || 'Anónimo'}</span>
                           </div>
-                          <div className="text-sm text-gray-400">{r.createdAt ? new Date(r.createdAt).toLocaleDateString() : ''}</div>
+                          <span className="text-xs text-gray-500">{r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'Reciente'}</span>
                         </div>
-                        <div className="text-sm text-gray-300 mt-1">{r.comment || r.text || ''}</div>
+                        <div className="mb-2">
+                          <StarsDisplay value={r.rating || 0} />
+                        </div>
+                        <p className="text-sm text-gray-400 leading-relaxed">{r.comment}</p>
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-400">No hay reseñas para este producto.</p>
+                    <p className="text-center text-gray-500 text-sm py-4">Sé el primero en opinar sobre este producto.</p>
                   )}
                 </div>
-
               </div>
-
             </div>
-
           </div>
         </div>
       </div>
