@@ -104,3 +104,51 @@ export const searchProducts = async (query) => {
     return [];
   }
 };
+
+export const getProductById = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/products/${id}`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/ld+json",
+      },
+    });
+
+    if (response.status === 404) {
+      // Producto no encontrado, devolvemos null sin lanzar error
+      return null;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener producto con ID ${id}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    // Si es un error de red o similar, lo logueamos pero devolvemos null para que la UI lo maneje
+    console.warn(`Aviso: No se pudo cargar el producto ${id} (posiblemente eliminado o error de red).`);
+    return null;
+  }
+};
+
+export const updateProductStock = async (id, newStock, token) => {
+  try {
+    const response = await fetch(`${API_URL}/products/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/merge-patch+json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ stock: newStock }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al actualizar el stock del producto ${id}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en updateProductStock:", error);
+    throw error;
+  }
+};
