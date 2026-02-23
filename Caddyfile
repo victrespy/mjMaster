@@ -2,6 +2,10 @@
     local_certs
 }
 localhost {
+    # Servir imágenes de productos desde el backend
+    reverse_proxy /products/* backend:80
+
+    # El resto al frontend
     reverse_proxy frontend:5173
 }
 localhost:8443 {
