@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict veDm9foTwBtn5vIaA7uqgRC7XH8byGYfvR1ITyyTgdhsUQIM68yc94aJ9b3xRId
+\restrict s3AokQe2VETOqLieb0I6T66F1ujfI71Ge8zC8bWxchJyYCl5TD3ZoRSIKcqMmSo
 
--- Dumped from database version 15.15
--- Dumped by pg_dump version 15.15
+-- Dumped from database version 15.16
+-- Dumped by pg_dump version 15.16
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -274,7 +274,6 @@ COPY public.categories (id, name, created_at, deleted_at, deleted) FROM stdin;
 --
 
 COPY public.doctrine_migration_versions (version, executed_at, execution_time) FROM stdin;
-DoctrineMigrations\\Version20260219072540	2026-02-19 07:25:54	2509
 DoctrineMigrations\\Version20260218180326	2026-02-18 18:03:27	60
 \.
 
@@ -292,7 +291,12 @@ COPY public.messenger_messages (id, body, headers, queue_name, created_at, avail
 --
 
 COPY public.order_products (id, quantity, unit_price, created_at, deleted_at, deleted, order_id, product_id) FROM stdin;
-11	6	35.00	2026-02-23 07:33:00	\N	f	5	14
+5	1	45.90	2026-02-18 18:13:11	\N	f	3	15
+6	1	12.00	2026-02-18 18:13:11	\N	f	3	16
+7	1	25.50	2026-02-22 08:11:47	\N	f	4	13
+8	6	35.00	2026-02-22 08:11:47	\N	f	4	14
+9	1	45.90	2026-02-22 08:11:47	\N	f	4	15
+10	1	29.95	2026-02-22 08:11:47	\N	f	4	17
 \.
 
 
@@ -301,7 +305,8 @@ COPY public.order_products (id, quantity, unit_price, created_at, deleted_at, de
 --
 
 COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) FROM stdin;
-5	210.00	COMPLETED	2026-02-23 07:33:00	\N	f	9
+3	57.90	COMPLETED	2026-02-18 18:13:11	\N	f	8
+4	311.35	COMPLETED	2026-02-22 08:11:47	\N	f	11
 \.
 
 
@@ -310,11 +315,11 @@ COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) 
 --
 
 COPY public.products (id, name, description, price, stock, picture, created_at, deleted_at, deleted, category_id) FROM stdin;
-13	Amnesia Haze (3 uds)	Semillas feminizadas de alta calidad con sabor cítrico.	25.50	100	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	9
-15	Bong de Vidrio 30cm	Bong de borosilicato resistente con percolador.	45.90	15	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	10
 16	Grinder Metálico 4 partes	Grinder de aluminio con polinizador y espátula.	12.00	200	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	10
-17	Kit Fertilizantes Orgánicos	Pack completo para crecimiento y floración.	29.95	30	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	11
+13	Amnesia Haze (3 uds)	Semillas feminizadas de alta calidad con sabor cítrico.	25.50	99	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	9
 14	Northern Lights Auto (5 uds)	Variedad autofloreciente clásica, ideal para principiantes.	35.00	44	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	9
+15	Bong de Vidrio 30cm	Bong de borosilicato resistente con percolador.	45.90	14	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	10
+17	Kit Fertilizantes Orgánicos	Pack completo para crecimiento y floración.	29.95	29	/products/placeholder.avif	2026-02-18 18:13:11	\N	f	11
 \.
 
 
@@ -332,9 +337,9 @@ COPY public.reviews (id, rating, comment, created_at, deleted_at, deleted, user_
 --
 
 COPY public.users (id, name, email, password, address, phone, roles, created_at, deleted_at, deleted) FROM stdin;
-7	Grow Master Admin	admin@example.com	$2y$13$OT4vYxCCiPC/m60dJrW8tu0qw32bJQLEAzjSc2DTOqEKY40Tn975G	Calle del Humo 420, Madrid	\N	["ROLE_ADMIN"]	2026-02-18 18:13:10	\N	f
-8	Juan Cultivador	user@example.com	$2y$13$nY.c6cT58FJqEb5Xl6ivkOF8ZbLd13SOx9so7Y9Ot2Gir4cJSJnaG	Avenida de la Resina 7, Barcelona	\N	["ROLE_USER"]	2026-02-18 18:13:10	\N	f
-9	David Duque Díaz	david@mj.com	$2y$13$Qyga7.KcWfho.xNkj4PcI.T8wcrTFWm7XODZm6KSJ8GSyMGQDyHJ2	\N	\N	[]	2026-02-20 11:11:09	\N	f
+11	David	david@mj.com	$2y$13$wxph3T8GwYcjbY5rg4O26.lz/L/0ECpNwZ/3TPpu0NWI3om3azife	Calle del Cultivo, 69	666666666	[]	2026-02-20 14:25:54	\N	f
+7	Grow Master Admin	admin@mj.com	$2y$13$OT4vYxCCiPC/m60dJrW8tu0qw32bJQLEAzjSc2DTOqEKY40Tn975G	Calle del Humo 420, Madrid	\N	["ROLE_ADMIN"]	2026-02-18 18:13:10	\N	f
+8	Juan Cultivador	user@mj.com	$2y$13$nY.c6cT58FJqEb5Xl6ivkOF8ZbLd13SOx9so7Y9Ot2Gir4cJSJnaG	Avenida de la Resina 7, Barcelona	\N	["ROLE_USER"]	2026-02-18 18:13:10	\N	f
 \.
 
 
@@ -356,14 +361,14 @@ SELECT pg_catalog.setval('public.messenger_messages_id_seq', 1, false);
 -- Name: order_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_user
 --
 
-SELECT pg_catalog.setval('public.order_products_id_seq', 11, true);
+SELECT pg_catalog.setval('public.order_products_id_seq', 10, true);
 
 
 --
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_user
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 5, true);
+SELECT pg_catalog.setval('public.orders_id_seq', 4, true);
 
 
 --
@@ -573,5 +578,5 @@ ALTER TABLE ONLY public.orders
 -- PostgreSQL database dump complete
 --
 
-\unrestrict veDm9foTwBtn5vIaA7uqgRC7XH8byGYfvR1ITyyTgdhsUQIM68yc94aJ9b3xRId
+\unrestrict s3AokQe2VETOqLieb0I6T66F1ujfI71Ge8zC8bWxchJyYCl5TD3ZoRSIKcqMmSo
 

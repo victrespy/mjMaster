@@ -1,14 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { createOrder } from '../services/orderService';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const subtotal = getCartTotal();
-  const shippingCost = subtotal > 50 ? 0 : 5.99; // Envío gratis si > 50€
+  const shippingCost = subtotal > 50 ? 0 : 5.99;
   const total = subtotal + shippingCost;
+
+  const handleCheckout = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    if (!window.confirm(`¿Confirmar compra por ${total.toFixed(2)} €?`)) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      await createOrder(cartItems);
+      clearCart();
+      alert('¡Pedido realizado con éxito! Gracias por tu compra.');
+      navigate('/'); // O redirigir a /orders si existiera
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (cartItems.length === 0) {
     return (
@@ -26,6 +57,12 @@ const Cart = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-primary">Carrito de Compras</h1>
       
+      {error && (
+        <div className="mb-6 bg-red-900/30 border border-red-500/50 text-red-200 p-4 rounded-lg">
+          {error}
+        </div>
+      )}
+
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Lista de Productos */}
         <div className="lg:w-2/3">
@@ -146,8 +183,12 @@ const Cart = () => {
               <p className="text-xs text-gray-500 mt-1 text-right">Impuestos incluidos</p>
             </div>
             
-            <Button className="w-full py-3 text-base shadow-lg hover:shadow-primary/20 transform hover:-translate-y-0.5">
-              Finalizar Compra
+            <Button 
+              onClick={handleCheckout}
+              disabled={loading}
+              className="w-full py-3 text-base shadow-lg hover:shadow-primary/20 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Procesando...' : 'Finalizar Compra'}
             </Button>
             
             <div className="mt-6 flex justify-center gap-4 text-gray-600">
