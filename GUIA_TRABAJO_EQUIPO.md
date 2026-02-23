@@ -130,5 +130,7 @@ Si el backend falla al generar tokens JWT:
     ```bash
     docker compose exec backend composer install
     ```
+3.  Si a pesar de todo no consigues iniciar sesión, puede que necesites entrar en (https://localhost:9443/api) y aceptar los riesgos. También es posible que estés usando Firefox, ¡es de parguelas! 
+    
 
 ¡Mucho ánimo con el desarrollo! 🚀

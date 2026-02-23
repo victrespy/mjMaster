@@ -17,7 +17,7 @@ export const createOrder = async (orderData, token) => {
       console.error("Error detallado del servidor:", errorData);
 
       let errorMessage = 'Error al procesar el pedido';
-      
+
       if (errorData['hydra:description']) {
         errorMessage = errorData['hydra:description'];
       } else if (errorData['detail']) {
