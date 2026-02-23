@@ -10,6 +10,14 @@ const AdminProducts = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
+  const API_BASE_URL = "https://localhost:9443";
+
+  const getImageUrl = (path) => {
+    if (!path) return '/products/placeholder.avif';
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
+
   useEffect(() => {
     loadProducts();
   }, []);
@@ -67,9 +75,13 @@ const AdminProducts = () => {
       render: (product) => (
         <div className="h-10 w-10 rounded bg-sage-200 overflow-hidden">
           <img 
-            src={product.picture || '/products/placeholder.avif'} 
+            src={getImageUrl(product.picture)} 
             alt="" 
             className="h-full w-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/products/placeholder.avif';
+            }}
           />
         </div>
       )

@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 
 const API_URL = "https://localhost:9443/api";
+const API_BASE_URL = "https://localhost:9443";
 
 const StarsDisplay = ({ value = 0 }) => {
   return (
@@ -50,7 +51,11 @@ const ProductModal = ({ product, onClose }) => {
 
   if (!product) return null;
 
-  const imageUrl = product.picture ? product.picture : '/products/placeholder.avif';
+  const getImageUrl = (path) => {
+    if (!path) return '/products/placeholder.avif';
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
 
   const handleOverlayClick = (e) => {
     // Si clicas en el overlay fuera del modal, cerramos
@@ -157,7 +162,15 @@ const ProductModal = ({ product, onClose }) => {
       <div className="bg-card-bg rounded-lg shadow-xl max-w-4xl w-full mt-12 overflow-hidden">
         <div className="flex flex-col sm:flex-row max-h-[90vh]">
           <div className="sm:w-1/2 w-full h-64 sm:h-auto">
-            <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
+            <img 
+              src={getImageUrl(product.picture)} 
+              alt={product.name} 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/products/placeholder.avif';
+              }}
+            />
           </div>
 
           <div className="sm:w-1/2 w-full p-6 overflow-y-auto max-h-[90vh]">

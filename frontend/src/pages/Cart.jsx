@@ -13,6 +13,14 @@ const Cart = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
 
+  const API_BASE_URL = "https://localhost:9443";
+
+  const getImageUrl = (path) => {
+    if (!path) return '/products/placeholder.avif';
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
+
   const subtotal = getCartTotal();
   const shippingCost = subtotal > 50 ? 0 : 5.99; // Envío gratis si > 50€
   const total = subtotal + shippingCost;
@@ -77,7 +85,7 @@ const Cart = () => {
       const orderData = {
         user: `/api/users/${user.id}`,
         total: total.toFixed(2),
-        state: "Pendiente",
+        state: "pending",
         orderProducts: validItems.map(item => ({
           product: `/api/products/${item.id}`,
           quantity: item.quantity,
@@ -89,14 +97,11 @@ const Cart = () => {
       await createOrder(orderData, token);
 
       // 3. Actualizar el stock de los productos en la base de datos
-      // Nota: En un entorno de producción ideal, esto debería hacerse en el backend
-      // dentro de una transacción al crear el pedido.
       for (const product of productsToUpdate) {
         try {
           await updateProductStock(product.id, product.newStock, token);
         } catch (err) {
           console.error(`Error al actualizar stock del producto ${product.id}:`, err);
-          // No lanzamos error aquí para no interrumpir el flujo si el pedido ya se creó
         }
       }
       
@@ -170,9 +175,13 @@ const Cart = () => {
                   <div className="col-span-12 md:col-span-6 flex items-center gap-4">
                     <div className="w-20 h-20 flex-shrink-0 bg-sage-100 rounded overflow-hidden border border-sage-200 relative">
                       <img 
-                        src={item.picture || '/products/placeholder.avif'} 
+                        src={getImageUrl(item.picture)} 
                         alt={item.name} 
                         className={`w-full h-full object-cover ${isUnavailable ? 'grayscale' : ''}`}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/products/placeholder.avif';
+                        }}
                       />
                       {isDiscontinued && (
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-xs text-white font-bold text-center p-1">
