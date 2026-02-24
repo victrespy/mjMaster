@@ -26,8 +26,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center bg-dark-bg">
-      <div className="w-full max-w-md rounded-lg bg-card-bg p-8 shadow-2xl border border-sage-200/20">
+    // Quitamos bg-dark-bg para que se vea el humo de fondo
+    <div className="flex min-h-[80vh] items-center justify-center bg-transparent relative z-10">
+      <div className="w-full max-w-md rounded-lg bg-card-bg/90 backdrop-blur-sm p-8 shadow-2xl border border-sage-200/20">
         <h2 className="mb-6 text-center text-3xl font-bold text-primary tracking-tight">Iniciar Sesión</h2>
         
         {error && (
@@ -44,7 +45,7 @@ const Login = () => {
             <input
               type="email"
               id="email"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="tu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -59,7 +60,7 @@ const Login = () => {
             <input
               type="password"
               id="password"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

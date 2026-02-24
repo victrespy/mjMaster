@@ -19,6 +19,7 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminReviews from './pages/admin/AdminReviews';
+import SmokeEffect from './components/SmokeEffect'; // Importamos el efecto
 import './App.css';
 
 // Componente para proteger rutas
@@ -39,102 +40,111 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <Routes>
-            {/* Rutas Públicas */}
-            <Route path="/" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <Home />
-                </main>
-                <Footer />
-              </div>
-            } />
+          <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display relative overflow-hidden">
             
-            <Route path="/products" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <Products />
-                </main>
-                <Footer />
-              </div>
-            } />
+            {/* EFECTO DE HUMO GLOBAL */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+              <SmokeEffect />
+            </div>
 
-            <Route path="/about" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <About />
-                </main>
-                <Footer />
-              </div>
-            } />
+            {/* Contenido principal con z-index superior */}
+            <div className="relative z-10 flex flex-col min-h-screen">
+              <Routes>
+                {/* Rutas Públicas */}
+                <Route path="/" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <Home />
+                    </main>
+                    <Footer />
+                  </>
+                } />
+                
+                <Route path="/products" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <Products />
+                    </main>
+                    <Footer />
+                  </>
+                } />
 
-            <Route path="/cart" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <Cart />
-                </main>
-                <Footer />
-              </div>
-            } />
+                <Route path="/about" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <About />
+                    </main>
+                    <Footer />
+                  </>
+                } />
 
-            <Route path="/login" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <Login />
-                </main>
-                <Footer />
-              </div>
-            } />
+                <Route path="/cart" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <Cart />
+                    </main>
+                    <Footer />
+                  </>
+                } />
 
-            <Route path="/register" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <Register />
-                </main>
-                <Footer />
-              </div>
-            } />
+                <Route path="/login" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <Login />
+                    </main>
+                    <Footer />
+                  </>
+                } />
 
-            {/* Ruta Protegida de Perfil */}
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                  <Header />
-                  <main className="app-main container mx-auto px-4 py-8">
-                    <UserProfile />
-                  </main>
-                  <Footer />
-                </div>
-              </ProtectedRoute>
-            } />
+                <Route path="/register" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <Register />
+                    </main>
+                    <Footer />
+                  </>
+                } />
 
-            {/* Rutas de Administración */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="reviews" element={<AdminReviews />} />
-            </Route>
-            
-            {/* Ruta Comodín (404) */}
-            <Route path="*" element={
-              <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
-                <Header />
-                <main className="app-main container mx-auto px-4 py-8">
-                  <NotFound />
-                </main>
-                <Footer />
-              </div>
-            } />
-          </Routes>
+                {/* Ruta Protegida de Perfil */}
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <UserProfile />
+                    </main>
+                    <Footer />
+                  </ProtectedRoute>
+                } />
+
+                {/* Rutas de Administración (con AdminLayout) */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="categories" element={<AdminCategories />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="orders" element={<AdminOrders />} />
+                  <Route path="reviews" element={<AdminReviews />} />
+                </Route>
+                
+                {/* Ruta Comodín (404) */}
+                <Route path="*" element={
+                  <>
+                    <Header />
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                      <NotFound />
+                    </main>
+                    <Footer />
+                  </>
+                } />
+              </Routes>
+            </div>
+          </div>
         </Router>
       </CartProvider>
     </AuthProvider>

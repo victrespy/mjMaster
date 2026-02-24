@@ -50,8 +50,9 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center bg-dark-bg py-12">
-      <div className="w-full max-w-md rounded-lg bg-card-bg p-8 shadow-2xl border border-sage-200/20">
+    // Fondo transparente para ver el humo
+    <div className="flex min-h-[80vh] items-center justify-center bg-transparent py-12 relative z-10">
+      <div className="w-full max-w-md rounded-lg bg-card-bg/90 backdrop-blur-sm p-8 shadow-2xl border border-sage-200/20">
         <h2 className="mb-6 text-center text-3xl font-bold text-primary tracking-tight">Crear Cuenta</h2>
         
         {error && (
@@ -74,7 +75,7 @@ const Register = () => {
             <input
               type="text"
               id="name"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="Juan Cultivador"
               value={formData.name}
               onChange={handleChange}
@@ -89,7 +90,7 @@ const Register = () => {
             <input
               type="email"
               id="email"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="tu@email.com"
               value={formData.email}
               onChange={handleChange}
@@ -104,7 +105,7 @@ const Register = () => {
             <input
               type="tel"
               id="phone"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="600 123 456"
               value={formData.phone}
               onChange={handleChange}
@@ -118,7 +119,7 @@ const Register = () => {
             <input
               type="text"
               id="address"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="Calle del Cultivo 420, Madrid"
               value={formData.address}
               onChange={handleChange}
@@ -132,7 +133,7 @@ const Register = () => {
             <input
               type="password"
               id="password"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="********"
               value={formData.password}
               onChange={handleChange}
@@ -148,7 +149,7 @@ const Register = () => {
             <input
               type="password"
               id="confirmPassword"
-              className="w-full rounded bg-sage-50 border border-sage-200 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
+              className="w-full rounded bg-sage-50/50 border border-sage-200/50 px-3 py-2 text-gray-100 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder-gray-500 transition-colors"
               placeholder="********"
               value={formData.confirmPassword}
               onChange={handleChange}
