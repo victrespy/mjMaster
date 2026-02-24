@@ -8,9 +8,9 @@ const API_URL = "https://localhost:9443/api";
 
 // Icono SVG de la hoja (MJ Star)
 const MJStarIcon = ({ className }) => (
-  <svg
-    viewBox="0 0 499.8 499.8"
-    className={className}
+  <svg 
+    viewBox="0 0 499.8 499.8" 
+    className={className} 
     fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -32,9 +32,9 @@ const StarsDisplay = ({ value = 0 }) => {
   return (
     <div className="flex items-center gap-1">
       {[1,2,3,4,5].map((i) => (
-        <MJStarIcon
-          key={i}
-          className={`w-4 h-4 ${i <= value ? 'text-primary' : 'text-gray-600' }`}
+        <MJStarIcon 
+          key={i} 
+          className={`w-4 h-4 ${i <= value ? 'text-primary' : 'text-gray-600' }`} 
         />
       ))}
     </div>
@@ -73,15 +73,11 @@ const ProductModal = ({ product, onClose }) => {
       setComment('');
       setErrorMsg(null);
     }
-  }, [product.id]); // Dependencia clave: product.id
+  }, [product.id]);
 
   if (!product) return null;
 
-  const getImageUrl = (path) => {
-    if (!path) return '/products/placeholder.avif';
-    if (path.startsWith('http')) return path;
-    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
-  };
+  const imageUrl = product.picture ? product.picture : '/products/placeholder.avif';
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -159,7 +155,6 @@ const ProductModal = ({ product, onClose }) => {
 
       const newReview = await res.json();
       
-      // Asegurarnos de que el autor se muestra correctamente inmediatamente
       if (!newReview.authorName && user.name) {
         newReview.authorName = user.name;
       }
@@ -185,18 +180,18 @@ const ProductModal = ({ product, onClose }) => {
     >
       <div className="bg-card-bg border border-sage-200/20 rounded-xl shadow-2xl max-w-4xl w-full mt-12 overflow-hidden transform transition-all animate-scale-in">
         <div className="flex flex-col sm:flex-row max-h-[90vh]">
-          <div className="sm:w-1/2 w-full h-64 sm:h-auto">
-            <img
-              src={getImageUrl(product.picture)}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/products/placeholder.avif';
-              }}
+          {/* Imagen a la izquierda (o arriba en móvil) */}
+          <div className="sm:w-1/2 w-full h-64 sm:h-auto bg-white/5 relative flex items-center justify-center overflow-hidden">
+            <img 
+              src={imageUrl} 
+              alt={product.name} 
+              className="w-full h-full object-cover" 
             />
+            {/* Overlay con degradado */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none"></div>
           </div>
 
+          {/* Contenido a la derecha (o abajo en móvil) */}
           <div className="sm:w-1/2 w-full p-6 overflow-y-auto max-h-[90vh] custom-scrollbar">
             <div className="flex items-start justify-between">
               <div>
@@ -279,7 +274,7 @@ const ProductModal = ({ product, onClose }) => {
                       {errorMsg && <div className="mb-3 text-xs text-red-400 bg-red-900/20 p-2 rounded border border-red-500/20">{errorMsg}</div>}
 
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="flex">
+                        <div className="flex gap-1">
                           {[1,2,3,4,5].map((i) => (
                             <button
                               key={i}
@@ -287,9 +282,11 @@ const ProductModal = ({ product, onClose }) => {
                               onClick={() => setRating(i)}
                               onMouseEnter={() => setHoverRating(i)}
                               onMouseLeave={() => setHoverRating(0)}
-                              className={`text-2xl transition-transform hover:scale-110 ${ (hoverRating || rating) >= i ? 'text-yellow-400' : 'text-gray-600' }`}
+                              className="focus:outline-none transition-transform hover:scale-110"
                             >
-                              ★
+                              <MJStarIcon 
+                                className={`w-6 h-6 ${ (hoverRating || rating) >= i ? 'text-primary' : 'text-gray-600' }`} 
+                              />
                             </button>
                           ))}
                         </div>
