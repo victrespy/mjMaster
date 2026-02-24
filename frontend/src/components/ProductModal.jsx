@@ -7,6 +7,7 @@ import MJStarIcon from './MJStarIcon';
 import StarsDisplay from './StarsDisplay';
 
 const API_URL = "https://localhost:9443/api";
+const API_BASE_URL = "https://localhost:9443";
 
 const ProductModal = ({ product, onClose }) => {
   const { addToCart } = useCart();
@@ -44,7 +45,15 @@ const ProductModal = ({ product, onClose }) => {
 
   if (!product) return null;
 
-  const imageUrl = product.picture ? product.picture : '/products/placeholder.avif';
+  // Procesar la URL de la imagen (igual que en ProductCard)
+  let imageUrl = '/products/placeholder.avif';
+  if (product.picture) {
+    if (product.picture.startsWith('http')) {
+      imageUrl = product.picture;
+    } else {
+      imageUrl = `${API_BASE_URL}${product.picture.startsWith('/') ? '' : '/'}${product.picture}`;
+    }
+  }
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -148,7 +157,15 @@ const ProductModal = ({ product, onClose }) => {
       <div className="bg-card-bg border border-sage-200/20 rounded-xl shadow-2xl max-w-4xl w-full mt-12 overflow-hidden transform transition-all animate-scale-in">
         <div className="flex flex-col sm:flex-row max-h-[90vh]">
           <div className="sm:w-1/2 w-full h-64 sm:h-auto bg-white/5 relative">
-            <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
+            <img 
+              src={imageUrl} 
+              alt={product.name} 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null; 
+                e.target.src = '/products/placeholder.avif';
+              }}
+            />
           </div>
 
           <div className="sm:w-1/2 w-full p-6 overflow-y-auto max-h-[90vh] custom-scrollbar">
