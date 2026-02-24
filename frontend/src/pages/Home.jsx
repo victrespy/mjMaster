@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import CategoryList from '../components/CategoryList';
 import Button from '../components/Button';
+import SmokeEffect from '../components/SmokeEffect';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -35,10 +36,15 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative">
       
+      {/* EFECTO DE HUMO GLOBAL (Fixed para que cubra toda la pantalla al hacer scroll) */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <SmokeEffect />
+      </div>
+
       {/* HERO SECTION */}
-      <div className="relative h-[600px] w-full overflow-hidden">
+      <div className="relative h-[600px] w-full overflow-hidden z-10">
         {/* Imagen de fondo con overlay */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transform hover:scale-105 transition-transform duration-[20s]"
@@ -82,7 +88,7 @@ const Home = () => {
       </div>
 
       {/* CATEGORÍAS DESTACADAS */}
-      <section className="py-16 bg-dark-bg">
+      <section className="py-16 bg-transparent relative z-10">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-100">
             Explora por <span className="text-primary">Categorías</span>
@@ -94,7 +100,7 @@ const Home = () => {
       </section>
 
       {/* PRODUCTOS DESTACADOS */}
-      <section className="py-16 bg-card-bg border-y border-sage-200/10">
+      <section className="py-16 bg-card-bg/80 backdrop-blur-sm border-y border-sage-200/10 relative z-10">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-12">
             <div>
@@ -116,7 +122,7 @@ const Home = () => {
                 <ProductCard 
                   key={product.id} 
                   product={product} 
-                  onOpen={handleOpenModal} // Pasamos la función para abrir el modal
+                  onOpen={handleOpenModal} 
                 />
               ))}
             </div>
@@ -131,10 +137,10 @@ const Home = () => {
       </section>
 
       {/* VENTAJAS / FEATURES */}
-      <section className="py-16 bg-dark-bg">
+      <section className="py-16 bg-transparent relative z-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors">
+            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors backdrop-blur-sm border border-white/5">
               <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -144,7 +150,7 @@ const Home = () => {
               <p className="text-gray-400">Seleccionamos solo los mejores productos de los bancos más prestigiosos.</p>
             </div>
 
-            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors">
+            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors backdrop-blur-sm border border-white/5">
               <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -154,7 +160,7 @@ const Home = () => {
               <p className="text-gray-400">Paquetes sin logotipos ni referencias al contenido. Tu privacidad es sagrada.</p>
             </div>
 
-            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors">
+            <div className="p-6 rounded-xl bg-sage-50/5 hover:bg-sage-50/10 transition-colors backdrop-blur-sm border border-white/5">
               <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
