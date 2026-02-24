@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import Cart from './pages/Cart';
+import UserProfile from './pages/UserProfile';
 import NotFound from './pages/NotFound';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
@@ -20,13 +21,26 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminReviews from './pages/admin/AdminReviews';
 import './App.css';
 
+// Componente para proteger rutas
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) return <div className="flex justify-center items-center h-screen bg-dark-bg"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div></div>;
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
           <Routes>
-            {/* Rutas Públicas (con Header y Footer normales) */}
+            {/* Rutas Públicas */}
             <Route path="/" element={
               <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
                 <Header />
@@ -87,7 +101,20 @@ function App() {
               </div>
             } />
 
-            {/* Rutas de Administración (con AdminLayout) */}
+            {/* Ruta Protegida de Perfil */}
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display">
+                  <Header />
+                  <main className="app-main container mx-auto px-4 py-8">
+                    <UserProfile />
+                  </main>
+                  <Footer />
+                </div>
+              </ProtectedRoute>
+            } />
+
+            {/* Rutas de Administración */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />

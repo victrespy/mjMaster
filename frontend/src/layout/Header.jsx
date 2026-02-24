@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import Button from '../components/Button';
@@ -10,6 +10,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const navigate = useNavigate();
 
   const cartCount = getCartCount();
 
@@ -35,6 +36,7 @@ const Header = () => {
     logout();
     closeMenu();
     closeUserMenu();
+    navigate('/');
   };
 
   const isAdmin = user && user.roles && user.roles.includes('ROLE_ADMIN');
@@ -119,7 +121,15 @@ const Header = () => {
                           <p className="text-xs text-gray-400 uppercase tracking-wider">Hola,</p>
                           <p className="text-sm font-bold text-primary truncate">{user.name || 'Usuario'}</p>
                         </div>
-                        
+
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-sage-50/10 hover:text-primary transition-colors"
+                          onClick={closeUserMenu}
+                        >
+                          👤 Mi Perfil
+                        </Link>
+
                         {isAdmin && (
                           <Link
                             to="/admin"
@@ -224,7 +234,15 @@ const Header = () => {
                     <div className="text-sm font-medium leading-none text-gray-400 mt-1">{user.email}</div>
                   </div>
                 </div>
-                
+
+                <Link
+                  to="/profile"
+                  className="block w-full text-center bg-sage-50/10 text-gray-200 border border-sage-200/30 px-3 py-2 rounded-md font-bold mt-2 hover:bg-sage-50/20 transition-colors"
+                  onClick={closeMenu}
+                >
+                  👤 Mi Perfil
+                </Link>
+
                 {isAdmin && (
                   <Link
                     to="/admin"

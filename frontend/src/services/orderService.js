@@ -14,9 +14,9 @@ export const getOrders = async (page = 1, itemsPerPage = 30) => {
     const response = await fetch(`${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
     });
-    
+
     if (!response.ok) throw new Error("Error al cargar pedidos");
-    
+
     const data = await response.json();
     return {
       items: data['hydra:member'] || data.member || [],
@@ -49,40 +49,51 @@ export const updateOrderState = async (id, state) => {
   }
 };
 
-export const createOrder = async (orderData, token) => {
+export const createOrder = async (cartItems) => {
   try {
-    const response = await fetch(`${API_URL}/orders`, {
-      method: 'POST',
+    // Preparamos los datos para el backend
+    // Solo necesitamos ID y cantidad
+    const itemsToSend = cartItems.map(item => ({
+      productId: item.id,
+      quantity: item.quantity
+    }));
+
+    // Usamos el endpoint personalizado /api/checkout
+    const response = await fetch(`${API_URL}/checkout`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/ld+json',
-        'Accept': 'application/ld+json',
-        'Authorization': `Bearer ${token}`
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
       },
-      body: JSON.stringify(orderData)
+      body: JSON.stringify({ items: itemsToSend }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Error detallado del servidor:", errorData);
-
-      let errorMessage = 'Error al procesar el pedido';
-
-      if (errorData['hydra:description']) {
-        errorMessage = errorData['hydra:description'];
-      } else if (errorData['detail']) {
-        errorMessage = errorData['detail'];
-      } else if (errorData['violations']) {
-        errorMessage = errorData['violations'].map(v => `${v.propertyPath}: ${v.message}`).join(', ');
-      } else if (response.statusText) {
-        errorMessage = `${response.status} ${response.statusText}`;
-      }
-
-      throw new Error(errorMessage);
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al procesar el pedido");
     }
 
     return await response.json();
   } catch (error) {
     console.error("Error en createOrder:", error);
     throw error;
+  }
+};
+
+export const getMyOrders = async (userId) => {
+  try {
+    // Filtramos por ID de usuario y ordenamos por fecha descendente
+    const response = await fetch(`${API_URL}/orders?user.id=${userId}&order[createdAt]=desc`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) throw new Error("Error al cargar pedidos");
+
+    const data = await response.json();
+    return data['hydra:member'] || data.member || [];
+  } catch (error) {
+    console.error("Error en getMyOrders:", error);
+    return [];
   }
 };
