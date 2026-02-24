@@ -85,7 +85,7 @@ const Cart = () => {
       const orderData = {
         user: `/api/users/${user.id}`,
         total: total.toFixed(2),
-        state: "pending",
+        state: "PENDING",
         orderProducts: validItems.map(item => ({
           product: `/api/products/${item.id}`,
           quantity: item.quantity,

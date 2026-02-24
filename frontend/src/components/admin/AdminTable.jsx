@@ -13,7 +13,7 @@ const AdminTable = ({ columns, data, loading, onEdit, onDelete, actions }) => {
                 </th>
               ))}
               {(onEdit || onDelete || actions) && (
-                <th className="px-6 py-4 text-right">Acciones</th>
+                <th className="px-6 py-4 text-center">Acciones</th>
               )}
             </tr>
           </thead>

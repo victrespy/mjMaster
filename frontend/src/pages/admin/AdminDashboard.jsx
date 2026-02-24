@@ -99,9 +99,31 @@ const AdminDashboard = () => {
                     <td className="py-3">{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td className="py-3 font-bold text-primary">{parseFloat(order.total).toFixed(2)} €</td>
                     <td className="py-3">
-                      <span className="px-2 py-1 bg-green-900/30 text-green-400 rounded text-xs font-bold border border-green-500/30">
-                        {order.state}
-                      </span>
+                      {(() => {
+                        const stateKey = order.state ? order.state.toUpperCase() : '';
+                        const colors = {
+                          'PENDING': 'bg-blue-900/30 text-blue-400 border-blue-500/30',
+                          'PAID': 'bg-green-900/30 text-green-400 border-green-500/30',
+                          'SHIPPED': 'bg-purple-900/30 text-purple-400 border-purple-500/30',
+                          'COMPLETED': 'bg-teal-900/30 text-teal-400 border-teal-500/30',
+                          'CANCELLED': 'bg-red-900/30 text-red-400 border-red-500/30',
+                        };
+                        const labels = {
+                          'PENDING': 'PENDIENTE',
+                          'PAID': 'PAGADO',
+                          'SHIPPED': 'ENVIADO',
+                          'COMPLETED': 'COMPLETADO',
+                          'CANCELLED': 'CANCELADO',
+                        };
+                        const colorClass = colors[stateKey] || 'bg-gray-700/30 text-gray-400';
+                        const label = labels[stateKey] || stateKey;
+                        
+                        return (
+                          <span className={`px-2 py-1 rounded text-xs font-bold border ${colorClass}`}>
+                            {label}
+                          </span>
+                        );
+                      })()}
                     </td>
                   </tr>
                 ))

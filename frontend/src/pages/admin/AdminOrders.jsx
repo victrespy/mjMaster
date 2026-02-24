@@ -56,18 +56,30 @@ const AdminOrders = () => {
     { 
       header: 'Estado', 
       render: (order) => {
+        const stateKey = order.state ? order.state.toUpperCase() : '';
+        
         const colors = {
-          'PENDING': 'bg-yellow-900/30 text-yellow-400 border-yellow-500/30',
-          'PAID': 'bg-blue-900/30 text-blue-400 border-blue-500/30',
+          'PENDING': 'bg-blue-900/30 text-blue-400 border-blue-500/30', // AZUL
+          'PAID': 'bg-green-900/30 text-green-400 border-green-500/30', // VERDE (Pagado es bueno)
           'SHIPPED': 'bg-purple-900/30 text-purple-400 border-purple-500/30',
-          'COMPLETED': 'bg-green-900/30 text-green-400 border-green-500/30',
+          'COMPLETED': 'bg-teal-900/30 text-teal-400 border-teal-500/30', // TEAL para completado final
           'CANCELLED': 'bg-red-900/30 text-red-400 border-red-500/30',
         };
-        const colorClass = colors[order.state] || 'bg-gray-700/30 text-gray-400';
+        
+        const labels = {
+          'PENDING': 'PENDIENTE',
+          'PAID': 'PAGADO',
+          'SHIPPED': 'ENVIADO',
+          'COMPLETED': 'COMPLETADO',
+          'CANCELLED': 'CANCELADO',
+        };
+
+        const colorClass = colors[stateKey] || 'bg-gray-700/30 text-gray-400';
+        const label = labels[stateKey] || stateKey;
         
         return (
           <span className={`px-2 py-1 rounded text-xs font-bold border ${colorClass}`}>
-            {order.state}
+            {label}
           </span>
         );
       }
@@ -90,11 +102,11 @@ const AdminOrders = () => {
                 value=""
                 onChange={(e) => handleStateChange(order, e.target.value)}
               >
-                <option value="">Cambiar estado...</option>
-                <option value="PAID">Pagado</option>
-                <option value="SHIPPED">Enviado</option>
-                <option value="COMPLETED">Completado</option>
-                <option value="CANCELLED">Cancelado</option>
+                <option value="">CAMBIAR ESTADO...</option>
+                <option value="PAID">PAGADO</option>
+                <option value="SHIPPED">ENVIADO</option>
+                <option value="COMPLETED">COMPLETADO</option>
+                <option value="CANCELLED">CANCELADO</option>
               </select>
             )}
           </div>

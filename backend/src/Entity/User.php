@@ -45,12 +45,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'order:read', 'review:read'])]
     #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'order:read'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     private ?string $email = null;
