@@ -43,7 +43,7 @@ function App() {
           <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display relative overflow-hidden">
             
             {/* EFECTO DE HUMO GLOBAL */}
-            <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="fixed inset-0 pointer-events-none z-5">
               <SmokeEffect />
             </div>
 
@@ -54,7 +54,7 @@ function App() {
                 <Route path="/" element={
                   <>
                     <Header />
-                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                    <main className="app-main container mx-auto px-4 py-8 flex-grow z-3">
                       <Home />
                     </main>
                     <Footer />

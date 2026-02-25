@@ -38,27 +38,36 @@ const Home = () => {
     <div className="flex flex-col min-h-screen">
       
       {/* HERO SECTION */}
-      <div className="relative h-[600px] w-full overflow-hidden rounded-xl shadow-2xl mb-12">
-        {/* Imagen de fondo con overlay */}
+      <div className="relative h-[600px] w-full mb-12">
+        {/* Imagen de fondo con máscara de transparencia */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transform hover:scale-105 transition-transform duration-[20s]"
-          style={{ backgroundImage: "url('/hero.webp')" }}
+          style={{ 
+            backgroundImage: "url('/hero.webp')",
+            // Máscara para desvanecer bordes: Izquierda, Derecha y Abajo
+            maskImage: "linear-gradient(to bottom, black 60%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
+            // Composición para que se apliquen ambas máscaras (intersección)
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in"
+          }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-dark-bg"></div>
+          {/* Overlay general para oscurecer y mejorar legibilidad */}
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         {/* Contenido del Hero */}
-        <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-start">
+        <div className="relative z-20 container mx-auto pl-12 pr-4 h-full flex flex-col justify-center items-start">
           <span className="text-primary font-bold tracking-widest uppercase mb-4 animate-fade-in-up">
             Bienvenido a MJ Master
           </span>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight max-w-3xl animate-fade-in-up delay-100">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight max-w-3xl animate-fade-in-up delay-100 drop-shadow-lg">
             Tu Cultivo, <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-lime-400">
               Nuestra Pasión
             </span>
           </h1>
-          <p className="text-gray-300 text-lg md:text-xl mb-8 max-w-xl animate-fade-in-up delay-200">
+          <p className="text-gray-200 text-lg md:text-xl mb-8 max-w-xl animate-fade-in-up delay-200 drop-shadow-md">
             Encuentra las mejores semillas, fertilizantes y parafernalia. 
             Calidad premium y envíos 100% discretos garantizados.
           </p>
@@ -73,7 +82,7 @@ const Home = () => {
             <Button 
               to="/about" 
               variant="hero-secondary"
-              className="px-8 py-4 text-base"
+              className="px-8 py-4 text-base backdrop-blur-sm bg-black/30 border-white/20 hover:bg-black/50"
             >
               Sobre Nosotros
             </Button>
@@ -82,9 +91,9 @@ const Home = () => {
       </div>
 
       {/* CATEGORÍAS DESTACADAS */}
-      <section className="py-8 bg-transparent relative z-10">
+      <section className="py-8 bg-transparent relative z-10 -mt-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-100">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-100 drop-shadow-lg">
             Explora por <span className="text-primary">Categorías</span>
           </h2>
           
@@ -94,7 +103,7 @@ const Home = () => {
       </section>
 
       {/* PRODUCTOS DESTACADOS */}
-      <section className="py-16 bg-card-bg/80 backdrop-blur-sm border-y border-sage-200/10 relative z-10 rounded-xl my-12">
+      <section className="py-16 bg-card-bg/50 backdrop-blur-sm border-y border-sage-200/10 relative z-10 rounded-xl my-12 mx-4">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-12">
             <div>
