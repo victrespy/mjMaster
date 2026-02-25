@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -38,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'name' => 'ipartial',
     'category' => 'exact'
 ])]
+#[ApiFilter(NumericFilter::class, properties: ['stock'])]
 class Product
 {
     #[ORM\Id]
