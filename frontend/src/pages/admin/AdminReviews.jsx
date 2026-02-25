@@ -8,19 +8,28 @@ const AdminReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Paginación
+  // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
+  const [filters, setFilters] = useState({
+    productName: '',
+    userName: '',
+    rating: ''
+  });
 
   useEffect(() => {
-    loadReviews(currentPage);
-  }, [currentPage]);
+    const delayDebounceFn = setTimeout(() => {
+      loadReviews(currentPage, filters);
+    }, 300);
 
-  const loadReviews = async (page = 1) => {
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPage, filters]);
+
+  const loadReviews = async (page = 1, currentFilters = {}) => {
     try {
       setLoading(true);
-      const data = await getReviews(page, itemsPerPage);
+      const data = await getReviews(page, itemsPerPage, currentFilters);
       setReviews(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {
@@ -30,11 +39,17 @@ const AdminReviews = () => {
     }
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+    setCurrentPage(1);
+  };
+
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de eliminar esta reseña?')) {
       try {
         await deleteReview(id);
-        loadReviews(currentPage);
+        loadReviews(currentPage, filters);
       } catch (error) {
         alert('Error al eliminar reseña');
       }
@@ -79,6 +94,50 @@ const AdminReviews = () => {
   return (
     <div>
       <AdminPageHeader title="Gestión de Reseñas" />
+
+      {/* Barra de Filtros */}
+      <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm flex flex-wrap gap-4">
+        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Producto</label>
+          <input 
+            type="text"
+            name="productName"
+            placeholder="Nombre del producto..."
+            value={filters.productName}
+            onChange={handleFilterChange}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Usuario</label>
+          <input 
+            type="text"
+            name="userName"
+            placeholder="Nombre del usuario..."
+            value={filters.userName}
+            onChange={handleFilterChange}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1 min-w-[150px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Rating</label>
+          <select 
+            name="rating"
+            value={filters.rating}
+            onChange={handleFilterChange}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          >
+            <option value="">TODOS</option>
+            <option value="5">5 Estrellas</option>
+            <option value="4">4 Estrellas</option>
+            <option value="3">3 Estrellas</option>
+            <option value="2">2 Estrellas</option>
+            <option value="1">1 Estrella</option>
+          </select>
+        </div>
+      </div>
 
       <AdminTable 
         columns={columns}
