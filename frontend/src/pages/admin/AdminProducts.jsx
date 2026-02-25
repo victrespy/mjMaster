@@ -16,8 +16,13 @@ const AdminProducts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 8;
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  
+  const [filters, setFilters] = useState({
+    name: '',
+    categoryName: '',
+    stockOp: 'gte', // gte (>=), lte (<=), gt (>), lt (<), eq (=)
+    stockValue: ''
+  });
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -27,7 +32,6 @@ const AdminProducts = () => {
     return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
-  // Cargar categorías una sola vez al inicio
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -42,16 +46,16 @@ const AdminProducts = () => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      loadProducts(currentPage, searchTerm, selectedCategory);
+      loadProducts(currentPage, filters);
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [currentPage, searchTerm, selectedCategory]);
+  }, [currentPage, filters]);
 
-  const loadProducts = async (page = 1, name = '', categoryName = '') => {
+  const loadProducts = async (page = 1, currentFilters = {}) => {
     try {
       setLoading(true);
-      const data = await getProducts(page, itemsPerPage, { name, categoryName });
+      const data = await getProducts(page, itemsPerPage, currentFilters);
       setProducts(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {
@@ -60,6 +64,12 @@ const AdminProducts = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+    setCurrentPage(1);
   };
 
   const handleCreate = () => {
@@ -76,7 +86,7 @@ const AdminProducts = () => {
     if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
         await deleteProduct(id);
-        loadProducts(currentPage, searchTerm, selectedCategory);
+        loadProducts(currentPage, filters);
       } catch (error) {
         alert('Error al eliminar producto');
       }
@@ -91,7 +101,7 @@ const AdminProducts = () => {
         await createProduct(data);
       }
       setShowForm(false);
-      loadProducts(currentPage, searchTerm, selectedCategory);
+      loadProducts(currentPage, filters);
     } catch (error) {
       alert(error.message);
     }
@@ -145,37 +155,62 @@ const AdminProducts = () => {
         createLabel="+ Nuevo Producto" 
       />
 
-      {/* Barra de Filtros */}
+      {/* Barra de Filtros Avanzada */}
       <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm flex flex-wrap gap-4">
+        {/* Búsqueda por Nombre */}
         <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Buscar por Nombre</label>
+          <label className="text-xs font-bold text-gray-400 uppercase">Nombre</label>
           <input 
             type="text"
-            placeholder="Escribe el nombre del producto..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
+            name="name"
+            placeholder="Buscar producto..."
+            value={filters.name}
+            onChange={handleFilterChange}
             className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
           />
         </div>
 
-        <div className="flex flex-col gap-1 min-w-[200px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Filtrar por Categoría</label>
+        {/* Filtro por Categoría */}
+        <div className="flex flex-col gap-1 min-w-[180px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Categoría</label>
           <select 
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-              setCurrentPage(1);
-            }}
+            name="categoryName"
+            value={filters.categoryName}
+            onChange={handleFilterChange}
             className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
           >
-            <option value="">TODAS LAS CATEGORÍAS</option>
+            <option value="">TODAS</option>
             {categories.map(cat => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
+        </div>
+
+        {/* Filtro por Stock */}
+        <div className="flex flex-col gap-1 min-w-[220px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Filtrar Stock</label>
+          <div className="flex gap-2">
+            <select 
+              name="stockOp"
+              value={filters.stockOp}
+              onChange={handleFilterChange}
+              className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-24"
+            >
+              <option value="eq">=</option>
+              <option value="gt">&gt;</option>
+              <option value="gte">&ge;</option>
+              <option value="lt">&lt;</option>
+              <option value="lte">&le;</option>
+            </select>
+            <input 
+              type="number"
+              name="stockValue"
+              placeholder="Cant."
+              value={filters.stockValue}
+              onChange={handleFilterChange}
+              className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+            />
+          </div>
         </div>
       </div>
 

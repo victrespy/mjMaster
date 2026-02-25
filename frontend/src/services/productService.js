@@ -24,7 +24,6 @@ const getCategoryIdByName = async (categoryName) => {
 
 export const getProducts = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
-    // Asegurarnos de que filters sea un objeto válido
     const safeFilters = filters || {};
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
@@ -38,6 +37,17 @@ export const getProducts = async (page = 1, itemsPerPage = 10, filters = {}) => 
         url += `&category=${categoryId}`;
       } else {
         return { items: [], totalItems: 0 };
+      }
+    }
+
+    // Filtros de Stock (API Platform Range/Numeric Filter)
+    if (safeFilters.stockValue !== undefined && safeFilters.stockValue !== '') {
+      const op = safeFilters.stockOp || 'eq'; // eq, gt, gte, lt, lte
+      if (op === 'eq') {
+        url += `&stock=${safeFilters.stockValue}`;
+      } else {
+        // API Platform usa stock[gt], stock[gte], etc.
+        url += `&stock[${op}]=${safeFilters.stockValue}`;
       }
     }
 
