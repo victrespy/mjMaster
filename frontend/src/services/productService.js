@@ -22,7 +22,7 @@ const getCategoryIdByName = async (categoryName) => {
   }
 };
 
-export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = null) => {
+export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = null, orderBy = null, filters = null) => {
   try {
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
@@ -34,6 +34,18 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
         // Si no se encuentra la categoría, devolvemos lista vacía
         return { items: [], totalItems: 0 };
       }
+    }
+
+    if (orderBy) {
+      Object.keys(orderBy).forEach(key => {
+        url += `&order[${key}]=${orderBy[key]}`;
+      });
+    }
+
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        url += `&${key}=${filters[key]}`;
+      });
     }
 
     const response = await fetch(url, {
@@ -50,8 +62,7 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
     const data = await response.json();
     
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    // Si no viene totalItems, devolvemos 0 para indicar que es desconocido, NO items.length
-    const totalItems = data['hydra:totalItems'] || 0;
+    const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
     
     return { items, totalItems };
   } catch (error) {
@@ -76,7 +87,7 @@ export const searchProducts = async (query) => {
     const data = await response.json();
     
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    const totalItems = data['hydra:totalItems'] || 0;
+    const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
 
     return { items, totalItems };
   } catch (error) {

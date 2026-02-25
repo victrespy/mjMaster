@@ -16,7 +16,7 @@ api_platform:
             standard_put: true
             rfc_7807_compliant_errors: true
 
-        # Configuración de Paginación Explícita
+        # Configuración de Paginación Global
         pagination_enabled: true
         pagination_client_enabled: true
         pagination_client_items_per_page: true
