@@ -22,30 +22,23 @@ const getCategoryIdByName = async (categoryName) => {
   }
 };
 
-export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = null, orderBy = null, filters = null) => {
+export const getProducts = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
+    // Asegurarnos de que filters sea un objeto válido
+    const safeFilters = filters || {};
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
-    if (categoryName) {
-      const categoryId = await getCategoryIdByName(categoryName);
+    if (safeFilters.name) {
+      url += `&name=${encodeURIComponent(safeFilters.name)}`;
+    }
+
+    if (safeFilters.categoryName) {
+      const categoryId = await getCategoryIdByName(safeFilters.categoryName);
       if (categoryId) {
         url += `&category=${categoryId}`;
       } else {
-        // Si no se encuentra la categoría, devolvemos lista vacía
         return { items: [], totalItems: 0 };
       }
-    }
-
-    if (orderBy) {
-      Object.keys(orderBy).forEach(key => {
-        url += `&order[${key}]=${orderBy[key]}`;
-      });
-    }
-
-    if (filters) {
-      Object.keys(filters).forEach(key => {
-        url += `&${key}=${filters[key]}`;
-      });
     }
 
     const response = await fetch(url, {
@@ -60,10 +53,9 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
     }
 
     const data = await response.json();
-    
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
-    
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+
     return { items, totalItems };
   } catch (error) {
     console.error("Error en getProducts:", error);
@@ -85,9 +77,8 @@ export const searchProducts = async (query) => {
     }
 
     const data = await response.json();
-    
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
 
     return { items, totalItems };
   } catch (error) {
@@ -109,8 +100,6 @@ export const getProductById = async (id) => {
     return null;
   }
 };
-
-// --- NUEVAS FUNCIONES CRUD ---
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -196,21 +185,5 @@ export const deleteProduct = async (id) => {
   } catch (error) {
     console.error("Error en deleteProduct:", error);
     throw error;
-  }
-};
-
-export const getCategories = async () => {
-  try {
-    const response = await fetch(`${API_URL}/categories`, {
-      headers: { "Accept": "application/ld+json" }
-    });
-    
-    if (!response.ok) throw new Error("Error al cargar categorías");
-    
-    const data = await response.json();
-    return data['hydra:member'] || data.member || [];
-  } catch (error) {
-    console.error("Error en getCategories:", error);
-    return [];
   }
 };

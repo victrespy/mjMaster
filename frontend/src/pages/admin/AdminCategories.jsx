@@ -9,16 +9,35 @@ const AdminCategories = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  
+  // Paginación y Filtros
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 8;
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const API_BASE_URL = "https://localhost:9443";
+
+  const getImageUrl = (path) => {
+    if (!path) return '/products/placeholder.avif';
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
 
   useEffect(() => {
-    loadCategories();
-  }, []);
+    const delayDebounceFn = setTimeout(() => {
+      loadCategories(currentPage, searchTerm);
+    }, 300);
 
-  const loadCategories = async () => {
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPage, searchTerm]);
+
+  const loadCategories = async (page = 1, name = '') => {
     try {
       setLoading(true);
-      const data = await getCategories();
-      setCategories(data);
+      const data = await getCategories(page, itemsPerPage, { name });
+      setCategories(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando categorías:", error);
     } finally {
@@ -40,7 +59,7 @@ const AdminCategories = () => {
     if (window.confirm('¿Estás seguro? Esto podría afectar a los productos asociados.')) {
       try {
         await deleteCategory(id);
-        loadCategories();
+        loadCategories(currentPage, searchTerm);
       } catch (error) {
         alert('Error al eliminar categoría');
       }
@@ -55,7 +74,7 @@ const AdminCategories = () => {
         await createCategory(data);
       }
       setShowForm(false);
-      loadCategories();
+      loadCategories(currentPage, searchTerm);
     } catch (error) {
       alert(error.message);
     }
@@ -63,6 +82,22 @@ const AdminCategories = () => {
 
   const columns = [
     { header: 'ID', accessor: 'id', className: 'text-gray-400 w-20' },
+    { 
+      header: 'Imagen', 
+      render: (category) => (
+        <div className="h-10 w-10 rounded bg-sage-200 overflow-hidden">
+          <img 
+            src={getImageUrl(category.picture)} 
+            alt="" 
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/products/placeholder.avif';
+            }}
+          />
+        </div>
+      )
+    },
     { header: 'Nombre', accessor: 'name', className: 'font-medium text-gray-200' },
   ];
 
@@ -74,12 +109,33 @@ const AdminCategories = () => {
         createLabel="+ Nueva Categoría" 
       />
 
+      {/* Barra de Búsqueda */}
+      <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm">
+        <div className="flex flex-col gap-1 max-w-md">
+          <label className="text-xs font-bold text-gray-400 uppercase">Buscar por Nombre</label>
+          <input 
+            type="text"
+            placeholder="Escribe el nombre de la categoría..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          />
+        </div>
+      </div>
+
       <AdminTable 
         columns={columns}
         data={categories}
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
       />
 
       {showForm && (

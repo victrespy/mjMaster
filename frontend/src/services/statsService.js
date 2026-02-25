@@ -20,10 +20,10 @@ export const getOrders = async (page = 1, itemsPerPage = 30) => {
     if (!response.ok) throw new Error("Error al cargar pedidos");
     
     const data = await response.json();
-    return {
-      items: data['hydra:member'] || data.member || [],
-      totalItems: data['hydra:totalItems'] || 0
-    };
+    const items = data['hydra:member'] || data.member || [];
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+
+    return { items, totalItems };
   } catch (error) {
     console.error("Error en getOrders:", error);
     return { items: [], totalItems: 0 };
@@ -34,31 +34,28 @@ export const getDashboardStats = async () => {
   try {
     // Cargar datos en paralelo
     const [productsData, usersData, ordersData] = await Promise.all([
-      getProducts(1, 1), // Solo necesitamos el totalItems
-      getUsers(), // API Platform por defecto pagina, así que esto solo trae la primera página
-      getOrders(1, 5) // Traemos los 5 últimos pedidos para la tabla
+      getProducts(1, 1),
+      getUsers(1, 1),
+      getOrders(1, 5) // Volvemos a 5 pedidos
     ]);
 
-    // Para obtener el total de ventas real, necesitaríamos un endpoint específico en el backend
-    // o iterar sobre todos los pedidos (lo cual es lento).
-    // Por simplicidad, sumaremos los de la página actual o simularemos si no hay endpoint de stats.
-    
-    // Nota: API Platform devuelve 'hydra:totalItems' si está habilitado.
-    // Si getProducts devuelve un array directo, usamos .length (pero será solo la página actual).
-    
-    // Asumimos que getProducts devuelve array, así que para saber el total real
-    // necesitaríamos que devuelva el objeto hydra completo.
-    // Vamos a ajustar esto asumiendo que podemos obtener totales.
+    // Ordenar explícitamente por fecha descendente (más reciente primero)
+    // Usamos getTime() para asegurar una comparación numérica precisa
+    const sortedOrders = [...ordersData.items].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
 
-    // Calculamos ventas totales sumando los pedidos recientes (esto es una aproximación para la demo)
-    const totalSales = ordersData.items.reduce((sum, order) => sum + parseFloat(order.total), 0);
+    // Calculamos ventas totales sumando los pedidos recientes
+    const totalSales = sortedOrders.reduce((sum, order) => sum + parseFloat(order.total), 0);
 
     return {
-      totalSales: totalSales, // Solo de los últimos pedidos cargados
-      totalOrders: ordersData.totalItems || ordersData.items.length,
-      totalUsers: usersData.length, // Aproximado si hay paginación
-      totalProducts: productsData.length, // Aproximado
-      recentOrders: ordersData.items
+      totalSales: totalSales,
+      totalOrders: ordersData.totalItems || sortedOrders.length,
+      totalUsers: usersData.totalItems || 0,
+      totalProducts: productsData.totalItems || 0,
+      recentOrders: sortedOrders
     };
   } catch (error) {
     console.error("Error cargando estadísticas:", error);

@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['category:read']],
     denormalizationContext: ['groups' => ['category:write']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['name' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 class Category
 {
     #[ORM\Id]

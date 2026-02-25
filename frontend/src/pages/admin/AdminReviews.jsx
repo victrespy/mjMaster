@@ -7,16 +7,22 @@ import StarsDisplay from '../../components/StarsDisplay';
 const AdminReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 8;
 
   useEffect(() => {
-    loadReviews();
-  }, []);
+    loadReviews(currentPage);
+  }, [currentPage]);
 
-  const loadReviews = async () => {
+  const loadReviews = async (page = 1) => {
     try {
       setLoading(true);
-      const data = await getReviews(1, 50);
-      setReviews(data.items);
+      const data = await getReviews(page, itemsPerPage);
+      setReviews(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando reseñas:", error);
     } finally {
@@ -28,7 +34,7 @@ const AdminReviews = () => {
     if (window.confirm('¿Estás seguro de eliminar esta reseña?')) {
       try {
         await deleteReview(id);
-        loadReviews();
+        loadReviews(currentPage);
       } catch (error) {
         alert('Error al eliminar reseña');
       }
@@ -79,6 +85,10 @@ const AdminReviews = () => {
         data={reviews}
         loading={loading}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
       />
     </div>
   );

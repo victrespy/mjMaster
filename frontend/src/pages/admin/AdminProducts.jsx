@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../services/productService';
+import { getCategories } from '../../services/categoryService';
 import ProductForm from '../../components/admin/ProductForm';
 import AdminTable from '../../components/admin/AdminTable';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  
+  // Paginación y Filtros
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 8;
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -18,15 +27,33 @@ const AdminProducts = () => {
     return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
+  // Cargar categorías una sola vez al inicio
   useEffect(() => {
-    loadProducts();
+    const loadInitialData = async () => {
+      try {
+        const catData = await getCategories(1, 100);
+        setCategories(catData.items || []);
+      } catch (error) {
+        console.error("Error cargando categorías iniciales:", error);
+      }
+    };
+    loadInitialData();
   }, []);
 
-  const loadProducts = async () => {
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      loadProducts(currentPage, searchTerm, selectedCategory);
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPage, searchTerm, selectedCategory]);
+
+  const loadProducts = async (page = 1, name = '', categoryName = '') => {
     try {
       setLoading(true);
-      const data = await getProducts(1, 100);
+      const data = await getProducts(page, itemsPerPage, { name, categoryName });
       setProducts(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando productos:", error);
       setProducts([]);
@@ -49,7 +76,7 @@ const AdminProducts = () => {
     if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
         await deleteProduct(id);
-        loadProducts();
+        loadProducts(currentPage, searchTerm, selectedCategory);
       } catch (error) {
         alert('Error al eliminar producto');
       }
@@ -64,7 +91,7 @@ const AdminProducts = () => {
         await createProduct(data);
       }
       setShowForm(false);
-      loadProducts();
+      loadProducts(currentPage, searchTerm, selectedCategory);
     } catch (error) {
       alert(error.message);
     }
@@ -89,6 +116,14 @@ const AdminProducts = () => {
     },
     { header: 'Nombre', accessor: 'name', className: 'font-medium text-gray-200' },
     { 
+      header: 'Categoría', 
+      render: (product) => (
+        <span className="px-2 py-1 bg-sage-100/30 text-sage-300 rounded text-xs border border-sage-200/30">
+          {product.category ? product.category.name : 'Sin categoría'}
+        </span>
+      )
+    },
+    { 
       header: 'Precio', 
       render: (product) => <span className="text-primary font-bold">{parseFloat(product.price).toFixed(2)} €</span> 
     },
@@ -110,12 +145,50 @@ const AdminProducts = () => {
         createLabel="+ Nuevo Producto" 
       />
 
-      <AdminTable 
+      {/* Barra de Filtros */}
+      <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm flex flex-wrap gap-4">
+        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Buscar por Nombre</label>
+          <input 
+            type="text"
+            placeholder="Escribe el nombre del producto..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1 min-w-[200px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Filtrar por Categoría</label>
+          <select 
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          >
+            <option value="">TODAS LAS CATEGORÍAS</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <AdminTable
         columns={columns}
         data={products}
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
       />
 
       {showForm && (

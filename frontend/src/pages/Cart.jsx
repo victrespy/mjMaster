@@ -38,6 +38,15 @@ const Cart = () => {
       return;
     }
 
+    // Obtener el ID del usuario de forma segura
+    const userId = user.id || (user['@id'] ? user['@id'].split('/').pop() : null);
+    
+    if (!userId) {
+      console.error("Usuario sin ID:", user);
+      setError("Error de sesión: No se pudo identificar al usuario.");
+      return;
+    }
+
     setIsProcessing(true);
     setError(null);
 
@@ -46,20 +55,16 @@ const Cart = () => {
       const stockErrors = [];
       const productsToUpdate = [];
       
-      // Comprobamos cada producto del carrito contra la base de datos
       for (const item of cartItems) {
         try {
           const latestProduct = await getProductById(item.id);
           
           if (!latestProduct || latestProduct.isDiscontinued) {
             stockErrors.push(`El producto "${item.name}" ya no está disponible.`);
-            removeFromCart(item.id);
           } else if (item.quantity > latestProduct.stock) {
             stockErrors.push(`El producto "${item.name}" no tiene tanto stock disponible (Máximo: ${latestProduct.stock}).`);
-            // Ajustar la cantidad al máximo disponible en la base de datos
             updateQuantity(item.id, latestProduct.stock);
           } else {
-            // Guardamos la información para actualizar el stock después
             productsToUpdate.push({
               id: item.id,
               newStock: latestProduct.stock - item.quantity
@@ -71,11 +76,9 @@ const Cart = () => {
       }
 
       if (stockErrors.length > 0) {
-        // Si hay errores de stock, detenemos el proceso y mostramos los mensajes
         throw new Error(stockErrors.join(' '));
       }
 
-      // Filtrar productos válidos (con stock y no descatalogados)
       const validItems = cartItems.filter(item => !item.isDiscontinued && item.stock > 0);
 
       if (validItems.length === 0) {
@@ -83,20 +86,22 @@ const Cart = () => {
       }
 
       const orderData = {
-        user: `/api/users/${user.id}`,
-        total: total.toFixed(2),
+        user: `/api/users/${userId}`,
+        total: total.toFixed(2).toString(),
         state: "PENDING",
         orderProducts: validItems.map(item => ({
           product: `/api/products/${item.id}`,
-          quantity: item.quantity,
-          unitPrice: parseFloat(item.price).toFixed(2)
+          quantity: parseInt(item.quantity),
+          unitPrice: parseFloat(item.price).toFixed(2).toString()
         }))
       };
+
+      console.log("Enviando pedido:", orderData);
 
       // 2. Crear el pedido
       await createOrder(orderData, token);
 
-      // 3. Actualizar el stock de los productos en la base de datos
+      // 3. Actualizar el stock de los productos
       for (const product of productsToUpdate) {
         try {
           await updateProductStock(product.id, product.newStock, token);
@@ -312,7 +317,6 @@ const Cart = () => {
             </Button>
             
             <div className="mt-6 flex justify-center gap-4 text-gray-600">
-              {/* Iconos de pago simulados (placeholders oscuros) */}
               <div className="w-8 h-5 bg-sage-200 rounded opacity-50"></div>
               <div className="w-8 h-5 bg-sage-200 rounded opacity-50"></div>
               <div className="w-8 h-5 bg-sage-200 rounded opacity-50"></div>
