@@ -10,6 +10,14 @@ const AdminCategories = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
 
+  const API_BASE_URL = "https://localhost:9443";
+
+  const getImageUrl = (path) => {
+    if (!path) return '/products/placeholder.avif';
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
+
   useEffect(() => {
     loadCategories();
   }, []);
@@ -65,23 +73,17 @@ const AdminCategories = () => {
     { header: 'ID', accessor: 'id', className: 'text-gray-400 w-20' },
     { 
       header: 'Imagen', 
-      accessor: 'picture', 
-      className: 'w-24',
       render: (category) => (
-        <div className="w-12 h-12 rounded-lg overflow-hidden bg-sage-100/20 flex items-center justify-center border border-sage-200/30">
-          {category.picture ? (
-            <img 
-              src={category.picture} 
-              alt={category.name} 
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/products/placeholder.avif';
-              }}
-            />
-          ) : (
-            <span className="text-[10px] text-gray-500 italic">Sin foto</span>
-          )}
+        <div className="h-10 w-10 rounded bg-sage-200 overflow-hidden">
+          <img 
+            src={getImageUrl(category.picture)} 
+            alt="" 
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/products/placeholder.avif';
+            }}
+          />
         </div>
       )
     },
