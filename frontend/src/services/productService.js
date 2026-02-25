@@ -24,14 +24,16 @@ const getCategoryIdByName = async (categoryName) => {
 
 export const getProducts = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
+    // Asegurarnos de que filters sea un objeto válido
+    const safeFilters = filters || {};
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
-    if (filters.name) {
-      url += `&name=${encodeURIComponent(filters.name)}`;
+    if (safeFilters.name) {
+      url += `&name=${encodeURIComponent(safeFilters.name)}`;
     }
 
-    if (filters.categoryName) {
-      const categoryId = await getCategoryIdByName(filters.categoryName);
+    if (safeFilters.categoryName) {
+      const categoryId = await getCategoryIdByName(safeFilters.categoryName);
       if (categoryId) {
         url += `&category=${categoryId}`;
       } else {

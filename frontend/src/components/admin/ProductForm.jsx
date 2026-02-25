@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../Button';
-import { getCategories } from '../../services/productService';
+import { getCategories } from '../../services/categoryService';
 import { uploadImage } from '../../services/uploadService';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
@@ -18,8 +18,9 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
   useEffect(() => {
     const loadCategories = async () => {
-      const data = await getCategories();
-      setCategories(data);
+      // getCategories ahora devuelve { items: [], totalItems: X }
+      const data = await getCategories(1, 100);
+      setCategories(data.items || []);
     };
     loadCategories();
 
