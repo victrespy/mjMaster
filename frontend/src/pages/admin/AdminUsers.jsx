@@ -7,28 +7,19 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Paginación y Filtros
+  // Paginación
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
-  const [filters, setFilters] = useState({
-    name: '',
-    email: '',
-    role: ''
-  });
+  const itemsPerPage = 7;
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      loadUsers(currentPage, filters);
-    }, 300);
+    loadUsers(currentPage);
+  }, [currentPage]);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [currentPage, filters]);
-
-  const loadUsers = async (page = 1, currentFilters = {}) => {
+  const loadUsers = async (page = 1) => {
     try {
       setLoading(true);
-      const data = await getUsers(page, itemsPerPage, currentFilters);
+      const data = await getUsers(page, itemsPerPage);
       setUsers(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {
@@ -36,12 +27,6 @@ const AdminUsers = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
-    setCurrentPage(1);
   };
 
   const handleToggleAdmin = async (user) => {
@@ -53,7 +38,7 @@ const AdminUsers = () => {
     if (window.confirm(`¿Cambiar rol de ${user.email}?`)) {
       try {
         await updateUserRoles(user.id, newRoles);
-        loadUsers(currentPage, filters);
+        loadUsers(currentPage);
       } catch (error) {
         alert('Error al actualizar rol');
       }
@@ -64,7 +49,7 @@ const AdminUsers = () => {
     if (window.confirm('¿Estás seguro de eliminar este usuario? Esta acción es irreversible.')) {
       try {
         await deleteUser(id);
-        loadUsers(currentPage, filters);
+        loadUsers(currentPage);
       } catch (error) {
         alert('Error al eliminar usuario');
       }
@@ -88,47 +73,6 @@ const AdminUsers = () => {
   return (
     <div>
       <AdminPageHeader title="Gestión de Usuarios" />
-
-      {/* Barra de Filtros */}
-      <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm flex flex-wrap gap-4">
-        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Nombre</label>
-          <input 
-            type="text"
-            name="name"
-            placeholder="Buscar por nombre..."
-            value={filters.name}
-            onChange={handleFilterChange}
-            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Email</label>
-          <input 
-            type="text"
-            name="email"
-            placeholder="Buscar por email..."
-            value={filters.email}
-            onChange={handleFilterChange}
-            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1 min-w-[150px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Rol</label>
-          <select 
-            name="role"
-            value={filters.role}
-            onChange={handleFilterChange}
-            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
-          >
-            <option value="">TODOS</option>
-            <option value="ROLE_ADMIN">ADMINISTRADORES</option>
-            <option value="ROLE_USER">USUARIOS</option>
-          </select>
-        </div>
-      </div>
 
       <AdminTable 
         columns={columns}

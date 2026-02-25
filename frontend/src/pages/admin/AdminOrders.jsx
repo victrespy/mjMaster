@@ -10,7 +10,7 @@ const AdminOrders = () => {
   // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
   const [filters, setFilters] = useState({
     state: '',
     sortField: 'createdAt',

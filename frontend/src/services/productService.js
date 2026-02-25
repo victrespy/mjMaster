@@ -44,7 +44,9 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
 
     if (filters) {
       Object.keys(filters).forEach(key => {
-        url += `&${key}=${filters[key]}`;
+        if (filters[key]) {
+          url += `&${key}=${filters[key]}`;
+        }
       });
     }
 

@@ -13,7 +13,7 @@ const AdminCategories = () => {
   // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
   const [searchTerm, setSearchTerm] = useState('');
 
   const API_BASE_URL = "https://localhost:9443";
