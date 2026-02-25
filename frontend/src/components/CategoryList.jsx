@@ -10,6 +10,7 @@ const CategoryList = () => {
     const loadCategories = async () => {
       try {
         const data = await getCategories();
+        console.log("Categorías cargadas:", data); // DEBUG
         setCategories(data);
       } catch (error) {
         console.error("Error cargando categorías:", error);
@@ -28,7 +29,7 @@ const CategoryList = () => {
     );
   }
 
-  if (categories.length === 0) {
+  if (!categories || categories.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
         No hay categorías disponibles.
@@ -37,7 +38,7 @@ const CategoryList = () => {
   }
 
   return (
-    <div className="flex flex-wrap justify-evenly gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {categories.map((category) => (
         <CategoryCard key={category.id} category={category} />
       ))}

@@ -14,9 +14,9 @@ const Home = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        // Obtenemos los primeros 4 productos como destacados
-        const data = await getProducts(1, 4);
-        setFeaturedProducts(data);
+        // Obtenemos los últimos 8 productos añadidos
+        const data = await getProducts(1, 8, null, { createdAt: 'desc' });
+        setFeaturedProducts(data.items || []);
       } catch (error) {
         console.error("Error cargando destacados:", error);
       } finally {
@@ -44,10 +44,8 @@ const Home = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transform hover:scale-105 transition-transform duration-[20s]"
           style={{ 
             backgroundImage: "url('/hero.webp')",
-            // Máscara para desvanecer bordes: Izquierda, Derecha y Abajo
             maskImage: "linear-gradient(to bottom, black 60%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
-            // Composición para que se apliquen ambas máscaras (intersección)
             maskComposite: "intersect",
             WebkitMaskComposite: "source-in"
           }}
@@ -57,7 +55,7 @@ const Home = () => {
         </div>
 
         {/* Contenido del Hero */}
-        <div className="relative z-20 container mx-auto pl-12 pr-4 h-full flex flex-col justify-center items-start">
+        <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center items-start">
           <span className="text-primary font-bold tracking-widest uppercase mb-4 animate-fade-in-up">
             Bienvenido a MJ Master
           </span>
