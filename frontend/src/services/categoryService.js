@@ -9,9 +9,15 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getCategories = async (page = 1, itemsPerPage = 10) => {
+export const getCategories = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
-    const response = await fetch(`${API_URL}/categories?page=${page}&itemsPerPage=${itemsPerPage}`, {
+    let url = `${API_URL}/categories?page=${page}&itemsPerPage=${itemsPerPage}`;
+    
+    if (filters.name) {
+      url += `&name=${encodeURIComponent(filters.name)}`;
+    }
+
+    const response = await fetch(url, {
       headers: { "Accept": "application/ld+json" }
     });
     

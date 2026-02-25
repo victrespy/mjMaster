@@ -10,10 +10,11 @@ const AdminProducts = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   
-  // Paginación
+  // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 8;
+  const [searchTerm, setSearchTerm] = useState('');
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -24,13 +25,17 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    loadProducts(currentPage);
-  }, [currentPage]);
+    const delayDebounceFn = setTimeout(() => {
+      loadProducts(currentPage, searchTerm);
+    }, 300); // Debounce de 300ms para no saturar la API
 
-  const loadProducts = async (page = 1) => {
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPage, searchTerm]);
+
+  const loadProducts = async (page = 1, name = '') => {
     try {
       setLoading(true);
-      const data = await getProducts(page, itemsPerPage);
+      const data = await getProducts(page, itemsPerPage, { name });
       setProducts(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {
@@ -55,7 +60,7 @@ const AdminProducts = () => {
     if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
         await deleteProduct(id);
-        loadProducts(currentPage);
+        loadProducts(currentPage, searchTerm);
       } catch (error) {
         alert('Error al eliminar producto');
       }
@@ -70,7 +75,7 @@ const AdminProducts = () => {
         await createProduct(data);
       }
       setShowForm(false);
-      loadProducts(currentPage);
+      loadProducts(currentPage, searchTerm);
     } catch (error) {
       alert(error.message);
     }
@@ -115,6 +120,23 @@ const AdminProducts = () => {
         onCreate={handleCreate} 
         createLabel="+ Nuevo Producto" 
       />
+
+      {/* Barra de Búsqueda */}
+      <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm">
+        <div className="flex flex-col gap-1 max-w-md">
+          <label className="text-xs font-bold text-gray-400 uppercase">Buscar por Nombre</label>
+          <input 
+            type="text"
+            placeholder="Escribe el nombre del producto..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          />
+        </div>
+      </div>
 
       <AdminTable
         columns={columns}

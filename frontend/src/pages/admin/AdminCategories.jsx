@@ -10,10 +10,11 @@ const AdminCategories = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   
-  // Paginación
+  // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 8;
+  const [searchTerm, setSearchTerm] = useState('');
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -24,13 +25,17 @@ const AdminCategories = () => {
   };
 
   useEffect(() => {
-    loadCategories(currentPage);
-  }, [currentPage]);
+    const delayDebounceFn = setTimeout(() => {
+      loadCategories(currentPage, searchTerm);
+    }, 300);
 
-  const loadCategories = async (page = 1) => {
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPage, searchTerm]);
+
+  const loadCategories = async (page = 1, name = '') => {
     try {
       setLoading(true);
-      const data = await getCategories(page, itemsPerPage);
+      const data = await getCategories(page, itemsPerPage, { name });
       setCategories(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {
@@ -54,7 +59,7 @@ const AdminCategories = () => {
     if (window.confirm('¿Estás seguro? Esto podría afectar a los productos asociados.')) {
       try {
         await deleteCategory(id);
-        loadCategories(currentPage);
+        loadCategories(currentPage, searchTerm);
       } catch (error) {
         alert('Error al eliminar categoría');
       }
@@ -69,7 +74,7 @@ const AdminCategories = () => {
         await createCategory(data);
       }
       setShowForm(false);
-      loadCategories(currentPage);
+      loadCategories(currentPage, searchTerm);
     } catch (error) {
       alert(error.message);
     }
@@ -103,6 +108,23 @@ const AdminCategories = () => {
         onCreate={handleCreate} 
         createLabel="+ Nueva Categoría" 
       />
+
+      {/* Barra de Búsqueda */}
+      <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm">
+        <div className="flex flex-col gap-1 max-w-md">
+          <label className="text-xs font-bold text-gray-400 uppercase">Buscar por Nombre</label>
+          <input 
+            type="text"
+            placeholder="Escribe el nombre de la categoría..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
+          />
+        </div>
+      </div>
 
       <AdminTable 
         columns={columns}

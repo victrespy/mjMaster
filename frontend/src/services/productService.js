@@ -22,12 +22,16 @@ const getCategoryIdByName = async (categoryName) => {
   }
 };
 
-export const getProducts = async (page = 1, itemsPerPage = 10, categoryName = null) => {
+export const getProducts = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
-    if (categoryName) {
-      const categoryId = await getCategoryIdByName(categoryName);
+    if (filters.name) {
+      url += `&name=${encodeURIComponent(filters.name)}`;
+    }
+
+    if (filters.categoryName) {
+      const categoryId = await getCategoryIdByName(filters.categoryName);
       if (categoryId) {
         url += `&category=${categoryId}`;
       } else {
@@ -47,11 +51,8 @@ export const getProducts = async (page = 1, itemsPerPage = 10, categoryName = nu
     }
 
     const data = await response.json();
-
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    
-    // Intentamos obtener el total de varias fuentes posibles
-    const totalItems = data.totalItems || data['hydra:totalItems'] || data.total || items.length;
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
 
     return { items, totalItems };
   } catch (error) {
@@ -74,7 +75,6 @@ export const searchProducts = async (query) => {
     }
 
     const data = await response.json();
-    
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
     const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
 
@@ -183,21 +183,5 @@ export const deleteProduct = async (id) => {
   } catch (error) {
     console.error("Error en deleteProduct:", error);
     throw error;
-  }
-};
-
-export const getCategories = async () => {
-  try {
-    const response = await fetch(`${API_URL}/categories`, {
-      headers: { "Accept": "application/ld+json" }
-    });
-
-    if (!response.ok) throw new Error("Error al cargar categorías");
-
-    const data = await response.json();
-    return data['hydra:member'] || data.member || [];
-  } catch (error) {
-    console.error("Error en getCategories:", error);
-    return [];
   }
 };
