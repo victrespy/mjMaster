@@ -1,20 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../Button';
+import { uploadImage } from '../../services/uploadService';
 
 const CategoryForm = ({ category, onSubmit, onCancel }) => {
   const [name, setName] = useState('');
+  const [picture, setPicture] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  // Base URL vacía porque usamos rutas relativas y proxy Caddy
+  const API_BASE_URL = "";
 
   useEffect(() => {
     if (category) {
       setName(category.name || '');
+      setPicture(category.picture || '');
     }
   }, [category]);
+
+  const getImageUrl = (path) => {
+    if (!path) return '/mj-star.svg'; // Placeholder por defecto para categorías
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const url = await uploadImage(file);
+      setPicture(url);
+    } catch (error) {
+      alert('Error al subir la imagen');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await onSubmit({ name });
+    await onSubmit({ name, picture });
     setLoading(false);
   };
 
@@ -44,11 +72,39 @@ const CategoryForm = ({ category, onSubmit, onCancel }) => {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-bold text-gray-300 mb-1">Imagen</label>
+            
+            <div className="border-2 border-dashed border-sage-200 rounded-lg p-4 flex flex-col items-center justify-center bg-sage-50/5 hover:bg-sage-50/10 transition-colors relative">
+              {uploading ? (
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              ) : (
+                <img 
+                  src={getImageUrl(picture)} 
+                  alt="Preview" 
+                  className="h-32 w-full object-contain rounded mb-2"
+                  onError={(e) => e.target.src = '/mj-star.svg'}
+                />
+              )}
+              
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              
+              <div className="text-center pointer-events-none">
+                <p className="text-sm text-primary font-bold">Haz clic para subir imagen</p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="secondary" onClick={onCancel}>
               Cancelar
             </Button>
-            <Button type="submit" variant="primary" disabled={loading}>
+            <Button type="submit" variant="primary" disabled={loading || uploading}>
               {loading ? 'Guardando...' : 'Guardar'}
             </Button>
           </div>

@@ -47,6 +47,10 @@ class Category
     #[Assert\NotBlank]
     private ?string $name = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['category:read', 'category:write', 'product:read'])]
+    private ?string $picture = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['category:read'])]
     private ?\DateTimeInterface $createdAt = null;
@@ -84,6 +88,17 @@ class Category
     public function setName(string $name): static
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?string $picture): static
+    {
+        $this->picture = $picture;
         return $this;
     }
 

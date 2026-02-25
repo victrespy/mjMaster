@@ -22,7 +22,10 @@ class SoftDeleteExtension implements QueryCollectionExtensionInterface, QueryIte
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        // Verificamos si la entidad tiene la propiedad 'deleted'
+        if (!class_exists($resourceClass)) {
+            return;
+        }
+
         $reflectionClass = new \ReflectionClass($resourceClass);
         if (!$reflectionClass->hasProperty('deleted')) {
             return;
