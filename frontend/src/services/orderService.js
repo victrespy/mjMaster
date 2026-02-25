@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:9443/api";
+const API_URL = "/api";
 
 const getAuthHeaders = (contentType = "application/ld+json") => {
   const token = localStorage.getItem("token");
@@ -14,9 +14,9 @@ export const getOrders = async (page = 1, itemsPerPage = 30) => {
     const response = await fetch(`${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
     });
-
+    
     if (!response.ok) throw new Error("Error al cargar pedidos");
-
+    
     const data = await response.json();
     return {
       items: data['hydra:member'] || data.member || [],
@@ -41,7 +41,7 @@ export const updateOrderState = async (id, state) => {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData['hydra:description'] || "Error al actualizar estado del pedido");
     }
-
+    
     return await response.json();
   } catch (error) {
     console.error("Error en updateOrderState:", error);
@@ -49,29 +49,35 @@ export const updateOrderState = async (id, state) => {
   }
 };
 
-export const createOrder = async (cartItems) => {
+export const createOrder = async (orderData, token) => {
   try {
-    // Preparamos los datos para el backend
-    // Solo necesitamos ID y cantidad
-    const itemsToSend = cartItems.map(item => ({
-      productId: item.id,
-      quantity: item.quantity
-    }));
-
-    // Usamos el endpoint personalizado /api/checkout
-    const response = await fetch(`${API_URL}/checkout`, {
-      method: "POST",
+    const response = await fetch(`${API_URL}/orders`, {
+      method: 'POST',
       headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-        "Accept": "application/json",
+        'Content-Type': 'application/ld+json',
+        'Accept': 'application/ld+json',
+        'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ items: itemsToSend }),
+      body: JSON.stringify(orderData)
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error al procesar el pedido");
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Error detallado del servidor:", errorData);
+
+      let errorMessage = 'Error al procesar el pedido';
+
+      if (errorData['hydra:description']) {
+        errorMessage = errorData['hydra:description'];
+      } else if (errorData['detail']) {
+        errorMessage = errorData['detail'];
+      } else if (errorData['violations']) {
+        errorMessage = errorData['violations'].map(v => `${v.propertyPath}: ${v.message}`).join(', ');
+      } else if (response.statusText) {
+        errorMessage = `${response.status} ${response.statusText}`;
+      }
+
+      throw new Error(errorMessage);
     }
 
     return await response.json();
@@ -84,11 +90,13 @@ export const createOrder = async (cartItems) => {
 export const getMyOrders = async (userId) => {
   try {
     // Filtramos por ID de usuario y ordenamos por fecha descendente
-    const response = await fetch(`${API_URL}/orders?user.id=${userId}&order[createdAt]=desc`, {
+    // Nota: API Platform usa 'user.id' o 'user' dependiendo de la configuración de filtros
+    // Asumimos que hay un filtro SearchFilter en Order.php para 'user'
+    const response = await fetch(`${API_URL}/orders?user=${userId}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
     });
 
-    if (!response.ok) throw new Error("Error al cargar pedidos");
+    if (!response.ok) throw new Error("Error al cargar mis pedidos");
 
     const data = await response.json();
     return data['hydra:member'] || data.member || [];
