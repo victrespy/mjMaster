@@ -9,9 +9,21 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getReviews = async (page = 1, itemsPerPage = 10) => {
+export const getReviews = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
-    const response = await fetch(`${API_URL}/reviews?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
+    let url = `${API_URL}/reviews?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`;
+    
+    if (filters.productName) {
+      url += `&product.name=${encodeURIComponent(filters.productName)}`;
+    }
+    if (filters.userName) {
+      url += `&user.name=${encodeURIComponent(filters.userName)}`;
+    }
+    if (filters.rating) {
+      url += `&rating=${filters.rating}`;
+    }
+
+    const response = await fetch(url, {
       headers: getAuthHeaders()
     });
     

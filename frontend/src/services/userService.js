@@ -9,17 +9,34 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getUsers = async (page = 1, itemsPerPage = 10) => {
+export const getUsers = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
-    const response = await fetch(`${API_URL}/users?page=${page}&itemsPerPage=${itemsPerPage}`, {
+    let url = `${API_URL}/users?page=${page}&itemsPerPage=${itemsPerPage}`;
+    
+    if (filters.name) {
+      url += `&name=${encodeURIComponent(filters.name)}`;
+    }
+    if (filters.email) {
+      url += `&email=${encodeURIComponent(filters.email)}`;
+    }
+    // Eliminamos el envío del filtro de roles a la API para evitar el error 500
+
+    const response = await fetch(url, {
       headers: getAuthHeaders()
     });
     
     if (!response.ok) throw new Error("Error al cargar usuarios");
     
     const data = await response.json();
-    const items = data['hydra:member'] || data.member || [];
-    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+    let items = data['hydra:member'] || data.member || [];
+    let totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+
+    // Filtrado de roles en el Frontend (para evitar errores de la API)
+    if (filters.role) {
+      items = items.filter(user => user.roles.includes(filters.role));
+      // Nota: Esto afectará al totalItems visual, pero es la forma segura de hacerlo
+      totalItems = items.length;
+    }
 
     return { items, totalItems };
   } catch (error) {
