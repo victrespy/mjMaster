@@ -63,6 +63,28 @@ const AdminCategories = () => {
 
   const columns = [
     { header: 'ID', accessor: 'id', className: 'text-gray-400 w-20' },
+    { 
+      header: 'Imagen', 
+      accessor: 'picture', 
+      className: 'w-24',
+      render: (category) => (
+        <div className="w-12 h-12 rounded-lg overflow-hidden bg-sage-100/20 flex items-center justify-center border border-sage-200/30">
+          {category.picture ? (
+            <img 
+              src={category.picture} 
+              alt={category.name} 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/products/placeholder.avif';
+              }}
+            />
+          ) : (
+            <span className="text-[10px] text-gray-500 italic">Sin foto</span>
+          )}
+        </div>
+      )
+    },
     { header: 'Nombre', accessor: 'name', className: 'font-medium text-gray-200' },
   ];
 
