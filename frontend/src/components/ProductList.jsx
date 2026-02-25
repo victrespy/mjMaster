@@ -15,7 +15,7 @@ const ProductList = () => {
   // Paginación
   const [page, setPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 12; // Catálogo general: 12 por página
+  const itemsPerPage = 12;
 
   // Leemos los parámetros de la URL
   const categoryFilter = searchParams.get('category');
@@ -42,10 +42,6 @@ const ProductList = () => {
         
         setProducts(result.items);
         setTotalItems(result.totalItems);
-        
-        // Debug para ver si llega el total
-        console.log(`Cargados ${result.items.length} productos. Total: ${result.totalItems}`);
-        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -67,9 +63,9 @@ const ProductList = () => {
 
   // Componente de controles de paginación
   const PaginationControls = () => {
-    // Si no hay totalItems (backend antiguo) pero tenemos items, mostramos paginación simple
-    // O si totalPages > 1
-    const showPagination = totalPages > 1 || (totalItems === 0 && products.length === itemsPerPage);
+    // Mostrar si hay más de una página real, o si estamos en una página avanzada, 
+    // o si la página actual está llena (sugiere que hay más)
+    const showPagination = totalPages > 1 || page > 1 || (totalItems === 0 && products.length === itemsPerPage);
     
     if (!showPagination) return null;
     
@@ -95,7 +91,8 @@ const ProductList = () => {
         <Button 
           variant="secondary" 
           onClick={() => setPage(p => p + 1)}
-          disabled={page === totalPages || (totalItems === 0 && products.length < itemsPerPage)}
+          // Deshabilitar si estamos en la última página conocida O si no sabemos el total y la página actual no está llena
+          disabled={(totalItems > 0 && page === totalPages) || (totalItems === 0 && products.length < itemsPerPage)}
           className="px-4 py-2"
         >
           Siguiente &rarr;
