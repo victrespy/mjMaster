@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getReviews = async (page = 1, itemsPerPage = 30) => {
+export const getReviews = async (page = 1, itemsPerPage = 10) => {
   try {
     const response = await fetch(`${API_URL}/reviews?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
@@ -18,10 +18,10 @@ export const getReviews = async (page = 1, itemsPerPage = 30) => {
     if (!response.ok) throw new Error("Error al cargar reseñas");
     
     const data = await response.json();
-    return {
-      items: data['hydra:member'] || data.member || [],
-      totalItems: data['hydra:totalItems'] || 0
-    };
+    const items = data['hydra:member'] || data.member || [];
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+
+    return { items, totalItems };
   } catch (error) {
     console.error("Error en getReviews:", error);
     return { items: [], totalItems: 0 };

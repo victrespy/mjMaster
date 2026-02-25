@@ -6,16 +6,22 @@ import AdminPageHeader from '../../components/admin/AdminPageHeader';
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    loadUsers(currentPage);
+  }, [currentPage]);
 
-  const loadUsers = async () => {
+  const loadUsers = async (page = 1) => {
     try {
       setLoading(true);
-      const data = await getUsers();
-      setUsers(data);
+      const data = await getUsers(page, itemsPerPage);
+      setUsers(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando usuarios:", error);
     } finally {
@@ -32,7 +38,7 @@ const AdminUsers = () => {
     if (window.confirm(`¿Cambiar rol de ${user.email}?`)) {
       try {
         await updateUserRoles(user.id, newRoles);
-        loadUsers();
+        loadUsers(currentPage);
       } catch (error) {
         alert('Error al actualizar rol');
       }
@@ -43,7 +49,7 @@ const AdminUsers = () => {
     if (window.confirm('¿Estás seguro de eliminar este usuario? Esta acción es irreversible.')) {
       try {
         await deleteUser(id);
-        loadUsers();
+        loadUsers(currentPage);
       } catch (error) {
         alert('Error al eliminar usuario');
       }
@@ -73,6 +79,10 @@ const AdminUsers = () => {
         data={users}
         loading={loading}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
         actions={(user) => (
           <button 
             onClick={() => handleToggleAdmin(user)}

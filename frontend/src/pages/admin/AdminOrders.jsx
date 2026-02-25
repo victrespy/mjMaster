@@ -6,16 +6,22 @@ import AdminPageHeader from '../../components/admin/AdminPageHeader';
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    loadOrders();
-  }, []);
+    loadOrders(currentPage);
+  }, [currentPage]);
 
-  const loadOrders = async () => {
+  const loadOrders = async (page = 1) => {
     try {
       setLoading(true);
-      const data = await getOrders(1, 50); // Traemos 50 por ahora
-      setOrders(data.items);
+      const data = await getOrders(page, itemsPerPage);
+      setOrders(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando pedidos:", error);
     } finally {
@@ -27,7 +33,7 @@ const AdminOrders = () => {
     if (window.confirm(`¿Cambiar estado del pedido #${order.id} a ${newState}?`)) {
       try {
         await updateOrderState(order.id, newState);
-        loadOrders();
+        loadOrders(currentPage);
       } catch (error) {
         alert('Error al actualizar estado');
       }
@@ -94,6 +100,10 @@ const AdminOrders = () => {
         columns={columns}
         data={orders}
         loading={loading}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
         actions={(order) => (
           <div className="flex gap-2">
             {order.state !== 'COMPLETED' && order.state !== 'CANCELLED' && (

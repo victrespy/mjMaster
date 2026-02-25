@@ -9,19 +9,22 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getCategories = async () => {
+export const getCategories = async (page = 1, itemsPerPage = 10) => {
   try {
-    const response = await fetch(`${API_URL}/categories`, {
+    const response = await fetch(`${API_URL}/categories?page=${page}&itemsPerPage=${itemsPerPage}`, {
       headers: { "Accept": "application/ld+json" }
     });
     
     if (!response.ok) throw new Error("Error al cargar categorías");
     
     const data = await response.json();
-    return data['hydra:member'] || data.member || [];
+    const items = data['hydra:member'] || data.member || [];
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+
+    return { items, totalItems };
   } catch (error) {
     console.error("Error en getCategories:", error);
-    return [];
+    return { items: [], totalItems: 0 };
   }
 };
 

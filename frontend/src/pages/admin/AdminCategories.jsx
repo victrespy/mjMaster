@@ -9,6 +9,11 @@ const AdminCategories = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -19,14 +24,15 @@ const AdminCategories = () => {
   };
 
   useEffect(() => {
-    loadCategories();
-  }, []);
+    loadCategories(currentPage);
+  }, [currentPage]);
 
-  const loadCategories = async () => {
+  const loadCategories = async (page = 1) => {
     try {
       setLoading(true);
-      const data = await getCategories();
-      setCategories(data);
+      const data = await getCategories(page, itemsPerPage);
+      setCategories(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando categorías:", error);
     } finally {
@@ -48,7 +54,7 @@ const AdminCategories = () => {
     if (window.confirm('¿Estás seguro? Esto podría afectar a los productos asociados.')) {
       try {
         await deleteCategory(id);
-        loadCategories();
+        loadCategories(currentPage);
       } catch (error) {
         alert('Error al eliminar categoría');
       }
@@ -63,7 +69,7 @@ const AdminCategories = () => {
         await createCategory(data);
       }
       setShowForm(false);
-      loadCategories();
+      loadCategories(currentPage);
     } catch (error) {
       alert(error.message);
     }
@@ -104,6 +110,10 @@ const AdminCategories = () => {
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
       />
 
       {showForm && (

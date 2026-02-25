@@ -1,4 +1,4 @@
-const API_URL = "/api";
+const API_URL = "https://localhost:9443/api";
 
 const getAuthHeaders = (contentType = "application/ld+json") => {
   const token = localStorage.getItem("token");
@@ -9,7 +9,7 @@ const getAuthHeaders = (contentType = "application/ld+json") => {
   };
 };
 
-export const getOrders = async (page = 1, itemsPerPage = 30) => {
+export const getOrders = async (page = 1, itemsPerPage = 10) => {
   try {
     const response = await fetch(`${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
@@ -18,10 +18,10 @@ export const getOrders = async (page = 1, itemsPerPage = 30) => {
     if (!response.ok) throw new Error("Error al cargar pedidos");
     
     const data = await response.json();
-    return {
-      items: data['hydra:member'] || data.member || [],
-      totalItems: data['hydra:totalItems'] || 0
-    };
+    const items = data['hydra:member'] || data.member || [];
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+
+    return { items, totalItems };
   } catch (error) {
     console.error("Error en getOrders:", error);
     return { items: [], totalItems: 0 };
@@ -30,7 +30,6 @@ export const getOrders = async (page = 1, itemsPerPage = 30) => {
 
 export const updateOrderState = async (id, state) => {
   try {
-    // Usamos PATCH para actualización parcial
     const response = await fetch(`${API_URL}/orders/${id}`, {
       method: 'PATCH',
       headers: getAuthHeaders("application/merge-patch+json"),
@@ -62,19 +61,21 @@ export const createOrder = async (orderData, token) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Error detallado del servidor:", errorData);
+      const errorText = await response.text();
+      let errorData = {};
+      try {
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        console.error("La respuesta del servidor no es JSON válido:", errorText);
+      }
 
       let errorMessage = 'Error al procesar el pedido';
-
       if (errorData['hydra:description']) {
         errorMessage = errorData['hydra:description'];
       } else if (errorData['detail']) {
         errorMessage = errorData['detail'];
       } else if (errorData['violations']) {
         errorMessage = errorData['violations'].map(v => `${v.propertyPath}: ${v.message}`).join(', ');
-      } else if (response.statusText) {
-        errorMessage = `${response.status} ${response.statusText}`;
       }
 
       throw new Error(errorMessage);
@@ -89,9 +90,6 @@ export const createOrder = async (orderData, token) => {
 
 export const getMyOrders = async (userId) => {
   try {
-    // Filtramos por ID de usuario y ordenamos por fecha descendente
-    // Nota: API Platform usa 'user.id' o 'user' dependiendo de la configuración de filtros
-    // Asumimos que hay un filtro SearchFilter en Order.php para 'user'
     const response = await fetch(`${API_URL}/orders?user=${userId}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
     });

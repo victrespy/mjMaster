@@ -1,6 +1,20 @@
 import React from 'react';
 
-const AdminTable = ({ columns, data, loading, onEdit, onDelete, actions }) => {
+const AdminTable = ({ 
+  columns, 
+  data = [], 
+  loading, 
+  onEdit, 
+  onDelete, 
+  actions,
+  currentPage = 1,
+  totalItems = 0,
+  itemsPerPage = 10,
+  onPageChange
+}) => {
+  const totalItemsNum = parseInt(totalItems, 10) || 0;
+  const totalPages = Math.ceil(totalItemsNum / itemsPerPage) || 1;
+
   return (
     <div className="bg-card-bg border border-sage-200 rounded-xl shadow-lg overflow-hidden">
       <div className="overflow-x-auto">
@@ -71,6 +85,37 @@ const AdminTable = ({ columns, data, loading, onEdit, onDelete, actions }) => {
           </tbody>
         </table>
       </div>
+
+      {/* Barra de Paginación */}
+      {totalItemsNum > 0 && (
+        <div className="px-6 py-4 bg-sage-100/30 border-t border-sage-200/50 flex items-center justify-between">
+          <div className="text-sm text-gray-400">
+            Mostrando <span className="font-medium text-gray-200">{data.length}</span> de <span className="font-medium text-gray-200">{totalItemsNum}</span> resultados
+          </div>
+          
+          {onPageChange && totalPages > 1 && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage === 1 || loading}
+                className="px-3 py-1 rounded border border-sage-200 text-gray-300 hover:bg-sage-200/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Anterior
+              </button>
+              <span className="px-3 py-1 text-gray-200 font-medium">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || loading}
+                className="px-3 py-1 rounded border border-sage-200 text-gray-300 hover:bg-sage-200/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

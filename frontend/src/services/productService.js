@@ -22,7 +22,7 @@ const getCategoryIdByName = async (categoryName) => {
   }
 };
 
-export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = null) => {
+export const getProducts = async (page = 1, itemsPerPage = 10, categoryName = null) => {
   try {
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
@@ -31,7 +31,6 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
       if (categoryId) {
         url += `&category=${categoryId}`;
       } else {
-        // Si no se encuentra la categoría, devolvemos lista vacía
         return { items: [], totalItems: 0 };
       }
     }
@@ -48,11 +47,13 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
     }
 
     const data = await response.json();
-    
+    console.log("DEBUG API Response (Products):", data);
+
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    // Si no viene totalItems, devolvemos 0 para indicar que es desconocido, NO items.length
-    const totalItems = data['hydra:totalItems'] || 0;
     
+    // Intentamos obtener el total de varias fuentes posibles
+    const totalItems = data['hydra:totalItems'] || data.totalItems || data.total || items.length;
+
     return { items, totalItems };
   } catch (error) {
     console.error("Error en getProducts:", error);
@@ -76,7 +77,7 @@ export const searchProducts = async (query) => {
     const data = await response.json();
     
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    const totalItems = data['hydra:totalItems'] || 0;
+    const totalItems = data['hydra:totalItems'] || data.totalItems || items.length;
 
     return { items, totalItems };
   } catch (error) {
@@ -98,8 +99,6 @@ export const getProductById = async (id) => {
     return null;
   }
 };
-
-// --- NUEVAS FUNCIONES CRUD ---
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -193,9 +192,9 @@ export const getCategories = async () => {
     const response = await fetch(`${API_URL}/categories`, {
       headers: { "Accept": "application/ld+json" }
     });
-    
+
     if (!response.ok) throw new Error("Error al cargar categorías");
-    
+
     const data = await response.json();
     return data['hydra:member'] || data.member || [];
   } catch (error) {

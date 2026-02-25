@@ -9,6 +9,11 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -19,16 +24,18 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    loadProducts(currentPage);
+  }, [currentPage]);
 
-  const loadProducts = async () => {
+  const loadProducts = async (page = 1) => {
     try {
       setLoading(true);
-      const data = await getProducts(1, 100);
-      setProducts(data);
+      const data = await getProducts(page, itemsPerPage);
+      setProducts(data.items || []);
+      setTotalItems(data.totalItems || 0);
     } catch (error) {
       console.error("Error cargando productos:", error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -48,7 +55,7 @@ const AdminProducts = () => {
     if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
         await deleteProduct(id);
-        loadProducts();
+        loadProducts(currentPage);
       } catch (error) {
         alert('Error al eliminar producto');
       }
@@ -63,7 +70,7 @@ const AdminProducts = () => {
         await createProduct(data);
       }
       setShowForm(false);
-      loadProducts();
+      loadProducts(currentPage);
     } catch (error) {
       alert(error.message);
     }
@@ -109,12 +116,16 @@ const AdminProducts = () => {
         createLabel="+ Nuevo Producto" 
       />
 
-      <AdminTable 
+      <AdminTable
         columns={columns}
         data={products}
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
       />
 
       {showForm && (
