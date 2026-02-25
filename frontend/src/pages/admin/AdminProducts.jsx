@@ -26,9 +26,10 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       const data = await getProducts(1, 100);
-      setProducts(data);
+      setProducts(data.items || []);
     } catch (error) {
       console.error("Error cargando productos:", error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
