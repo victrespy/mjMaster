@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import { getProducts, searchProducts } from '../services/productService';
+import Button from './Button';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -10,10 +11,20 @@ const ProductList = () => {
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  // Paginación
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 12; // Catálogo general: 12 por página
 
   // Leemos los parámetros de la URL
   const categoryFilter = searchParams.get('category');
-  const searchQuery = searchParams.get('search'); // Nuevo: Filtro de búsqueda
+  const searchQuery = searchParams.get('search');
+
+  // Resetear página al cambiar filtros
+  useEffect(() => {
+    setPage(1);
+  }, [categoryFilter, searchQuery]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,19 +32,20 @@ const ProductList = () => {
         setLoading(true);
         setError(null);
         
-        let data = [];
+        let result = { items: [], totalItems: 0 };
         
         if (searchQuery) {
-          // Si hay búsqueda, usamos searchProducts
-          console.log("🔍 ProductList: Buscando por:", searchQuery);
-          data = await searchProducts(searchQuery);
+          result = await searchProducts(searchQuery);
         } else {
-          // Si no, usamos getProducts (con o sin categoría)
-          console.log("🔍 ProductList: Filtrando por categoría:", categoryFilter);
-          data = await getProducts(1, 30, categoryFilter);
+          result = await getProducts(page, itemsPerPage, categoryFilter);
         }
         
-        setProducts(data);
+        setProducts(result.items);
+        setTotalItems(result.totalItems);
+        
+        // Debug para ver si llega el total
+        console.log(`Cargados ${result.items.length} productos. Total: ${result.totalItems}`);
+        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,14 +54,55 @@ const ProductList = () => {
     };
 
     fetchProducts();
-  }, [categoryFilter, searchQuery]); // Se ejecuta cuando cambia categoría o búsqueda
+  }, [categoryFilter, searchQuery, page]);
 
   const clearFilters = () => {
-    setSearchParams({}); // Limpia todos los parámetros de la URL
+    setSearchParams({});
   };
 
   const openModal = (product) => setSelectedProduct(product);
   const closeModal = () => setSelectedProduct(null);
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // Componente de controles de paginación
+  const PaginationControls = () => {
+    // Si no hay totalItems (backend antiguo) pero tenemos items, mostramos paginación simple
+    // O si totalPages > 1
+    const showPagination = totalPages > 1 || (totalItems === 0 && products.length === itemsPerPage);
+    
+    if (!showPagination) return null;
+    
+    return (
+      <div className="flex justify-center items-center gap-4 my-8">
+        <Button 
+          variant="secondary" 
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="px-4 py-2"
+        >
+          &larr; Anterior
+        </Button>
+        
+        <span className="text-gray-400 font-medium">
+          {totalItems > 0 ? (
+            <>Página <span className="text-primary">{page}</span> de {totalPages}</>
+          ) : (
+            <>Página <span className="text-primary">{page}</span></>
+          )}
+        </span>
+        
+        <Button 
+          variant="secondary" 
+          onClick={() => setPage(p => p + 1)}
+          disabled={page === totalPages || (totalItems === 0 && products.length < itemsPerPage)}
+          className="px-4 py-2"
+        >
+          Siguiente &rarr;
+        </Button>
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -108,16 +161,22 @@ const ProductList = () => {
             </span>
           </div>
           <span className="text-sm text-gray-500 hidden sm:inline">
-            {products.length} productos encontrados
+            {totalItems > 0 ? `${totalItems} productos encontrados` : `${products.length} productos mostrados`}
           </span>
         </div>
       )}
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Paginación Superior */}
+      <PaginationControls />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} onOpen={openModal} />
         ))}
       </div>
+
+      {/* Paginación Inferior */}
+      <PaginationControls />
 
       {selectedProduct && (
         <ProductModal product={selectedProduct} onClose={closeModal} />
