@@ -9,8 +9,7 @@ const CategoryList = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        // getCategories ahora devuelve { items: [], totalItems: X }
-        const data = await getCategories(1, 100); // Pedimos bastantes para la lista general
+        const data = await getCategories(1, 100);
         const items = data.items || (Array.isArray(data) ? data : []);
         setCategories(items);
       } catch (error) {
@@ -40,7 +39,7 @@ const CategoryList = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
       {categories.map((category) => (
         <CategoryCard key={category.id} category={category} />
       ))}

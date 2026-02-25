@@ -20,49 +20,51 @@ const CategoryCard = ({ category }) => {
     if (lowerName.includes('cultivo')) return '🌿';
     if (lowerName.includes('parafernalia')) return '💨';
     if (lowerName.includes('vaporizador')) return '🌬️';
+    if (lowerName.includes('iluminación')) return '💡';
+    if (lowerName.includes('fertilizante')) return '🧪';
+    if (lowerName.includes('sustrato')) return '🟤';
+    if (lowerName.includes('clima')) return '🌡️';
+    if (lowerName.includes('cosecha')) return '✂️';
+    if (lowerName.includes('cbd')) return '💊';
     return '📦';
   };
 
   return (
     <Link 
       to={`/products?category=${encodeURIComponent(category.name)}`}
-      className="group block h-64 rounded-xl overflow-hidden relative shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+      className="group block h-40 rounded-xl overflow-hidden relative shadow-md hover:shadow-xl transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 border border-sage-200/10"
     >
       {imageUrl ? (
         <>
           <img 
             src={imageUrl} 
             alt={category.name} 
-            className="w-full h-full object-fit transition-transform duration-700 group-hover:scale-110"
+            className="w-full h-full object-contain p-5 transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
-              e.target.style.display = 'none'; // Ocultar imagen rota
-              e.target.nextSibling.style.display = 'flex'; // Mostrar fallback
+              e.target.style.display = 'none'; 
+              e.target.nextSibling.style.display = 'flex'; 
             }}
           />
-          {/* Fallback oculto por defecto */}
           <div className="absolute inset-0 bg-card-bg flex-col items-center justify-center hidden">
-            <div className="text-5xl mb-4">{getIcon(category.name)}</div>
+            <div className="text-4xl">{getIcon(category.name)}</div>
           </div>
         </>
       ) : (
-        <div className="w-full h-full bg-card-bg border border-sage-200/30 flex flex-col items-center justify-center">
-          <div className="text-5xl mb-4 transform transition-transform duration-300 group-hover:scale-110">
+        <div className="w-full h-full bg-card-bg flex flex-col items-center justify-center">
+          <div className="text-4xl transform transition-transform duration-300 group-hover:scale-110">
             {getIcon(category.name)}
           </div>
         </div>
       )}
 
-      {/* Overlay Gradiente */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-70 transition-opacity"></div>
+      {/* Overlay Gradiente más sutil */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 group-hover:opacity-70 transition-opacity"></div>
 
-      {/* Contenido */}
-      <div className="absolute bottom-0 left-0 p-6 w-full z-10">
-        <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-primary transition-colors">
+      {/* Contenido Compacto */}
+      <div className="absolute bottom-0 left-0 p-4 w-full z-10">
+        <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors leading-tight">
           {category.name}
         </h3>
-        <p className="text-gray-300 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-          Explorar Categoría &rarr;
-        </p>
       </div>
     </Link>
   );
