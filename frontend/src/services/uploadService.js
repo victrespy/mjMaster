@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:9443/api";
+const API_URL = "/api";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -20,7 +20,9 @@ export const uploadImage = async (file) => {
     });
 
     if (!response.ok) {
-      throw new Error("Error al subir la imagen");
+      // Intentar leer el error JSON del backend si existe
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || "Error al subir la imagen");
     }
 
     const data = await response.json();
