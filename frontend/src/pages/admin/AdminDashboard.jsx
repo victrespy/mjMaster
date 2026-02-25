@@ -81,7 +81,7 @@ const AdminDashboard = () => {
               <tr className="text-gray-400 border-b border-sage-200">
                 <th className="pb-3 font-medium">ID</th>
                 <th className="pb-3 font-medium">Cliente</th>
-                <th className="pb-3 font-medium">Fecha</th>
+                <th className="pb-3 font-medium">Fecha y Hora</th>
                 <th className="pb-3 font-medium">Total</th>
                 <th className="pb-3 font-medium">Estado</th>
               </tr>
@@ -96,7 +96,12 @@ const AdminDashboard = () => {
                   <tr key={order.id} className="border-b border-sage-200/50 hover:bg-sage-50/5">
                     <td className="py-3">#{order.id}</td>
                     <td className="py-3">{order.user ? order.user.name : 'Usuario Eliminado'}</td>
-                    <td className="py-3">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="py-3">
+                      <div className="text-gray-200">{new Date(order.createdAt).toLocaleDateString()}</div>
+                      <div className="text-xs text-gray-500">
+                        {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </td>
                     <td className="py-3 font-bold text-primary">{parseFloat(order.total).toFixed(2)} €</td>
                     <td className="py-3">
                       {(() => {

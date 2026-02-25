@@ -9,9 +9,21 @@ const getAuthHeaders = (contentType = "application/ld+json") => {
   };
 };
 
-export const getOrders = async (page = 1, itemsPerPage = 10) => {
+export const getOrders = async (page = 1, itemsPerPage = 10, filters = {}) => {
   try {
-    const response = await fetch(`${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
+    let url = `${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}`;
+    
+    // Añadir ordenación (por defecto fecha desc, pero permitimos cambiar)
+    const sortField = filters.sortField || 'createdAt';
+    const sortOrder = filters.sortOrder || 'desc';
+    url += `&order[${sortField}]=${sortOrder}`;
+
+    // Añadir filtro por estado si existe
+    if (filters.state) {
+      url += `&state=${filters.state}`;
+    }
+
+    const response = await fetch(url, {
       headers: getAuthHeaders()
     });
     
