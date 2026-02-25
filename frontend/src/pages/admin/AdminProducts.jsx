@@ -15,7 +15,7 @@ const AdminProducts = () => {
   // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
@@ -31,8 +31,9 @@ const AdminProducts = () => {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const catData = await getCategories(1, 100);
-        setCategories(catData.items || []);
+        const catData = await getCategories();
+        // getCategories devuelve un array directamente en la versión actual del servicio
+        setCategories(Array.isArray(catData) ? catData : (catData.items || []));
       } catch (error) {
         console.error("Error cargando categorías iniciales:", error);
       }
@@ -51,7 +52,13 @@ const AdminProducts = () => {
   const loadProducts = async (page = 1, name = '', categoryName = '') => {
     try {
       setLoading(true);
-      const data = await getProducts(page, itemsPerPage, { name, categoryName });
+      
+      // getProducts(page, itemsPerPage, categoryName, orderBy, filters)
+      // Pasamos 'name' dentro del objeto filters (5º argumento)
+      const filters = name ? { name } : {};
+      
+      const data = await getProducts(page, itemsPerPage, categoryName || null, null, filters);
+
       setProducts(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {

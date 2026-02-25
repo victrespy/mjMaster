@@ -11,7 +11,7 @@ const AdminReviews = () => {
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 11;
 
   useEffect(() => {
     loadReviews(currentPage);
