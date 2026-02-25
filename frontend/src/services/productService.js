@@ -47,12 +47,11 @@ export const getProducts = async (page = 1, itemsPerPage = 10, categoryName = nu
     }
 
     const data = await response.json();
-    console.log("DEBUG API Response (Products):", data);
 
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
     
     // Intentamos obtener el total de varias fuentes posibles
-    const totalItems = data['hydra:totalItems'] || data.totalItems || data.total || items.length;
+    const totalItems = data.totalItems || data['hydra:totalItems'] || data.total || items.length;
 
     return { items, totalItems };
   } catch (error) {
@@ -77,7 +76,7 @@ export const searchProducts = async (query) => {
     const data = await response.json();
     
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    const totalItems = data['hydra:totalItems'] || data.totalItems || items.length;
+    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
 
     return { items, totalItems };
   } catch (error) {

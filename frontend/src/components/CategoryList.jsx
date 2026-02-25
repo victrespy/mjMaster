@@ -9,11 +9,13 @@ const CategoryList = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await getCategories();
-        console.log("Categorías cargadas:", data); // DEBUG
-        setCategories(data);
+        // getCategories ahora devuelve { items: [], totalItems: X }
+        const data = await getCategories(1, 100); // Pedimos bastantes para la lista general
+        const items = data.items || (Array.isArray(data) ? data : []);
+        setCategories(items);
       } catch (error) {
         console.error("Error cargando categorías:", error);
+        setCategories([]);
       } finally {
         setLoading(false);
       }
