@@ -136,6 +136,7 @@ const AdminCategories = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader="name"
       />
 
       {showForm && (

@@ -196,6 +196,7 @@ const AdminProducts = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader="name"
       />
 
       {showForm && (

@@ -83,6 +83,7 @@ const AdminUsers = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader="email"
         actions={(user) => (
           <button 
             onClick={() => handleToggleAdmin(user)}

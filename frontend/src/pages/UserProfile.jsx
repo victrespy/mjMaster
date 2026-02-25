@@ -4,10 +4,10 @@ import { getMyOrders } from '../services/orderService';
 import { updateUserProfile } from '../services/userService';
 import Button from '../components/Button';
 import OrderDetailModal from '../components/OrderDetailModal';
+import AdminTable from '../components/admin/AdminTable';
 
 const UserProfile = () => {
-  const { user, logout } = useAuth(); // Asumimos que useAuth tiene una función para recargar el usuario (reloadUser)
-  // Si no, tendremos que actualizar el estado localmente o recargar la página
+  const { user, logout } = useAuth(); 
   
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
@@ -62,8 +62,6 @@ const UserProfile = () => {
       await updateUserProfile(user.id, formData);
       alert('Perfil actualizado correctamente');
       setIsEditing(false);
-      // Aquí deberíamos recargar los datos del usuario en el contexto
-      // window.location.reload(); // Solución rápida si no tenemos reloadUser en el contexto
     } catch (error) {
       alert('Error al actualizar perfil');
     } finally {
@@ -75,15 +73,38 @@ const UserProfile = () => {
     setSelectedOrder(order);
   };
 
+  const orderColumns = [
+    { 
+      header: 'ID Pedido', 
+      render: (order) => <span className="font-medium text-gray-200">#{order.id}</span>
+    },
+    { 
+      header: 'Fecha', 
+      render: (order) => <span className="text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</span>
+    },
+    { 
+      header: 'Total', 
+      render: (order) => <span className="font-bold text-primary">{parseFloat(order.total).toFixed(2)} €</span>
+    },
+    { 
+      header: 'Estado', 
+      render: (order) => (
+        <span className="px-2 py-1 bg-green-900/30 text-green-400 rounded text-xs font-bold border border-green-500/30">
+          {order.state}
+        </span>
+      )
+    },
+  ];
+
   if (!user) return <div className="text-center py-20 text-gray-400">Cargando perfil...</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-primary mb-8">Mi Cuenta</h1>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col min-[890px]:flex-row gap-8">
         {/* Sidebar de Navegación */}
-        <div className="md:w-1/4">
+        <div className="min-[890px]:w-1/4">
           <div className="bg-card-bg border border-sage-200 rounded-xl shadow-lg overflow-hidden">
             <div className="p-6 border-b border-sage-200 text-center">
               <div className="w-20 h-20 mx-auto bg-primary/20 rounded-full flex items-center justify-center text-3xl font-bold text-primary mb-4">
@@ -133,7 +154,7 @@ const UserProfile = () => {
         </div>
 
         {/* Contenido Principal */}
-        <div className="md:w-3/4">
+        <div className="min-[890px]:w-3/4">
           {activeTab === 'profile' && (
             <div className="bg-card-bg border border-sage-200 rounded-xl shadow-lg p-8">
               <div className="flex justify-between items-center mb-6">
@@ -227,15 +248,15 @@ const UserProfile = () => {
           )}
 
           {activeTab === 'orders' && (
-            <div className="bg-card-bg border border-sage-200 rounded-xl shadow-lg overflow-hidden">
-              <div className="p-6 border-b border-sage-200">
-                <h3 className="text-2xl font-bold text-gray-100">Historial de Pedidos</h3>
+            <div>
+              <div className="bg-card-bg border border-sage-200 rounded-xl shadow-lg overflow-hidden mb-6">
+                <div className="p-6 border-b border-sage-200">
+                  <h3 className="text-2xl font-bold text-gray-100">Historial de Pedidos</h3>
+                </div>
               </div>
               
-              {loadingOrders ? (
-                <div className="p-8 text-center text-gray-400">Cargando pedidos...</div>
-              ) : orders.length === 0 ? (
-                <div className="p-12 text-center text-gray-400">
+              {orders.length === 0 && !loadingOrders ? (
+                <div className="p-12 text-center text-gray-400 bg-card-bg border border-sage-200 rounded-xl">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto mb-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
@@ -245,45 +266,25 @@ const UserProfile = () => {
                   </Button>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead className="bg-sage-100/50 text-gray-300 uppercase text-xs font-bold">
-                      <tr>
-                        <th className="px-6 py-4">ID Pedido</th>
-                        <th className="px-6 py-4">Fecha</th>
-                        <th className="px-6 py-4">Total</th>
-                        <th className="px-6 py-4">Estado</th>
-                        <th className="px-6 py-4 text-right">Detalles</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-sage-200/50">
-                      {orders.map((order) => (
-                        <tr key={order.id} className="hover:bg-sage-50/5 transition-colors">
-                          <td className="px-6 py-4 font-medium text-gray-200">#{order.id}</td>
-                          <td className="px-6 py-4 text-gray-400">
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 font-bold text-primary">
-                            {parseFloat(order.total).toFixed(2)} €
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="px-2 py-1 bg-green-900/30 text-green-400 rounded text-xs font-bold border border-green-500/30">
-                              {order.state}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <button 
-                              onClick={() => handleViewOrder(order)}
-                              className="text-primary hover:text-white text-sm font-medium transition-colors"
-                            >
-                              Ver
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <AdminTable
+                  columns={orderColumns}
+                  data={orders}
+                  loading={loadingOrders}
+                  mobileHeader={(order) => (
+                    <div className="flex justify-between items-center w-full pr-4">
+                      <span className="font-bold">Pedido #{order.id}</span>
+                      <span className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                  actions={(order) => (
+                    <button 
+                      onClick={() => handleViewOrder(order)}
+                      className="text-primary hover:text-white text-sm font-medium transition-colors"
+                    >
+                      Ver Detalles
+                    </button>
+                  )}
+                />
               )}
             </div>
           )}

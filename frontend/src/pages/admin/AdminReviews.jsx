@@ -89,6 +89,12 @@ const AdminReviews = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader={(review) => (
+          <div className="flex justify-between items-center w-full pr-4">
+            <span className="font-bold">{review.authorName || (review.user ? review.user.name : 'Anónimo')}</span>
+            <span className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+          </div>
+        )}
       />
     </div>
   );

@@ -156,6 +156,12 @@ const AdminOrders = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader={(order) => (
+          <div className="flex justify-between items-center w-full pr-4">
+            <span className="font-bold">{order.user ? order.user.name : 'Usuario Eliminado'}</span>
+            <span className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</span>
+          </div>
+        )}
         actions={(order) => (
           <div className="flex gap-2">
             {order.state !== 'COMPLETED' && order.state !== 'CANCELLED' && (
