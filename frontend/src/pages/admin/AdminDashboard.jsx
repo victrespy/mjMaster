@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDashboardStats } from '../../services/statsService';
+import AdminTable from '../../components/admin/AdminTable'; // Importar AdminTable
 
 const StatCard = ({ title, value, icon, color }) => (
   <div className="bg-card-bg border border-sage-200 rounded-xl p-6 shadow-lg flex items-center">
@@ -34,6 +35,51 @@ const AdminDashboard = () => {
     loadStats();
   }, []);
 
+  const orderColumns = [
+    { header: 'ID', render: (order) => `#${order.id}` },
+    { header: 'Cliente', render: (order) => order.user ? order.user.name : 'Usuario Eliminado' },
+    { 
+      header: 'Fecha y Hora', 
+      render: (order) => (
+        <div>
+          <div className="text-gray-200">{new Date(order.createdAt).toLocaleDateString()}</div>
+          <div className="text-xs text-gray-500">
+            {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        </div>
+      )
+    },
+    { header: 'Total', render: (order) => <span className="font-bold text-primary">{parseFloat(order.total).toFixed(2)} €</span> },
+    { 
+      header: 'Estado', 
+      render: (order) => {
+        const stateKey = order.state ? order.state.toUpperCase() : '';
+        const colors = {
+          'PENDING': 'bg-blue-900/30 text-blue-400 border-blue-500/30',
+          'PAID': 'bg-green-900/30 text-green-400 border-green-500/30',
+          'SHIPPED': 'bg-purple-900/30 text-purple-400 border-purple-500/30',
+          'COMPLETED': 'bg-teal-900/30 text-teal-400 border-teal-500/30',
+          'CANCELLED': 'bg-red-900/30 text-red-400 border-red-500/30',
+        };
+        const labels = {
+          'PENDING': 'PENDIENTE',
+          'PAID': 'PAGADO',
+          'SHIPPED': 'ENVIADO',
+          'COMPLETED': 'COMPLETADO',
+          'CANCELLED': 'CANCELADO',
+        };
+        const colorClass = colors[stateKey] || 'bg-gray-700/30 text-gray-400';
+        const label = labels[stateKey] || stateKey;
+        
+        return (
+          <span className={`px-2 py-1 rounded text-xs font-bold border ${colorClass}`}>
+            {label}
+          </span>
+        );
+      }
+    }
+  ];
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -46,7 +92,7 @@ const AdminDashboard = () => {
     <div>
       <h1 className="text-3xl font-bold text-gray-100 mb-8">Dashboard</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <StatCard 
           title="Ventas (Recientes)" 
           value={`${stats.totalSales.toFixed(2)} €`} 
@@ -75,67 +121,17 @@ const AdminDashboard = () => {
 
       <div className="bg-card-bg border border-sage-200 rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-bold text-gray-100 mb-4">Últimos Pedidos</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-400 border-b border-sage-200">
-                <th className="pb-3 font-medium">ID</th>
-                <th className="pb-3 font-medium">Cliente</th>
-                <th className="pb-3 font-medium">Fecha y Hora</th>
-                <th className="pb-3 font-medium">Total</th>
-                <th className="pb-3 font-medium">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-300">
-              {stats.recentOrders.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="py-4 text-center text-gray-500">No hay pedidos recientes.</td>
-                </tr>
-              ) : (
-                stats.recentOrders.map(order => (
-                  <tr key={order.id} className="border-b border-sage-200/50 hover:bg-sage-50/5">
-                    <td className="py-3">#{order.id}</td>
-                    <td className="py-3">{order.user ? order.user.name : 'Usuario Eliminado'}</td>
-                    <td className="py-3">
-                      <div className="text-gray-200">{new Date(order.createdAt).toLocaleDateString()}</div>
-                      <div className="text-xs text-gray-500">
-                        {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                    </td>
-                    <td className="py-3 font-bold text-primary">{parseFloat(order.total).toFixed(2)} €</td>
-                    <td className="py-3">
-                      {(() => {
-                        const stateKey = order.state ? order.state.toUpperCase() : '';
-                        const colors = {
-                          'PENDING': 'bg-blue-900/30 text-blue-400 border-blue-500/30',
-                          'PAID': 'bg-green-900/30 text-green-400 border-green-500/30',
-                          'SHIPPED': 'bg-purple-900/30 text-purple-400 border-purple-500/30',
-                          'COMPLETED': 'bg-teal-900/30 text-teal-400 border-teal-500/30',
-                          'CANCELLED': 'bg-red-900/30 text-red-400 border-red-500/30',
-                        };
-                        const labels = {
-                          'PENDING': 'PENDIENTE',
-                          'PAID': 'PAGADO',
-                          'SHIPPED': 'ENVIADO',
-                          'COMPLETED': 'COMPLETADO',
-                          'CANCELLED': 'CANCELADO',
-                        };
-                        const colorClass = colors[stateKey] || 'bg-gray-700/30 text-gray-400';
-                        const label = labels[stateKey] || stateKey;
-                        
-                        return (
-                          <span className={`px-2 py-1 rounded text-xs font-bold border ${colorClass}`}>
-                            {label}
-                          </span>
-                        );
-                      })()}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <AdminTable
+          columns={orderColumns}
+          data={stats.recentOrders}
+          loading={loading}
+          mobileHeader={(order) => (
+            <div className="flex justify-between items-center w-full pr-4">
+              <span className="font-bold">{order.user ? order.user.name : 'Usuario Eliminado'}</span>
+              <span className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</span>
+            </div>
+          )}
+        />
       </div>
     </div>
   );

@@ -23,13 +23,14 @@ const AdminTable = ({
     // Normalizamos la ruta quitando slashes finales o query params si fuera necesario
     const currentPath = path.toLowerCase();
 
-    if (currentPath.includes('/admin/products')) return '(max-width: 1090px)'; // Tabla ancha
-    if (currentPath.includes('/admin/orders')) return '(max-width: 1180px)';   // Tabla ancha
-    if (currentPath.includes('/admin/reviews')) return '(max-width: 1495px)';  // Tabla muy ancha (comentarios)
-    if (currentPath.includes('/admin/users')) return '(max-width: 1045px)';     // Tabla media
-    if (currentPath.includes('/admin/categories')) return '(max-width: 640px)'; // Tabla estrecha
-    if (currentPath.includes('/profile')) return '(max-width: 768px)';          // Perfil de usuario
-    
+    if (currentPath.includes('/admin/products')) return '(max-width: 1090px)';
+    if (currentPath.includes('/admin/orders')) return '(max-width: 1180px)';
+    if (currentPath.includes('/admin/reviews')) return '(max-width: 1495px)';
+    if (currentPath.includes('/admin/users')) return '(max-width: 1045px)';
+    if (currentPath.includes('/admin/categories')) return '(max-width: 640px)';
+    if (currentPath.includes('/profile')) return '(max-width: 768px)';
+    if (currentPath === '/admin' || currentPath === '/admin/') return '(max-width: 1024px)';
+
     return '(max-width: 768px)'; // Default
   };
 
