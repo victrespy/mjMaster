@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Header from './layout/Header';
@@ -21,6 +21,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminReviews from './pages/admin/AdminReviews';
 import SmokeEffect from './components/SmokeEffect'; // Importamos el efecto
 import './App.css';
+import usePageTitle from './hooks/usePageTitle';
 
 // Componente para proteger rutas
 const ProtectedRoute = ({ children }) => {
@@ -35,21 +36,49 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Componente que escucha cambios de ruta y actualiza el título
+function TitleManager() {
+  const location = useLocation();
+
+  // Mapeo simple de ruta -> título
+  useEffect(() => {
+    // No usamos hooks condicionales aquí: solo delegamos al hook custom
+  }, [location]);
+
+  const mapPathToTitle = (pathname) => {
+    if (pathname === '/') return 'Home';
+    if (pathname.startsWith('/products')) return 'Productos';
+    if (pathname.startsWith('/about')) return 'Nosotros';
+    if (pathname.startsWith('/cart')) return 'Carrito';
+    if (pathname.startsWith('/login')) return 'Inicio';
+    if (pathname.startsWith('/register')) return 'Registro';
+    if (pathname.startsWith('/profile')) return 'Perfil';
+    if (pathname.startsWith('/admin')) return 'Admin';
+    return '';
+  };
+
+  const title = mapPathToTitle(location.pathname);
+  usePageTitle(title);
+
+  return null;
+}
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display relative overflow-hidden">
-            
-            {/* EFECTO DE HUMO GLOBAL */}
-            <div className="fixed inset-0 pointer-events-none z-5">
-              <SmokeEffect />
-            </div>
+          <TitleManager />
+           <div className="app-layout min-h-screen bg-dark-bg text-gray-100 font-display relative overflow-hidden">
 
-            {/* Contenido principal con z-index superior */}
-            <div className="relative z-10 flex flex-col min-h-screen">
-              <Routes>
+             {/* EFECTO DE HUMO GLOBAL */}
+             <div className="fixed inset-0 pointer-events-none z-5">
+               <SmokeEffect />
+             </div>
+
+             {/* Contenido principal con z-index superior */}
+             <div className="relative z-10 flex flex-col min-h-screen">
+               <Routes>
                 {/* Rutas Públicas */}
                 <Route path="/" element={
                   <>

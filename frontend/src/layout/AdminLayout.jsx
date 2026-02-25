@@ -113,7 +113,7 @@ const AdminLayout = () => {
           <div className="w-6"></div> {/* Spacer para centrar el título */}
         </header>
 
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 overflow-y-auto">
           <Outlet />
         </main>
       </div>
