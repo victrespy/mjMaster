@@ -20,7 +20,6 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminReviews from './pages/admin/AdminReviews';
 import SmokeEffect from './components/SmokeEffect'; // Importamos el efecto
-import { LeafShower } from './components/LeafShower';
 import './App.css';
 import usePageTitle from './hooks/usePageTitle';
 
@@ -75,11 +74,6 @@ function App() {
              {/* EFECTO DE HUMO GLOBAL */}
              <div className="fixed inset-0 pointer-events-none z-5">
                <SmokeEffect />
-             </div>
-
-             {/* EFECTO DE HOJAS GLOBAL (debajo del contenido) */}
-             <div className="fixed inset-0 pointer-events-none z-6">
-               <LeafShower />
              </div>
 
              {/* Contenido principal con z-index superior */}

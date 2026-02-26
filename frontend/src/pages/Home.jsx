@@ -36,12 +36,10 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative">
 
-      {/* EFECTO DE HOJAS FIJAS (en fondo, z bajo) */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <LeafShower />
-      </div>
+      {/* EFECTO DE HOJAS: Fixed para que se queden en pantalla al aparecer */}
+      <LeafShower />
 
       {/* HERO SECTION */}
       <div className="relative h-[600px] w-full mb-12">
