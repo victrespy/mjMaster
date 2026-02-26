@@ -22,25 +22,46 @@ const getCategoryIdByName = async (categoryName) => {
   }
 };
 
-export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = null, orderBy = null, filters = null) => {
+/**
+ * Obtiene productos con filtros, búsqueda, ordenación y paginación
+ */
+export const getProducts = async (params = {}) => {
+  const {
+    page = 1,
+    itemsPerPage = 12,
+    categoryName = null,
+    orderBy = null,
+    filters = {},
+    search = null
+  } = params;
+
   try {
     let url = `${API_URL}/products?page=${page}&itemsPerPage=${itemsPerPage}`;
     
+    // Filtro por nombre (búsqueda)
+    if (search) {
+      url += `&name=${encodeURIComponent(search)}`;
+    }
+
+    // Filtro por categoría
     if (categoryName) {
       const categoryId = await getCategoryIdByName(categoryName);
       if (categoryId) {
         url += `&category=${categoryId}`;
       } else {
+        // Si se pide una categoría que no existe, devolvemos vacío
         return { items: [], totalItems: 0 };
       }
     }
 
+    // Ordenación
     if (orderBy) {
       Object.keys(orderBy).forEach(key => {
         url += `&order[${key}]=${orderBy[key]}`;
       });
     }
 
+    // Otros filtros (como precio[gte], precio[lte])
     if (filters) {
       Object.keys(filters).forEach(key => {
         if (filters[key]) {
@@ -71,28 +92,10 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
   }
 };
 
+// Mantenemos searchProducts por compatibilidad si se usa en otros sitios, 
+// pero redirigimos a getProducts
 export const searchProducts = async (query) => {
-  try {
-    const response = await fetch(`${API_URL}/products?name=${query}`, {
-      method: "GET",
-      headers: {
-        "Accept": "application/ld+json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Error al buscar productos");
-    }
-
-    const data = await response.json();
-    const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
-    const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
-
-    return { items, totalItems };
-  } catch (error) {
-    console.error("Error en searchProducts:", error);
-    return { items: [], totalItems: 0 };
-  }
+  return getProducts({ search: query });
 };
 
 export const getProductById = async (id) => {

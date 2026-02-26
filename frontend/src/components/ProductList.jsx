@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
-import { getProducts, searchProducts } from '../services/productService';
+import { getProducts } from '../services/productService';
 import Button from './Button';
 
 const ProductList = () => {
@@ -35,9 +35,7 @@ const ProductList = () => {
         setLoading(true);
         setError(null);
         
-        let result = { items: [], totalItems: 0 };
-        
-        // Preparamos los filtros
+        // Preparamos los filtros de rango de precio
         const filters = {};
         if (minPrice) filters['price[gte]'] = minPrice;
         if (maxPrice) filters['price[lte]'] = maxPrice;
@@ -51,14 +49,15 @@ const ProductList = () => {
           }
         }
 
-        if (searchQuery) {
-          // Si hay búsqueda, usamos searchProducts
-          // Nota: searchProducts necesitaría actualizarse para soportar filtros adicionales si se desea
-          result = await searchProducts(searchQuery);
-        } else {
-          // Si no, usamos getProducts con todos los filtros
-          result = await getProducts(page, itemsPerPage, categoryFilter, orderBy, filters);
-        }
+        // Llamada unificada a getProducts con todos los parámetros
+        const result = await getProducts({
+          page,
+          itemsPerPage,
+          categoryName: categoryFilter,
+          search: searchQuery,
+          orderBy,
+          filters
+        });
         
         setProducts(result.items);
         setTotalItems(result.totalItems);
@@ -178,6 +177,12 @@ const ProductList = () => {
             {(minPrice || maxPrice) && (
               <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30">
                 Precio: {minPrice || '0'} - {maxPrice || '∞'} €
+              </span>
+            )}
+
+            {sort && (
+              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30">
+                Orden: {sort.replace('_', ' ')}
               </span>
             )}
 

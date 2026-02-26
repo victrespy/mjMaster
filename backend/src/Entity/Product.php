@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -40,6 +42,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     'category' => 'exact'
 ])]
 #[ApiFilter(NumericFilter::class, properties: ['stock'])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
+#[ApiFilter(OrderFilter::class, properties: ['price', 'name', 'createdAt'])]
 class Product
 {
     #[ORM\Id]
