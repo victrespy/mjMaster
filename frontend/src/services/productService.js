@@ -1,4 +1,4 @@
-const API_URL = "/api";
+import { API_URL } from "../config";
 
 // Función auxiliar para obtener el ID de una categoría por su nombre
 const getCategoryIdByName = async (categoryName) => {
@@ -31,7 +31,6 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
       if (categoryId) {
         url += `&category=${categoryId}`;
       } else {
-        // Si no se encuentra la categoría, devolvemos lista vacía
         return { items: [], totalItems: 0 };
       }
     }
@@ -62,7 +61,6 @@ export const getProducts = async (page = 1, itemsPerPage = 30, categoryName = nu
     }
 
     const data = await response.json();
-    
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
     const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
     
@@ -87,7 +85,6 @@ export const searchProducts = async (query) => {
     }
 
     const data = await response.json();
-    
     const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
     const totalItems = data['hydra:totalItems'] || data.totalItems || 0;
 
@@ -111,8 +108,6 @@ export const getProductById = async (id) => {
     return null;
   }
 };
-
-// --- NUEVAS FUNCIONES CRUD ---
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");

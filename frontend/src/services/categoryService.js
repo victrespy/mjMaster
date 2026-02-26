@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:9443/api";
+import { API_URL } from "../config";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -9,11 +9,11 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getCategories = async (page = 1, itemsPerPage = 10, filters = {}) => {
+export const getCategories = async (page = 1, itemsPerPage = 30, filters = {}) => {
   try {
     let url = `${API_URL}/categories?page=${page}&itemsPerPage=${itemsPerPage}`;
     
-    if (filters.name) {
+    if (filters && filters.name) {
       url += `&name=${encodeURIComponent(filters.name)}`;
     }
 
@@ -24,8 +24,10 @@ export const getCategories = async (page = 1, itemsPerPage = 10, filters = {}) =
     if (!response.ok) throw new Error("Error al cargar categorías");
     
     const data = await response.json();
-    const items = data['hydra:member'] || data.member || [];
-    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
+    
+    // Soporte para formato Hydra (API Platform) y array simple
+    const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
+    const totalItems = data['hydra:totalItems'] || data.totalItems || items.length;
 
     return { items, totalItems };
   } catch (error) {

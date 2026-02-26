@@ -1,10 +1,9 @@
-const API_URL = "/api";
+import { API_URL } from "../config";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
   return {
     "Authorization": `Bearer ${token}`,
-    // NO poner Content-Type aquí, el navegador lo pone automáticamente con el boundary correcto para FormData
   };
 };
 
@@ -20,7 +19,6 @@ export const uploadImage = async (file) => {
     });
 
     if (!response.ok) {
-      // Intentar leer el error JSON del backend si existe
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.error || "Error al subir la imagen");
     }

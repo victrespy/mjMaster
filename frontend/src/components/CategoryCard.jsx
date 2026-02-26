@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 const CategoryCard = ({ category }) => {
-  // Usamos URL absoluta para consistencia con ProductCard
-  const API_BASE_URL = "https://localhost:9443";
-
   const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('http')) return path;
@@ -32,7 +30,7 @@ const CategoryCard = ({ category }) => {
   return (
     <Link 
       to={`/products?category=${encodeURIComponent(category.name)}`}
-      className="group block h-40 rounded-xl overflow-hidden relative shadow-md hover:shadow-xl transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 border border-sage-200/10"
+      className="group block h-40 rounded-xl overflow-hidden relative shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-sage-200/10"
     >
       {imageUrl ? (
         <>

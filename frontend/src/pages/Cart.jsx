@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { createOrder } from '../services/orderService';
 import { getProductById, updateProductStock } from '../services/productService';
+import { API_BASE_URL } from '../config';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal, clearCart, isLoadingDetails } = useCart();
@@ -12,8 +13,6 @@ const Cart = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
-
-  const API_BASE_URL = "https://localhost:9443";
 
   const getImageUrl = (path) => {
     if (!path) return '/products/placeholder.avif';
@@ -38,7 +37,6 @@ const Cart = () => {
       return;
     }
 
-    // Obtener el ID del usuario de forma segura
     const userId = user.id || (user['@id'] ? user['@id'].split('/').pop() : null);
     
     if (!userId) {
@@ -51,7 +49,6 @@ const Cart = () => {
     setError(null);
 
     try {
-      // 1. Verificar stock actualizado antes de procesar el pedido
       const stockErrors = [];
       const productsToUpdate = [];
       
@@ -96,12 +93,8 @@ const Cart = () => {
         }))
       };
 
-      console.log("Enviando pedido:", orderData);
-
-      // 2. Crear el pedido
       await createOrder(orderData, token);
 
-      // 3. Actualizar el stock de los productos
       for (const product of productsToUpdate) {
         try {
           await updateProductStock(product.id, product.newStock, token);
@@ -154,7 +147,6 @@ const Cart = () => {
       )}
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Lista de Productos */}
         <div className="lg:w-2/3">
           <div className="bg-card-bg border border-sage-200 rounded-lg shadow-lg overflow-hidden">
             <div className="hidden md:grid grid-cols-12 gap-4 p-4 bg-sage-100 border-b border-sage-200 text-sm font-semibold text-gray-300 uppercase">
@@ -176,7 +168,6 @@ const Cart = () => {
                     isUnavailable ? 'bg-gray-800/50 opacity-75' : 'hover:bg-sage-50'
                   }`}
                 >
-                  {/* Producto (Imagen + Nombre) */}
                   <div className="col-span-12 md:col-span-6 flex items-center gap-4">
                     <div className="w-20 h-20 flex-shrink-0 bg-sage-100 rounded overflow-hidden border border-sage-200 relative">
                       <img 
@@ -220,13 +211,11 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  {/* Precio Unitario */}
                   <div className="col-span-6 md:col-span-2 text-center md:text-right font-medium text-gray-300">
                     <span className="md:hidden text-gray-500 text-sm mr-2">Precio:</span>
                     {isDiscontinued ? '-' : `${parseFloat(item.price).toFixed(2)} €`}
                   </div>
 
-                  {/* Cantidad */}
                   <div className="col-span-6 md:col-span-2 flex justify-center items-center">
                     {isUnavailable ? (
                       <span className="text-gray-500 text-sm italic">No disponible</span>
@@ -251,7 +240,6 @@ const Cart = () => {
                     )}
                   </div>
 
-                  {/* Total por Item */}
                   <div className="col-span-12 md:col-span-2 text-center md:text-right font-bold text-primary text-lg">
                     <span className="md:hidden text-gray-500 text-sm mr-2">Total:</span>
                     {isUnavailable ? '-' : `${(parseFloat(item.price) * item.quantity).toFixed(2)} €`}
@@ -277,7 +265,6 @@ const Cart = () => {
           </div>
         </div>
 
-        {/* Resumen del Pedido */}
         <div className="lg:w-1/3">
           <div className="bg-card-bg border border-sage-200 rounded-lg shadow-lg p-6 sticky top-24">
             <h2 className="text-xl font-bold mb-6 text-gray-100 border-b border-sage-200 pb-4">Resumen del Pedido</h2>

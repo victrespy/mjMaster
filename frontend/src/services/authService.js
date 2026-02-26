@@ -1,4 +1,5 @@
-const API_URL = "https://localhost:9443/api"; // Backend en puerto 9443
+import { jwtDecode } from "jwt-decode";
+import { API_URL } from "../config";
 
 export const login = async (email, password) => {
   try {
@@ -17,6 +18,8 @@ export const login = async (email, password) => {
     const data = await response.json();
     if (data.token) {
       localStorage.setItem("token", data.token);
+      const decoded = jwtDecode(data.token);
+      return { token: data.token, ...decoded };
     }
     return data;
   } catch (error) {
@@ -52,7 +55,7 @@ export const getProfile = async () => {
   if (!token) return null;
 
   try {
-    // Actualizado a /api/me
+    // Llamada real al endpoint /api/me para obtener el objeto User completo (con ID)
     const response = await fetch(`${API_URL}/me`, {
       method: "GET",
       headers: {
@@ -69,10 +72,18 @@ export const getProfile = async () => {
       throw new Error("Error al obtener perfil");
     }
 
-    return await response.json();
+    const userData = await response.json();
+    return { ...userData, token }; // Combinamos los datos del usuario con el token
+
   } catch (error) {
     console.error("Error en getProfile:", error);
-    return null;
+    // Fallback a decodificación básica si falla la red pero hay token
+    try {
+      const decoded = jwtDecode(token);
+      return { ...decoded, token };
+    } catch (e) {
+      return null;
+    }
   }
 };
 
@@ -81,5 +92,17 @@ export const logout = () => {
 };
 
 export const getCurrentUser = () => {
-  return localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded.exp * 1000 < Date.now()) {
+      logout();
+      return null;
+    }
+    return { token, ...decoded };
+  } catch (error) {
+    return null;
+  }
 };

@@ -1,55 +1,35 @@
-const API_URL = "https://localhost:9443/api";
+import { API_URL } from "../config";
 
-const getAuthHeaders = () => {
+const getAuthHeaders = (contentType = "application/ld+json") => {
   const token = localStorage.getItem("token");
   return {
     "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/ld+json",
+    "Content-Type": contentType,
     "Accept": "application/ld+json",
   };
 };
 
-export const getUsers = async (page = 1, itemsPerPage = 10, filters = {}) => {
+export const getUsers = async () => {
   try {
-    let url = `${API_URL}/users?page=${page}&itemsPerPage=${itemsPerPage}`;
-    
-    if (filters.name) {
-      url += `&name=${encodeURIComponent(filters.name)}`;
-    }
-    if (filters.email) {
-      url += `&email=${encodeURIComponent(filters.email)}`;
-    }
-    // Eliminamos el envío del filtro de roles a la API para evitar el error 500
-
-    const response = await fetch(url, {
+    const response = await fetch(`${API_URL}/users`, {
       headers: getAuthHeaders()
     });
     
     if (!response.ok) throw new Error("Error al cargar usuarios");
     
     const data = await response.json();
-    let items = data['hydra:member'] || data.member || [];
-    let totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
-
-    // Filtrado de roles en el Frontend (para evitar errores de la API)
-    if (filters.role) {
-      items = items.filter(user => user.roles.includes(filters.role));
-      // Nota: Esto afectará al totalItems visual, pero es la forma segura de hacerlo
-      totalItems = items.length;
-    }
-
-    return { items, totalItems };
+    return data['hydra:member'] || data.member || [];
   } catch (error) {
     console.error("Error en getUsers:", error);
-    return { items: [], totalItems: 0 };
+    return [];
   }
 };
 
 export const updateUserRoles = async (id, roles) => {
   try {
     const response = await fetch(`${API_URL}/users/${id}`, {
-      method: "PUT",
-      headers: getAuthHeaders(),
+      method: 'PATCH',
+      headers: getAuthHeaders("application/merge-patch+json"),
       body: JSON.stringify({ roles }),
     });
 
@@ -64,12 +44,15 @@ export const updateUserRoles = async (id, roles) => {
 export const updateUserProfile = async (id, userData) => {
   try {
     const response = await fetch(`${API_URL}/users/${id}`, {
-      method: "PUT",
-      headers: getAuthHeaders(),
+      method: 'PATCH',
+      headers: getAuthHeaders("application/merge-patch+json"),
       body: JSON.stringify(userData),
     });
 
-    if (!response.ok) throw new Error("Error al actualizar perfil");
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData['hydra:description'] || "Error al actualizar perfil");
+    }
     return await response.json();
   } catch (error) {
     console.error("Error en updateUserProfile:", error);
