@@ -20,11 +20,14 @@ const ProductList = () => {
   // Leemos los parámetros de la URL
   const categoryFilter = searchParams.get('category');
   const searchQuery = searchParams.get('search');
+  const minPrice = searchParams.get('minPrice');
+  const maxPrice = searchParams.get('maxPrice');
+  const sort = searchParams.get('sort');
 
   // Resetear página al cambiar filtros
   useEffect(() => {
     setPage(1);
-  }, [categoryFilter, searchQuery]);
+  }, [categoryFilter, searchQuery, minPrice, maxPrice, sort]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,14 +37,32 @@ const ProductList = () => {
         
         let result = { items: [], totalItems: 0 };
         
+        // Preparamos los filtros
+        const filters = {};
+        if (minPrice) filters['price[gte]'] = minPrice;
+        if (maxPrice) filters['price[lte]'] = maxPrice;
+        
+        // Preparamos el ordenamiento
+        let orderBy = null;
+        if (sort) {
+          const [field, direction] = sort.split('_');
+          if (field && direction) {
+            orderBy = { [field]: direction };
+          }
+        }
+
         if (searchQuery) {
+          // Si hay búsqueda, usamos searchProducts
+          // Nota: searchProducts necesitaría actualizarse para soportar filtros adicionales si se desea
           result = await searchProducts(searchQuery);
         } else {
-          result = await getProducts(page, itemsPerPage, categoryFilter);
+          // Si no, usamos getProducts con todos los filtros
+          result = await getProducts(page, itemsPerPage, categoryFilter, orderBy, filters);
         }
         
         setProducts(result.items);
         setTotalItems(result.totalItems);
+        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -50,7 +71,7 @@ const ProductList = () => {
     };
 
     fetchProducts();
-  }, [categoryFilter, searchQuery, page]);
+  }, [categoryFilter, searchQuery, minPrice, maxPrice, sort, page]);
 
   const clearFilters = () => {
     setSearchParams({});
@@ -63,8 +84,6 @@ const ProductList = () => {
 
   // Componente de controles de paginación
   const PaginationControls = () => {
-    // Mostrar si hay más de una página real, o si estamos en una página avanzada, 
-    // o si la página actual está llena (sugiere que hay más)
     const showPagination = totalPages > 1 || page > 1 || (totalItems === 0 && products.length === itemsPerPage);
     
     if (!showPagination) return null;
@@ -91,7 +110,6 @@ const ProductList = () => {
         <Button 
           variant="secondary" 
           onClick={() => setPage(p => p + 1)}
-          // Deshabilitar si estamos en la última página conocida O si no sabemos el total y la página actual no está llena
           disabled={(totalItems > 0 && page === totalPages) || (totalItems === 0 && products.length < itemsPerPage)}
           className="px-4 py-2"
         >
@@ -124,17 +142,15 @@ const ProductList = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p className="text-xl font-semibold mb-2">No se encontraron productos</p>
-        {(categoryFilter || searchQuery) && (
-          <div className="text-sm">
-            <p>No hay resultados para {categoryFilter ? `la categoría "${categoryFilter}"` : `la búsqueda "${searchQuery}"`}.</p>
-            <button 
-              onClick={clearFilters}
-              className="mt-4 text-primary hover:underline font-medium"
-            >
-              Ver todos los productos
-            </button>
-          </div>
-        )}
+        <div className="text-sm">
+          <p>No hay resultados para los filtros seleccionados.</p>
+          <button 
+            onClick={clearFilters}
+            className="mt-4 text-primary hover:underline font-medium"
+          >
+            Ver todos los productos
+          </button>
+        </div>
       </div>
     );
   }
@@ -142,23 +158,38 @@ const ProductList = () => {
   return (
     <div>
       {/* Cabecera de Filtros Activos */}
-      {(categoryFilter || searchQuery) && (
-        <div className="mb-8 flex items-center justify-between bg-card-bg p-4 rounded-lg border border-sage-200/20">
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400">Mostrando resultados de:</span>
-            <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30 flex items-center gap-2">
-              {categoryFilter ? `Categoría: ${categoryFilter}` : `Búsqueda: ${searchQuery}`}
-              <button 
-                onClick={clearFilters}
-                className="hover:text-white transition-colors ml-1"
-                title="Quitar filtro"
-              >
-                ×
-              </button>
-            </span>
+      {(categoryFilter || searchQuery || minPrice || maxPrice || sort) && (
+        <div className="mb-8 flex items-center justify-between bg-card-bg p-4 rounded-lg border border-sage-200/20 flex-wrap gap-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-gray-400">Filtros activos:</span>
+            
+            {categoryFilter && (
+              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30">
+                Categoría: {categoryFilter}
+              </span>
+            )}
+            
+            {searchQuery && (
+              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30">
+                Búsqueda: {searchQuery}
+              </span>
+            )}
+
+            {(minPrice || maxPrice) && (
+              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30">
+                Precio: {minPrice || '0'} - {maxPrice || '∞'} €
+              </span>
+            )}
+
+            <button 
+              onClick={clearFilters}
+              className="text-gray-400 hover:text-white transition-colors ml-2 text-sm underline"
+            >
+              Limpiar todo
+            </button>
           </div>
-          <span className="text-sm text-gray-500 hidden sm:inline">
-            {totalItems > 0 ? `${totalItems} productos encontrados` : `${products.length} productos mostrados`}
+          <span className="text-sm text-gray-500">
+            {totalItems > 0 ? `${totalItems} productos` : `${products.length} mostrados`}
           </span>
         </div>
       )}

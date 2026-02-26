@@ -10,7 +10,7 @@ const AdminOrders = () => {
   // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
   const [filters, setFilters] = useState({
     state: '',
     sortField: 'createdAt',
@@ -156,6 +156,12 @@ const AdminOrders = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader={(order) => (
+          <div className="flex justify-between items-center w-full pr-4">
+            <span className="font-bold">{order.user ? order.user.name : 'Usuario Eliminado'}</span>
+            <span className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</span>
+          </div>
+        )}
         actions={(order) => (
           <div className="flex gap-2">
             {order.state !== 'COMPLETED' && order.state !== 'CANCELLED' && (

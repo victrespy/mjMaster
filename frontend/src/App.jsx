@@ -144,7 +144,7 @@ function App() {
                 <Route path="/profile" element={
                   <ProtectedRoute>
                     <Header />
-                    <main className="app-main container mx-auto px-4 py-8 flex-grow">
+                    <main className="app-main w-full flex-grow">
                       <UserProfile />
                     </main>
                     <Footer />

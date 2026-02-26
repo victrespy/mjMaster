@@ -1,12 +1,10 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import Button from './Button';
+import { API_BASE_URL } from '../config';
 
 const ProductCard = ({ product, onOpen }) => {
   const { addToCart } = useCart();
-  
-  // Base URL para las imágenes si son relativas
-  const API_BASE_URL = "https://localhost:9443";
   
   // Procesar la URL de la imagen
   let imageUrl = '/products/placeholder.avif';
@@ -14,13 +12,12 @@ const ProductCard = ({ product, onOpen }) => {
     if (product.picture.startsWith('http')) {
       imageUrl = product.picture;
     } else {
-      // Si la ruta empieza por /uploads o similar, concatenamos la base de la API
+      // Usamos la URL base dinámica (localhost o ngrok)
       imageUrl = `${API_BASE_URL}${product.picture.startsWith('/') ? '' : '/'}${product.picture}`;
     }
   }
 
   const handleAddToCart = (e) => {
-    // Evitamos que el click en el botón burbujee y abra el modal
     if (e && e.stopPropagation) e.stopPropagation();
     addToCart(product, 1);
   };
@@ -48,7 +45,6 @@ const ProductCard = ({ product, onOpen }) => {
           </div>
         )}
 
-        {/* Aviso de pocas unidades: aparece cuando 0 < stock <= 20 */}
         {product.stock > 0 && product.stock <= 20 && (
           <div className="absolute top-0 right-0 bg-amber-500 text-black text-xs font-bold px-2 py-1 m-2 rounded text-right">
             QUEDAN POCAS UNIDADES
@@ -59,7 +55,6 @@ const ProductCard = ({ product, onOpen }) => {
       <div className="p-4 flex-grow flex flex-col justify-between">
         <div>
           <h3 className="text-lg font-bold text-gray-100 mb-1 line-clamp-2">{product.name}</h3>
-          {/* descripción removida de la tarjeta: irá en el modal */}
         </div>
         
         <div className="mt-4 flex items-center justify-between">

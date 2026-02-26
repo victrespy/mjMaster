@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:9443/api";
+import { API_URL } from "../config";
 
 const getAuthHeaders = (contentType = "application/ld+json") => {
   const token = localStorage.getItem("token");
@@ -9,31 +9,19 @@ const getAuthHeaders = (contentType = "application/ld+json") => {
   };
 };
 
-export const getOrders = async (page = 1, itemsPerPage = 10, filters = {}) => {
+export const getOrders = async (page = 1, itemsPerPage = 30) => {
   try {
-    let url = `${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}`;
-    
-    // Añadir ordenación (por defecto fecha desc, pero permitimos cambiar)
-    const sortField = filters.sortField || 'createdAt';
-    const sortOrder = filters.sortOrder || 'desc';
-    url += `&order[${sortField}]=${sortOrder}`;
-
-    // Añadir filtro por estado si existe
-    if (filters.state) {
-      url += `&state=${filters.state}`;
-    }
-
-    const response = await fetch(url, {
+    const response = await fetch(`${API_URL}/orders?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
     });
     
     if (!response.ok) throw new Error("Error al cargar pedidos");
     
     const data = await response.json();
-    const items = data['hydra:member'] || data.member || [];
-    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
-
-    return { items, totalItems };
+    return {
+      items: data['hydra:member'] || data.member || [],
+      totalItems: data['hydra:totalItems'] || 0
+    };
   } catch (error) {
     console.error("Error en getOrders:", error);
     return { items: [], totalItems: 0 };
@@ -73,23 +61,11 @@ export const createOrder = async (orderData, token) => {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      let errorData = {};
-      try {
-        errorData = JSON.parse(errorText);
-      } catch (e) {
-        console.error("La respuesta del servidor no es JSON válido:", errorText);
-      }
-
+      const errorData = await response.json().catch(() => ({}));
       let errorMessage = 'Error al procesar el pedido';
       if (errorData['hydra:description']) {
         errorMessage = errorData['hydra:description'];
-      } else if (errorData['detail']) {
-        errorMessage = errorData['detail'];
-      } else if (errorData['violations']) {
-        errorMessage = errorData['violations'].map(v => `${v.propertyPath}: ${v.message}`).join(', ');
       }
-
       throw new Error(errorMessage);
     }
 

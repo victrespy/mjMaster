@@ -1,4 +1,21 @@
-const API_URL = "https://localhost:9443/api"; // Backend en puerto 9443
+import { API_URL } from "../config";
+
+// Función manual para decodificar el JWT sin depender de librerías externas
+const jwtDecode = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Error decodificando token:", e);
+    return null;
+  }
+};
+//elñhgokpjahoñgkhvlkenjhiivbohbñlkhbetlkebhphboieoh doritos reoìwef    opirfwkphbwfrikfaifghhirfg
 
 export const login = async (email, password) => {
   try {
@@ -17,6 +34,8 @@ export const login = async (email, password) => {
     const data = await response.json();
     if (data.token) {
       localStorage.setItem("token", data.token);
+      const decoded = jwtDecode(data.token);
+      return { token: data.token, ...decoded };
     }
     return data;
   } catch (error) {
@@ -52,7 +71,6 @@ export const getProfile = async () => {
   if (!token) return null;
 
   try {
-    // Actualizado a /api/me
     const response = await fetch(`${API_URL}/me`, {
       method: "GET",
       headers: {
@@ -69,10 +87,17 @@ export const getProfile = async () => {
       throw new Error("Error al obtener perfil");
     }
 
-    return await response.json();
+    const userData = await response.json();
+    return { ...userData, token };
+
   } catch (error) {
     console.error("Error en getProfile:", error);
-    return null;
+    try {
+      const decoded = jwtDecode(token);
+      return { ...decoded, token };
+    } catch (e) {
+      return null;
+    }
   }
 };
 
@@ -81,5 +106,17 @@ export const logout = () => {
 };
 
 export const getCurrentUser = () => {
-  return localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  
+  try {
+    const decoded = jwtDecode(token);
+    if (!decoded || (decoded.exp * 1000 < Date.now())) {
+      logout();
+      return null;
+    }
+    return { token, ...decoded };
+  } catch (error) {
+    return null;
+  }
 };

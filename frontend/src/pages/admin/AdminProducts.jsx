@@ -15,14 +15,9 @@ const AdminProducts = () => {
   // Paginación y Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 8;
-  
-  const [filters, setFilters] = useState({
-    name: '',
-    categoryName: '',
-    stockOp: 'gte', // gte (>=), lte (<=), gt (>), lt (<), eq (=)
-    stockValue: ''
-  });
+  const itemsPerPage = 7;
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const API_BASE_URL = "https://localhost:9443";
 
@@ -32,11 +27,13 @@ const AdminProducts = () => {
     return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
+  // Cargar categorías una sola vez al inicio
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const catData = await getCategories(1, 100);
-        setCategories(catData.items || []);
+        const catData = await getCategories();
+        // getCategories devuelve un array directamente en la versión actual del servicio
+        setCategories(Array.isArray(catData) ? catData : (catData.items || []));
       } catch (error) {
         console.error("Error cargando categorías iniciales:", error);
       }
@@ -46,16 +43,22 @@ const AdminProducts = () => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      loadProducts(currentPage, filters);
+      loadProducts(currentPage, searchTerm, selectedCategory);
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [currentPage, filters]);
+  }, [currentPage, searchTerm, selectedCategory]);
 
-  const loadProducts = async (page = 1, currentFilters = {}) => {
+  const loadProducts = async (page = 1, name = '', categoryName = '') => {
     try {
       setLoading(true);
-      const data = await getProducts(page, itemsPerPage, currentFilters);
+      
+      // getProducts(page, itemsPerPage, categoryName, orderBy, filters)
+      // Pasamos 'name' dentro del objeto filters (5º argumento)
+      const filters = name ? { name } : {};
+      
+      const data = await getProducts(page, itemsPerPage, categoryName || null, null, filters);
+
       setProducts(data.items || []);
       setTotalItems(data.totalItems || 0);
     } catch (error) {
@@ -64,12 +67,6 @@ const AdminProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
-    setCurrentPage(1);
   };
 
   const handleCreate = () => {
@@ -86,7 +83,7 @@ const AdminProducts = () => {
     if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
         await deleteProduct(id);
-        loadProducts(currentPage, filters);
+        loadProducts(currentPage, searchTerm, selectedCategory);
       } catch (error) {
         alert('Error al eliminar producto');
       }
@@ -101,7 +98,7 @@ const AdminProducts = () => {
         await createProduct(data);
       }
       setShowForm(false);
-      loadProducts(currentPage, filters);
+      loadProducts(currentPage, searchTerm, selectedCategory);
     } catch (error) {
       alert(error.message);
     }
@@ -155,62 +152,37 @@ const AdminProducts = () => {
         createLabel="+ Nuevo Producto" 
       />
 
-      {/* Barra de Filtros Avanzada */}
+      {/* Barra de Filtros */}
       <div className="mb-6 bg-card-bg p-4 rounded-xl border border-sage-200 shadow-sm flex flex-wrap gap-4">
-        {/* Búsqueda por Nombre */}
         <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Nombre</label>
+          <label className="text-xs font-bold text-gray-400 uppercase">Buscar por Nombre</label>
           <input 
             type="text"
-            name="name"
-            placeholder="Buscar producto..."
-            value={filters.name}
-            onChange={handleFilterChange}
+            placeholder="Escribe el nombre del producto..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
             className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
           />
         </div>
 
-        {/* Filtro por Categoría */}
-        <div className="flex flex-col gap-1 min-w-[180px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Categoría</label>
+        <div className="flex flex-col gap-1 min-w-[200px]">
+          <label className="text-xs font-bold text-gray-400 uppercase">Filtrar por Categoría</label>
           <select 
-            name="categoryName"
-            value={filters.categoryName}
-            onChange={handleFilterChange}
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setCurrentPage(1);
+            }}
             className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
           >
-            <option value="">TODAS</option>
+            <option value="">TODAS LAS CATEGORÍAS</option>
             {categories.map(cat => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
-        </div>
-
-        {/* Filtro por Stock */}
-        <div className="flex flex-col gap-1 min-w-[220px]">
-          <label className="text-xs font-bold text-gray-400 uppercase">Filtrar Stock</label>
-          <div className="flex gap-2">
-            <select 
-              name="stockOp"
-              value={filters.stockOp}
-              onChange={handleFilterChange}
-              className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-24"
-            >
-              <option value="eq">=</option>
-              <option value="gt">&gt;</option>
-              <option value="gte">&ge;</option>
-              <option value="lt">&lt;</option>
-              <option value="lte">&le;</option>
-            </select>
-            <input 
-              type="number"
-              name="stockValue"
-              placeholder="Cant."
-              value={filters.stockValue}
-              onChange={handleFilterChange}
-              className="bg-dark-bg border border-sage-200/30 rounded-lg text-sm text-gray-200 p-2 outline-none focus:border-primary w-full"
-            />
-          </div>
         </div>
       </div>
 
@@ -224,6 +196,7 @@ const AdminProducts = () => {
         totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={(page) => setCurrentPage(page)}
+        mobileHeader="name"
       />
 
       {showForm && (

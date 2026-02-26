@@ -10,23 +10,29 @@ export const AuthProvider = ({ children }) => {
   // Cargar usuario al iniciar la app
   useEffect(() => {
     const loadUser = async () => {
-      const profile = await getProfile();
-      if (profile) {
-        setUser(profile);
+      try {
+        const profile = await getProfile();
+        if (profile) {
+          setUser(profile);
+        }
+      } catch (error) {
+        console.error("Error cargando usuario inicial:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     loadUser();
   }, []);
 
   const login = async (email, password) => {
     try {
-      // 1. Obtener token
-      await loginService(email, password);
+      // 1. Obtener token y datos básicos
+      const loginData = await loginService(email, password);
       
-      // 2. Obtener datos del usuario (nombre, rol, etc.)
+      // 2. El servicio de login ya devuelve los datos decodificados del token
+      // pero llamamos a getProfile para asegurar que tenemos los datos más frescos/completos
       const profile = await getProfile();
-      setUser(profile);
+      setUser(profile || loginData);
 
       return true;
     } catch (error) {

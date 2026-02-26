@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:9443/api";
+import { API_URL } from "../config";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -9,31 +9,19 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getReviews = async (page = 1, itemsPerPage = 10, filters = {}) => {
+export const getReviews = async (page = 1, itemsPerPage = 30) => {
   try {
-    let url = `${API_URL}/reviews?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`;
-    
-    if (filters.productName) {
-      url += `&product.name=${encodeURIComponent(filters.productName)}`;
-    }
-    if (filters.userName) {
-      url += `&user.name=${encodeURIComponent(filters.userName)}`;
-    }
-    if (filters.rating) {
-      url += `&rating=${filters.rating}`;
-    }
-
-    const response = await fetch(url, {
+    const response = await fetch(`${API_URL}/reviews?page=${page}&itemsPerPage=${itemsPerPage}&order[createdAt]=desc`, {
       headers: getAuthHeaders()
     });
     
     if (!response.ok) throw new Error("Error al cargar reseñas");
     
     const data = await response.json();
-    const items = data['hydra:member'] || data.member || [];
-    const totalItems = data.totalItems || data['hydra:totalItems'] || items.length;
-
-    return { items, totalItems };
+    return {
+      items: data['hydra:member'] || data.member || [],
+      totalItems: data['hydra:totalItems'] || 0
+    };
   } catch (error) {
     console.error("Error en getReviews:", error);
     return { items: [], totalItems: 0 };
