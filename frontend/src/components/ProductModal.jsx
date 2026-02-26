@@ -5,9 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 import MJStarIcon from './MJStarIcon';
 import StarsDisplay from './StarsDisplay';
-
-const API_URL = "https://localhost:9443/api";
-const API_BASE_URL = "https://localhost:9443";
+import { API_URL, API_BASE_URL } from '../config';
 
 const ProductModal = ({ product, onClose }) => {
   const { addToCart } = useCart();
@@ -45,7 +43,7 @@ const ProductModal = ({ product, onClose }) => {
 
   if (!product) return null;
 
-  // Procesar la URL de la imagen (igual que en ProductCard)
+  // Procesar la URL de la imagen usando la base dinámica
   let imageUrl = '/products/placeholder.avif';
   if (product.picture) {
     if (product.picture.startsWith('http')) {
