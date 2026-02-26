@@ -1,5 +1,21 @@
-import { jwtDecode } from "jwt-decode";
 import { API_URL } from "../config";
+
+// Función manual para decodificar el JWT sin depender de librerías externas
+const jwtDecode = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Error decodificando token:", e);
+    return null;
+  }
+};
+//elñhgokpjahoñgkhvlkenjhiivbohbñlkhbetlkebhphboieoh doritos reoìwef    opirfwkphbwfrikfaifghhirfg
 
 export const login = async (email, password) => {
   try {
@@ -55,7 +71,6 @@ export const getProfile = async () => {
   if (!token) return null;
 
   try {
-    // Llamada real al endpoint /api/me para obtener el objeto User completo (con ID)
     const response = await fetch(`${API_URL}/me`, {
       method: "GET",
       headers: {
@@ -73,11 +88,10 @@ export const getProfile = async () => {
     }
 
     const userData = await response.json();
-    return { ...userData, token }; // Combinamos los datos del usuario con el token
+    return { ...userData, token };
 
   } catch (error) {
     console.error("Error en getProfile:", error);
-    // Fallback a decodificación básica si falla la red pero hay token
     try {
       const decoded = jwtDecode(token);
       return { ...decoded, token };
@@ -97,7 +111,7 @@ export const getCurrentUser = () => {
   
   try {
     const decoded = jwtDecode(token);
-    if (decoded.exp * 1000 < Date.now()) {
+    if (!decoded || (decoded.exp * 1000 < Date.now())) {
       logout();
       return null;
     }
