@@ -18,10 +18,10 @@ export const getReviews = async (page = 1, itemsPerPage = 30) => {
     if (!response.ok) throw new Error("Error al cargar reseñas");
     
     const data = await response.json();
-    return {
-      items: data['hydra:member'] || data.member || [],
-      totalItems: data['hydra:totalItems'] || 0
-    };
+    const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
+    const totalItems = data['hydra:totalItems'] || data.totalItems || items.length;
+
+    return { items, totalItems };
   } catch (error) {
     console.error("Error en getReviews:", error);
     return { items: [], totalItems: 0 };

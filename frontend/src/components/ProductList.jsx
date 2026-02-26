@@ -35,7 +35,7 @@ const ProductList = () => {
         setLoading(true);
         setError(null);
         
-        // Preparamos los filtros de rango de precio
+        // Preparamos los filtros
         const filters = {};
         if (minPrice) filters['price[gte]'] = minPrice;
         if (maxPrice) filters['price[lte]'] = maxPrice;
@@ -49,14 +49,14 @@ const ProductList = () => {
           }
         }
 
-        // Llamada unificada a getProducts con todos los parámetros
+        // Llamamos a getProducts con el nuevo formato de objeto
         const result = await getProducts({
           page,
           itemsPerPage,
           categoryName: categoryFilter,
-          search: searchQuery,
           orderBy,
-          filters
+          filters,
+          search: searchQuery
         });
         
         setProducts(result.items);
@@ -81,7 +81,6 @@ const ProductList = () => {
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Componente de controles de paginación
   const PaginationControls = () => {
     const showPagination = totalPages > 1 || page > 1 || (totalItems === 0 && products.length === itemsPerPage);
     
@@ -156,7 +155,6 @@ const ProductList = () => {
 
   return (
     <div>
-      {/* Cabecera de Filtros Activos */}
       {(categoryFilter || searchQuery || minPrice || maxPrice || sort) && (
         <div className="mb-8 flex items-center justify-between bg-card-bg p-4 rounded-lg border border-sage-200/20 flex-wrap gap-4">
           <div className="flex items-center gap-2 flex-wrap">
@@ -180,12 +178,6 @@ const ProductList = () => {
               </span>
             )}
 
-            {sort && (
-              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-bold border border-primary/30">
-                Orden: {sort.replace('_', ' ')}
-              </span>
-            )}
-
             <button 
               onClick={clearFilters}
               className="text-gray-400 hover:text-white transition-colors ml-2 text-sm underline"
@@ -199,7 +191,6 @@ const ProductList = () => {
         </div>
       )}
       
-      {/* Paginación Superior */}
       <PaginationControls />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
@@ -208,7 +199,6 @@ const ProductList = () => {
         ))}
       </div>
 
-      {/* Paginación Inferior */}
       <PaginationControls />
 
       {selectedProduct && (

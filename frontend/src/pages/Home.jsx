@@ -15,8 +15,12 @@ const Home = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        // Obtenemos los últimos 8 productos añadidos
-        const data = await getProducts(1, 8, null, { createdAt: 'desc' });
+        // Obtenemos los últimos 8 productos añadidos usando el nuevo formato de objeto
+        const data = await getProducts({ 
+          page: 1, 
+          itemsPerPage: 8, 
+          orderBy: { createdAt: 'desc' } 
+        });
         setFeaturedProducts(data.items || []);
       } catch (error) {
         console.error("Error cargando destacados:", error);

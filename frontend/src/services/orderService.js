@@ -18,10 +18,10 @@ export const getOrders = async (page = 1, itemsPerPage = 30) => {
     if (!response.ok) throw new Error("Error al cargar pedidos");
     
     const data = await response.json();
-    return {
-      items: data['hydra:member'] || data.member || [],
-      totalItems: data['hydra:totalItems'] || 0
-    };
+    const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
+    const totalItems = data['hydra:totalItems'] || data.totalItems || items.length;
+
+    return { items, totalItems };
   } catch (error) {
     console.error("Error en getOrders:", error);
     return { items: [], totalItems: 0 };
@@ -85,7 +85,8 @@ export const getMyOrders = async (userId) => {
     if (!response.ok) throw new Error("Error al cargar mis pedidos");
 
     const data = await response.json();
-    return data['hydra:member'] || data.member || [];
+    const items = data['hydra:member'] || data.member || (Array.isArray(data) ? data : []);
+    return items;
   } catch (error) {
     console.error("Error en getMyOrders:", error);
     return [];

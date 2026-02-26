@@ -28,7 +28,7 @@ const getCategoryIdByName = async (categoryName) => {
 export const getProducts = async (params = {}) => {
   const {
     page = 1,
-    itemsPerPage = 12,
+    itemsPerPage = 7,
     categoryName = null,
     orderBy = null,
     filters = {},

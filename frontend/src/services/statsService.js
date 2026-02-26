@@ -21,12 +21,15 @@ export const getDashboardStats = async () => {
     const usersData = await usersRes.json();
     const ordersData = await ordersRes.json();
 
+    const recentOrders = ordersData['hydra:member'] || ordersData.member || [];
+
     return {
-      totalProducts: productsData['hydra:totalItems'] || 0,
-      totalUsers: usersData['hydra:totalItems'] || 0,
-      totalOrders: ordersData['hydra:totalItems'] || 0,
-      recentOrders: ordersData['hydra:member'] || [],
-      totalSales: (ordersData['hydra:member'] || []).reduce((acc, o) => acc + parseFloat(order.total || 0), 0) // Estimación
+      totalProducts: productsData['hydra:totalItems'] || productsData.totalItems || 0,
+      totalUsers: usersData['hydra:totalItems'] || usersData.totalItems || 0,
+      totalOrders: ordersData['hydra:totalItems'] || ordersData.totalItems || 0,
+      recentOrders: recentOrders,
+      // Calculamos ventas sumando los pedidos de la primera página (aproximación)
+      totalSales: recentOrders.reduce((acc, o) => acc + parseFloat(o.total || 0), 0)
     };
   } catch (error) {
     console.error("Error en getDashboardStats:", error);

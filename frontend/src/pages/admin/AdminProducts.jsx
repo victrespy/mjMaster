@@ -32,7 +32,6 @@ const AdminProducts = () => {
     const loadInitialData = async () => {
       try {
         const catData = await getCategories();
-        // getCategories devuelve un array directamente en la versión actual del servicio
         setCategories(Array.isArray(catData) ? catData : (catData.items || []));
       } catch (error) {
         console.error("Error cargando categorías iniciales:", error);
@@ -53,11 +52,13 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       
-      // getProducts(page, itemsPerPage, categoryName, orderBy, filters)
-      // Pasamos 'name' dentro del objeto filters (5º argumento)
-      const filters = name ? { name } : {};
-      
-      const data = await getProducts(page, itemsPerPage, categoryName || null, null, filters);
+      // Usamos el nuevo formato de objeto para los parámetros
+      const data = await getProducts({
+        page,
+        itemsPerPage,
+        categoryName: categoryName || null,
+        filters: name ? { name } : {}
+      });
 
       setProducts(data.items || []);
       setTotalItems(data.totalItems || 0);
