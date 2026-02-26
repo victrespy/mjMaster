@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import { getProducts } from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import ProductModal from '../components/ProductModal';
 import CategoryList from '../components/CategoryList';
 import Button from '../components/Button';
+import { LeafShower } from '../components/LeafShower';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -35,8 +36,11 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      
+    <div className="flex flex-col min-h-screen relative">
+
+      {/* EFECTO DE HOJAS: Fixed para que se queden en pantalla al aparecer */}
+      <LeafShower />
+
       {/* HERO SECTION */}
       <div className="relative h-[600px] w-full mb-12">
         {/* Imagen de fondo con máscara de transparencia */}
