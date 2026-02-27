@@ -1,5 +1,21 @@
-import { jwtDecode } from "jwt-decode";
 import { API_URL } from "../config";
+
+// Función manual para decodificar el JWT sin depender de librerías externas
+const jwtDecode = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Error decodificando token:", e);
+    return null;
+  }
+};
+//elñhgokpjahoñgkhvlkenjhiivbohbñlkhbetlkebhphboieoh doritos reoìwef    opirfwkphbwfrikfaifghhirfg
 
 export const login = async (email, password) => {
   try {
@@ -52,18 +68,9 @@ export const register = async (userData) => {
 
 export const getProfile = async () => {
   const token = localStorage.getItem("token");
-  
-  // EVITAR EL ERROR 401: Si no hay token, no hacemos la petición
   if (!token) return null;
 
   try {
-    // Opcional: Verificar si el token está expirado antes de llamar a la API
-    const decoded = jwtDecode(token);
-    if (decoded.exp * 1000 < Date.now()) {
-      localStorage.removeItem("token");
-      return null;
-    }
-
     const response = await fetch(`${API_URL}/me`, {
       method: "GET",
       headers: {
@@ -74,7 +81,7 @@ export const getProfile = async () => {
 
     if (!response.ok) {
       if (response.status === 401) {
-        localStorage.removeItem("token");
+        logout();
         return null;
       }
       throw new Error("Error al obtener perfil");
@@ -84,8 +91,13 @@ export const getProfile = async () => {
     return { ...userData, token };
 
   } catch (error) {
-    // No logueamos el error 401 como error crítico para mantener la consola limpia
-    return null;
+    console.error("Error en getProfile:", error);
+    try {
+      const decoded = jwtDecode(token);
+      return { ...decoded, token };
+    } catch (e) {
+      return null;
+    }
   }
 };
 
@@ -96,10 +108,10 @@ export const logout = () => {
 export const getCurrentUser = () => {
   const token = localStorage.getItem("token");
   if (!token) return null;
-  
+
   try {
     const decoded = jwtDecode(token);
-    if (decoded.exp * 1000 < Date.now()) {
+    if (!decoded || (decoded.exp * 1000 < Date.now())) {
       logout();
       return null;
     }
