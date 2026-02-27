@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Button from './Button';
+import { useCart } from '../context/CartContext';
+import { updateOrderState } from '../services/orderService';
 
-const OrderDetailModal = ({ order, onClose }) => {
+const OrderDetailModal = ({ order, onClose, onOrderUpdated }) => {
+  const { addToCart } = useCart();
+
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
@@ -16,6 +20,45 @@ const OrderDetailModal = ({ order, onClose }) => {
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
+
+  const handleCancelOrder = async () => {
+    if (window.confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
+      try {
+        await updateOrderState(order.id, 'CANCELLED');
+        if (onOrderUpdated) onOrderUpdated();
+        onClose();
+      } catch (error) {
+        console.error("Error al cancelar el pedido:", error);
+        alert("No se pudo cancelar el pedido. Inténtalo de nuevo.");
+      }
+    }
+  };
+
+  const handleReorder = () => {
+    if (order.orderProducts) {
+      order.orderProducts.forEach(item => {
+        if (item.product) {
+          // Si el producto es un objeto completo, lo usamos. Si es una referencia (string), necesitariamos más info.
+          // Asumimos que item.product tiene al menos id.
+          // Si item.product es un string (IRI), extraemos el ID.
+          let productData = item.product;
+          
+          // Si item.product es solo un IRI o ID, intentamos construir un objeto mínimo
+          if (typeof item.product === 'string') {
+             const id = item.product.split('/').pop();
+             productData = { id };
+          }
+
+          addToCart(productData, item.quantity);
+        }
+      });
+      alert('Productos añadidos al carrito');
+      onClose();
+    }
+  };
+
+  const canCancel = order.state !== 'SHIPPED' && order.state !== 'COMPLETED' && order.state !== 'CANCELLED';
+  const isCompleted = order.state === 'COMPLETED';
 
   return createPortal(
     <div
@@ -77,7 +120,17 @@ const OrderDetailModal = ({ order, onClose }) => {
           </div>
         </div>
 
-        <div className="p-4 border-t border-sage-200 bg-sage-50/5 flex justify-end">
+        <div className="p-4 border-t border-sage-200 bg-sage-50/5 flex justify-end gap-2">
+          {canCancel && (
+            <Button variant="danger" onClick={handleCancelOrder} className="bg-red-600 hover:bg-red-700 text-white">
+              Cancelar Pedido
+            </Button>
+          )}
+          {isCompleted && (
+            <Button variant="primary" onClick={handleReorder}>
+              Volver a Pedir
+            </Button>
+          )}
           <Button variant="secondary" onClick={onClose}>
             Cerrar
           </Button>
