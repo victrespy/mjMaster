@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '../components/Button';
 
 const About = () => {
   return (
@@ -88,6 +89,14 @@ const About = () => {
               <cite className="text-primary font-bold">— Carlos</cite>
             </blockquote>
           </div>
+        </section>
+
+        {/* ACCESO A LA GUÍA DE ESTILOS */}
+        <section className="text-center pt-8">
+          <p className="text-gray-400 text-sm mb-4 italic">¿Eres desarrollador o diseñador? Explora nuestro sistema de diseño.</p>
+          <Button to="/style-guide" variant="outline" className="px-8 py-3">
+            Ver Guía de Estilos
+          </Button>
         </section>
 
         <footer className="text-center text-sm text-gray-500 pb-8">

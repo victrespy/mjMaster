@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import Cart from './pages/Cart';
 import UserProfile from './pages/UserProfile';
+import StyleGuide from './pages/StyleGuide';
 import NotFound from './pages/NotFound';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
@@ -19,7 +20,7 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminReviews from './pages/admin/AdminReviews';
-import SmokeEffect from './components/SmokeEffect'; // Importamos el efecto
+import SmokeEffect from './components/SmokeEffect'; 
 import './App.css';
 import usePageTitle from './hooks/usePageTitle';
 
@@ -40,11 +41,6 @@ const ProtectedRoute = ({ children }) => {
 function TitleManager() {
   const location = useLocation();
 
-  // Mapeo simple de ruta -> título
-  useEffect(() => {
-    // No usamos hooks condicionales aquí: solo delegamos al hook custom
-  }, [location]);
-
   const mapPathToTitle = (pathname) => {
     if (pathname === '/') return 'Home';
     if (pathname.startsWith('/products')) return 'Productos';
@@ -54,6 +50,7 @@ function TitleManager() {
     if (pathname.startsWith('/register')) return 'Registro';
     if (pathname.startsWith('/profile')) return 'Perfil';
     if (pathname.startsWith('/admin')) return 'Admin';
+    if (pathname.startsWith('/style-guide')) return 'Guía de Estilos';
     return '';
   };
 
@@ -109,6 +106,8 @@ function App() {
                     <Footer />
                   </>
                 } />
+
+                <Route path="/style-guide" element={<StyleGuide />} />
 
                 <Route path="/cart" element={
                   <>
