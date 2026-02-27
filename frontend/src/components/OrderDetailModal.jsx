@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import Button from './Button';
 import { useCart } from '../context/CartContext';
 import { updateOrderState } from '../services/orderService';
+import { API_BASE_URL } from '../config';
 
 const OrderDetailModal = ({ order, onClose, onOrderUpdated }) => {
   const { addToCart } = useCart();
@@ -19,6 +20,12 @@ const OrderDetailModal = ({ order, onClose, onOrderUpdated }) => {
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
+  };
+
+  const getImageUrl = (path) => {
+    if (!path) return '/products/placeholder.avif';
+    if (path.startsWith('http')) return path;
+    return `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
   const handleCancelOrder = async () => {
@@ -38,17 +45,11 @@ const OrderDetailModal = ({ order, onClose, onOrderUpdated }) => {
     if (order.orderProducts) {
       order.orderProducts.forEach(item => {
         if (item.product) {
-          // Si el producto es un objeto completo, lo usamos. Si es una referencia (string), necesitariamos más info.
-          // Asumimos que item.product tiene al menos id.
-          // Si item.product es un string (IRI), extraemos el ID.
           let productData = item.product;
-          
-          // Si item.product es solo un IRI o ID, intentamos construir un objeto mínimo
           if (typeof item.product === 'string') {
              const id = item.product.split('/').pop();
              productData = { id };
           }
-
           addToCart(productData, item.quantity);
         }
       });
@@ -83,7 +84,9 @@ const OrderDetailModal = ({ order, onClose, onOrderUpdated }) => {
             </div>
             <div>
               <p className="text-gray-400 font-bold">Estado</p>
-              <span className="px-2 py-1 bg-green-900/30 text-green-400 rounded text-xs font-bold border border-green-500/30">
+              <span className={`px-2 py-1 rounded text-xs font-bold border ${
+                order.state === 'CANCELLED' ? 'bg-red-900/30 text-red-400 border-red-500/30' : 'bg-green-900/30 text-green-400 border-green-500/30'
+              }`}>
                 {order.state}
               </span>
             </div>
@@ -99,12 +102,18 @@ const OrderDetailModal = ({ order, onClose, onOrderUpdated }) => {
             {order.orderProducts && order.orderProducts.map((item, index) => (
               <div key={index} className="flex items-center justify-between bg-sage-50/5 p-3 rounded-lg border border-sage-200/10">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-sage-200 rounded overflow-hidden flex-shrink-0">
-                    {/* Si tuviéramos la imagen del producto en orderProduct, la mostraríamos aquí */}
-                    <div className="w-full h-full bg-sage-300 flex items-center justify-center text-gray-500 text-xs">IMG</div>
+                  <div className="h-16 w-16 bg-sage-200 rounded overflow-hidden flex-shrink-0">
+                    <img 
+                      src={getImageUrl(item.product?.picture)} 
+                      alt={item.product?.name || 'Producto'} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/products/placeholder.avif';
+                      }}
+                    />
                   </div>
                   <div>
-                    {/* Accedemos al nombre del producto si está disponible, o mostramos ID */}
                     <p className="font-bold text-gray-200">
                       {item.product ? (item.product.name || `Producto #${item.product.id || item.product.split('/').pop()}`) : 'Producto eliminado'}
                     </p>

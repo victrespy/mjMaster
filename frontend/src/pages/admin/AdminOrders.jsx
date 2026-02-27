@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getOrders, updateOrderState } from '../../services/orderService';
 import AdminTable from '../../components/admin/AdminTable';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import OrderDetailModal from '../../components/OrderDetailModal';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,6 +12,9 @@ const AdminOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 7;
+
+  // Estado para detalle de pedido
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     loadOrders(currentPage);
@@ -38,6 +42,14 @@ const AdminOrders = () => {
         alert('Error al actualizar estado');
       }
     }
+  };
+
+  const handleViewOrder = (order) => {
+    setSelectedOrder(order);
+  };
+
+  const handleOrderUpdated = () => {
+    loadOrders(currentPage);
   };
 
   const columns = [
@@ -90,6 +102,18 @@ const AdminOrders = () => {
         );
       }
     },
+    {
+      header: 'Desglosar',
+      render: (order) => (
+        <button 
+          onClick={() => handleViewOrder(order)}
+          className="text-primary hover:text-white text-sm font-medium transition-colors flex items-center gap-1"
+        >
+
+          Ver Detalles
+        </button>
+      )
+    }
   ];
 
   return (
@@ -111,8 +135,8 @@ const AdminOrders = () => {
           </div>
         )}
         actions={(order) => (
-          <div className="flex gap-2">
-            {order.state !== 'COMPLETED' && order.state !== 'CANCELLED' && (
+          <div className="flex items-center">
+            {order.state !== 'COMPLETED' && order.state !== 'CANCELLED' ? (
               <select 
                 className="bg-dark-bg border border-sage-200/30 rounded text-xs text-gray-300 p-1 outline-none focus:border-primary"
                 value=""
@@ -124,10 +148,21 @@ const AdminOrders = () => {
                 <option value="COMPLETED">COMPLETADO</option>
                 <option value="CANCELLED">CANCELADO</option>
               </select>
+            ) : (
+              <span className="text-xs text-gray-500 italic">Sin acciones</span>
             )}
           </div>
         )}
       />
+
+      {/* Modal de Detalle de Pedido */}
+      {selectedOrder && (
+        <OrderDetailModal 
+          order={selectedOrder} 
+          onClose={() => setSelectedOrder(null)}
+          onOrderUpdated={handleOrderUpdated}
+        />
+      )}
     </div>
   );
 };
