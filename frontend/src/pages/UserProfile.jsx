@@ -73,6 +73,10 @@ const UserProfile = () => {
     setSelectedOrder(order);
   };
 
+  const handleOrderUpdated = () => {
+    loadOrders();
+  };
+
   const orderColumns = [
     { 
       header: 'ID Pedido', 
@@ -295,7 +299,8 @@ const UserProfile = () => {
       {selectedOrder && (
         <OrderDetailModal 
           order={selectedOrder} 
-          onClose={() => setSelectedOrder(null)} 
+          onClose={() => setSelectedOrder(null)}
+          onOrderUpdated={handleOrderUpdated}
         />
       )}
     </div>
