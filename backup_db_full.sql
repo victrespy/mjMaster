@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict jKn7t09WW5MiLZnJauLtfWJX9LIt25YtXnrgQj0aSHIk6UtcdTfFwY3E0FvgPW3
+\restrict TUOg8ICZeI9DkJjvyXQu1T5oyNTeT7UDfaJ3grYCtkh8QqUTsu7QHHvnPPHMGMv
 
--- Dumped from database version 15.15
--- Dumped by pg_dump version 15.15
+-- Dumped from database version 15.16
+-- Dumped by pg_dump version 15.16
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -331,7 +331,7 @@ COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) 
 26	98.00	SHIPPED	2026-02-25 09:15:22	\N	f	10
 27	38.00	PENDING	2026-02-25 09:15:22	\N	f	10
 28	161.00	PAID	2026-02-25 09:15:22	\N	f	10
-29	125.00	PENDING	2026-02-25 09:42:23	\N	f	9
+29	125.00	CANCELLED	2026-02-25 09:42:23	\N	f	9
 \.
 
 
@@ -340,99 +340,93 @@ COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) 
 --
 
 COPY public.products (id, name, description, price, stock, picture, created_at, deleted_at, deleted, category_id) FROM stdin;
-96	Amnesia Haze (3 uds)	Semillas feminizadas de alta calidad con sabor cítrico.	25.50	100	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-97	Northern Lights Auto (5 uds)	Variedad autofloreciente clásica, ideal para principiantes.	35.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-98	OG Kush Feminizada	La leyenda californiana, potente y resinosa.	28.00	80	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-99	Semillas Genérico #4	Descripción del producto genérico de la categoría Semillas.	32.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
 100	Semillas Genérico #5	Descripción del producto genérico de la categoría Semillas.	73.00	49	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
 101	Semillas Genérico #6	Descripción del producto genérico de la categoría Semillas.	91.00	16	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
 102	Semillas Genérico #7	Descripción del producto genérico de la categoría Semillas.	22.00	25	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
 103	Semillas Genérico #8	Descripción del producto genérico de la categoría Semillas.	11.00	5	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
 104	Semillas Genérico #9	Descripción del producto genérico de la categoría Semillas.	74.00	0	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
 105	Semillas Genérico #10	Descripción del producto genérico de la categoría Semillas.	34.00	36	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-106	Armario de Cultivo 100x100	Armario robusto y reflectante para interior.	120.00	20	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-107	Maceta Textil 11L	Mejora la aireación de las raíces.	4.50	150	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-108	Tijeras de Poda Curvas	Precisión para manicurado.	12.90	60	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-109	Cultivo Genérico #4	Descripción del producto genérico de la categoría Cultivo.	75.00	29	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
 110	Cultivo Genérico #5	Descripción del producto genérico de la categoría Cultivo.	50.00	16	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
 111	Cultivo Genérico #6	Descripción del producto genérico de la categoría Cultivo.	12.00	47	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
 112	Cultivo Genérico #7	Descripción del producto genérico de la categoría Cultivo.	11.00	9	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
 113	Cultivo Genérico #8	Descripción del producto genérico de la categoría Cultivo.	51.00	46	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
 114	Cultivo Genérico #9	Descripción del producto genérico de la categoría Cultivo.	69.00	28	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
 115	Cultivo Genérico #10	Descripción del producto genérico de la categoría Cultivo.	70.00	22	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-116	Bong de Vidrio 30cm	Bong de borosilicato resistente con percolador.	45.90	15	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-117	Grinder Metálico 4 partes	Grinder de aluminio con polinizador y espátula.	12.00	200	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-118	Papel Raw King Size	Papel de liar natural sin blanquear.	1.50	500	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-119	Parafernalia Genérico #4	Descripción del producto genérico de la categoría Parafernalia.	93.00	42	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
 120	Parafernalia Genérico #5	Descripción del producto genérico de la categoría Parafernalia.	73.00	9	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
 121	Parafernalia Genérico #6	Descripción del producto genérico de la categoría Parafernalia.	33.00	39	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
 122	Parafernalia Genérico #7	Descripción del producto genérico de la categoría Parafernalia.	90.00	41	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
 123	Parafernalia Genérico #8	Descripción del producto genérico de la categoría Parafernalia.	73.00	1	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
 124	Parafernalia Genérico #9	Descripción del producto genérico de la categoría Parafernalia.	17.00	7	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
 125	Parafernalia Genérico #10	Descripción del producto genérico de la categoría Parafernalia.	83.00	10	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-126	Panel LED 200W Full Spectrum	Iluminación eficiente para crecimiento y floración.	180.00	10	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-127	Bombilla HPS 600W	Clásica bombilla de sodio para floración explosiva.	35.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-128	Temporizador Analógico	Controla tus ciclos de luz fácilmente.	6.50	100	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-129	Iluminación Genérico #4	Descripción del producto genérico de la categoría Iluminación.	11.00	19	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 130	Iluminación Genérico #5	Descripción del producto genérico de la categoría Iluminación.	60.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 131	Iluminación Genérico #6	Descripción del producto genérico de la categoría Iluminación.	52.00	0	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 132	Iluminación Genérico #7	Descripción del producto genérico de la categoría Iluminación.	24.00	36	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 133	Iluminación Genérico #8	Descripción del producto genérico de la categoría Iluminación.	96.00	14	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 134	Iluminación Genérico #9	Descripción del producto genérico de la categoría Iluminación.	6.00	6	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 135	Iluminación Genérico #10	Descripción del producto genérico de la categoría Iluminación.	88.00	35	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-136	Kit Fertilizantes Orgánicos	Pack completo para crecimiento y floración.	29.95	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-137	Estimulador de Raíces 500ml	Potencia el sistema radicular.	15.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-138	PK 13/14 1L	Potenciador de floración mineral.	12.50	45	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-139	Fertilizantes Genérico #4	Descripción del producto genérico de la categoría Fertilizantes.	65.00	16	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
+97	Northern Lights Auto (5 uds)	Variedad autofloreciente clásica, ideal para principiantes.	35.00	50	/products/69a1571934057.webp	2026-02-27 08:34:34	\N	f	13
+98	OG Kush Feminizada	La leyenda californiana, potente y resinosa.	28.00	80	/products/69a1573b4a213.jpg	2026-02-27 08:35:08	\N	f	13
+99	Semillas Genérico #4	Descripción del producto genérico de la categoría Semillas.	32.00	18	/products/69a1575fee7a9.webp	2026-02-27 08:35:45	\N	f	13
+106	Armario de Cultivo 100x100	Armario robusto y reflectante para interior.	120.00	20	/products/69a1578d69ddb.webp	2026-02-27 08:36:31	\N	f	14
+107	Maceta Textil 11L	Mejora la aireación de las raíces.	4.50	150	/products/69a157ab442f3.jpg	2026-02-27 08:37:00	\N	f	14
+108	Tijeras de Poda Curvas	Precisión para manicurado.	12.90	60	/products/69a157fbe86c7.webp	2026-02-27 08:38:21	\N	f	14
+109	Cultivo Genérico #4	Descripción del producto genérico de la categoría Cultivo.	75.00	29	/products/69a158206d096.jpg	2026-02-27 08:38:57	\N	f	14
+116	Bong de Vidrio 30cm	Bong de borosilicato resistente con percolador.	45.90	15	/products/69a1584b3be61.jpg	2026-02-27 08:39:41	\N	f	15
+117	Grinder Metálico 4 partes	Grinder de aluminio con polinizador y espátula.	12.00	200	/products/69a1587df2a7f.webp	2026-02-27 08:40:31	\N	f	15
+118	Papel Raw King Size	Papel de liar natural sin blanquear.	1.50	500	/products/69a158c471035.jpg	2026-02-27 08:41:41	\N	f	15
+119	Parafernalia Genérico #4	Descripción del producto genérico de la categoría Parafernalia.	93.00	42	/products/69a158ec19813.jpg	2026-02-27 08:42:21	\N	f	15
+126	Panel LED 200W Full Spectrum	Iluminación eficiente para crecimiento y floración.	180.00	10	/products/69a15927a4fad.jpg	2026-02-27 08:43:20	\N	f	16
+127	Bombilla HPS 600W	Clásica bombilla de sodio para floración explosiva.	35.00	40	/products/69a15959cbd8b.webp	2026-02-27 08:44:10	\N	f	16
+128	Temporizador Analógico	Controla tus ciclos de luz fácilmente.	6.50	100	/products/69a1597a87bc6.webp	2026-02-27 08:44:43	\N	f	16
+129	Iluminación Genérico #4	Descripción del producto genérico de la categoría Iluminación.	11.00	19	/products/69a1599ed27a5.jpg	2026-02-27 08:45:20	\N	f	16
+136	Kit Fertilizantes Orgánicos	Pack completo para crecimiento y floración.	29.95	30	/products/69a159f6c00bd.webp	2026-02-27 08:46:48	\N	f	17
+137	Estimulador de Raíces 500ml	Potencia el sistema radicular.	15.00	50	/products/69a15a1343407.jpg	2026-02-27 08:47:16	\N	f	17
 140	Fertilizantes Genérico #5	Descripción del producto genérico de la categoría Fertilizantes.	42.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
 141	Fertilizantes Genérico #6	Descripción del producto genérico de la categoría Fertilizantes.	88.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
 142	Fertilizantes Genérico #7	Descripción del producto genérico de la categoría Fertilizantes.	13.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
 143	Fertilizantes Genérico #8	Descripción del producto genérico de la categoría Fertilizantes.	93.00	28	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
 144	Fertilizantes Genérico #9	Descripción del producto genérico de la categoría Fertilizantes.	25.00	49	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
 145	Fertilizantes Genérico #10	Descripción del producto genérico de la categoría Fertilizantes.	22.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-146	Sustrato All Mix 50L	Tierra pre-abonada de alta calidad.	18.50	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-147	Coco Mix 50L	Fibra de coco lavada y tamponada.	14.00	35	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-148	Perlita 10L	Mejora el drenaje y la aireación.	5.00	80	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-149	Sustratos Genérico #4	Descripción del producto genérico de la categoría Sustratos.	53.00	46	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
 150	Sustratos Genérico #5	Descripción del producto genérico de la categoría Sustratos.	77.00	41	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
 151	Sustratos Genérico #6	Descripción del producto genérico de la categoría Sustratos.	72.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
 152	Sustratos Genérico #7	Descripción del producto genérico de la categoría Sustratos.	73.00	9	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
 153	Sustratos Genérico #8	Descripción del producto genérico de la categoría Sustratos.	83.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
 154	Sustratos Genérico #9	Descripción del producto genérico de la categoría Sustratos.	37.00	44	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
 155	Sustratos Genérico #10	Descripción del producto genérico de la categoría Sustratos.	38.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-157	Filtro de Carbón Antiolor	Elimina olores indeseados eficazmente.	45.00	20	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-158	Termohigrómetro Digital	Mide temperatura y humedad con precisión.	10.00	100	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-159	Control de Clima Genérico #4	Descripción del producto genérico de la categoría Control de Clima.	46.00	15	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 160	Control de Clima Genérico #5	Descripción del producto genérico de la categoría Control de Clima.	51.00	26	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 161	Control de Clima Genérico #6	Descripción del producto genérico de la categoría Control de Clima.	80.00	32	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 162	Control de Clima Genérico #7	Descripción del producto genérico de la categoría Control de Clima.	99.00	41	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 163	Control de Clima Genérico #8	Descripción del producto genérico de la categoría Control de Clima.	62.00	6	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 164	Control de Clima Genérico #9	Descripción del producto genérico de la categoría Control de Clima.	68.00	25	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 165	Control de Clima Genérico #10	Descripción del producto genérico de la categoría Control de Clima.	81.00	47	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-166	Malla de Secado 8 pisos	Seca tu cosecha en poco espacio.	18.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-167	Microscopio 60x LED	Controla la maduración de los tricomas.	8.50	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-168	Botes de Curado Herméticos	Conserva tus flores en perfecto estado.	12.00	60	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
 169	Cosecha y Secado Genérico #4	Descripción del producto genérico de la categoría Cosecha y Secado.	21.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-156	Extractor en Línea 125mm	Ventilación básica para armarios pequeños.	25.00	20	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
 170	Cosecha y Secado Genérico #5	Descripción del producto genérico de la categoría Cosecha y Secado.	80.00	24	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
 171	Cosecha y Secado Genérico #6	Descripción del producto genérico de la categoría Cosecha y Secado.	66.00	28	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
 172	Cosecha y Secado Genérico #7	Descripción del producto genérico de la categoría Cosecha y Secado.	21.00	1	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
 173	Cosecha y Secado Genérico #8	Descripción del producto genérico de la categoría Cosecha y Secado.	68.00	5	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
 174	Cosecha y Secado Genérico #9	Descripción del producto genérico de la categoría Cosecha y Secado.	81.00	3	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
 175	Cosecha y Secado Genérico #10	Descripción del producto genérico de la categoría Cosecha y Secado.	86.00	15	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-176	Vaporizador Portátil Pro	Vaporización por convección, sabor puro.	99.00	15	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-177	Vaporizador de Mesa	Potencia y precisión para sesiones largas.	250.00	5	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-178	Bolsas de Recambio	Pack de 5 bolsas para vaporizador.	15.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
 179	Vaporizadores Genérico #4	Descripción del producto genérico de la categoría Vaporizadores.	15.00	46	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
+146	Sustrato All Mix 50L	Tierra pre-abonada de alta calidad.	18.50	40	/products/69a15a8fdd109.jpg	2026-02-27 08:49:20	\N	f	18
+147	Coco Mix 50L	Fibra de coco lavada y tamponada.	14.00	35	/products/69a15aa6658ee.png	2026-02-27 08:49:43	\N	f	18
+148	Perlita 10L	Mejora el drenaje y la aireación.	5.00	80	/products/69a15ac3c035f.webp	2026-02-27 08:50:12	\N	f	18
+149	Sustratos Genérico #4	Descripción del producto genérico de la categoría Sustratos.	53.00	46	/products/69a15aefdc6fd.jpg	2026-02-27 08:50:57	\N	f	18
+156	Extractor en Línea 125mm	Ventilación básica para armarios pequeños.	25.00	20	/products/69a15b0eb18cf.jpg	2026-02-27 08:51:27	\N	f	19
+157	Filtro de Carbón Antiolor	Elimina olores indeseados eficazmente.	45.00	20	/products/69a15b2e7b034.jpg	2026-02-27 08:51:59	\N	f	19
+158	Termohigrómetro Digital	Mide temperatura y humedad con precisión.	10.00	100	/products/69a15b522bd2a.jpg	2026-02-27 08:52:35	\N	f	19
+159	Control de Clima Genérico #4	Descripción del producto genérico de la categoría Control de Clima.	46.00	15	/products/69a15d874d4d1.jpg	2026-02-27 09:02:00	\N	f	19
+166	Malla de Secado 8 pisos	Seca tu cosecha en poco espacio.	18.00	30	/products/69a15da6813e7.jpg	2026-02-27 09:02:32	\N	f	20
+167	Microscopio 60x LED	Controla la maduración de los tricomas.	8.50	50	/products/69a15dc49b3b2.jpg	2026-02-27 09:03:01	\N	f	20
+168	Botes de Curado Herméticos	Conserva tus flores en perfecto estado.	12.00	60	/products/69a15de700fc2.jpg	2026-02-27 09:03:36	\N	f	20
+176	Vaporizador Portátil Pro	Vaporización por convección, sabor puro.	99.00	15	/products/69a15e0e219f4.jpg	2026-02-27 09:04:15	\N	f	21
+177	Vaporizador de Mesa	Potencia y precisión para sesiones largas.	250.00	5	/products/69a15e2667a60.webp	2026-02-27 09:04:39	\N	f	21
+178	Bolsas de Recambio	Pack de 5 bolsas para vaporizador.	15.00	40	/products/69a15e40198d1.jpg	2026-02-27 09:05:05	\N	f	21
 180	Vaporizadores Genérico #5	Descripción del producto genérico de la categoría Vaporizadores.	46.00	6	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
 181	Vaporizadores Genérico #6	Descripción del producto genérico de la categoría Vaporizadores.	33.00	1	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
 182	Vaporizadores Genérico #7	Descripción del producto genérico de la categoría Vaporizadores.	40.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
 183	Vaporizadores Genérico #8	Descripción del producto genérico de la categoría Vaporizadores.	84.00	26	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
 184	Vaporizadores Genérico #9	Descripción del producto genérico de la categoría Vaporizadores.	24.00	36	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
 185	Vaporizadores Genérico #10	Descripción del producto genérico de la categoría Vaporizadores.	86.00	0	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-186	Aceite CBD 10% 10ml	Aceite Full Spectrum de alta calidad.	35.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-187	Crema Alivio Muscular CBD	Bálsamo recuperador con efecto frío/calor.	22.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-188	Flores CBD Amnesia 2g	Cogollos aromáticos sin THC.	10.00	100	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
 189	CBD y Cosmética Genérico #4	Descripción del producto genérico de la categoría CBD y Cosmética.	50.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
 190	CBD y Cosmética Genérico #5	Descripción del producto genérico de la categoría CBD y Cosmética.	13.00	37	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
 191	CBD y Cosmética Genérico #6	Descripción del producto genérico de la categoría CBD y Cosmética.	56.00	14	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
@@ -440,6 +434,12 @@ COPY public.products (id, name, description, price, stock, picture, created_at, 
 193	CBD y Cosmética Genérico #8	Descripción del producto genérico de la categoría CBD y Cosmética.	30.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
 194	CBD y Cosmética Genérico #9	Descripción del producto genérico de la categoría CBD y Cosmética.	79.00	22	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
 195	CBD y Cosmética Genérico #10	Descripción del producto genérico de la categoría CBD y Cosmética.	17.00	22	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
+96	Amnesia Haze (3 uds)	Semillas feminizadas de alta calidad con sabor cítrico.	25.50	100	/products/69a156e4646d7.jpg	2026-02-27 08:33:44	\N	f	13
+138	PK 13/14 1L	Potenciador de floración mineral.	12.50	45	/products/69a15a3014080.jpg	2026-02-27 08:47:45	\N	f	17
+139	Fertilizantes Genérico #4	Descripción del producto genérico de la categoría Fertilizantes.	65.00	16	/products/69a15a51c1326.webp	2026-02-27 08:48:19	\N	f	17
+186	Aceite CBD 10% 10ml	Aceite Full Spectrum de alta calidad.	35.00	50	/products/69a15e5c07d15.jpg	2026-02-27 09:05:32	\N	f	22
+187	Crema Alivio Muscular CBD	Bálsamo recuperador con efecto frío/calor.	22.00	30	/products/69a15e772d3f8.jpg	2026-02-27 09:06:03	\N	f	22
+188	Flores CBD Amnesia 2g	Cogollos aromáticos sin THC.	10.00	100	/products/69a15e8f5b93c.png	2026-02-27 09:06:38	\N	f	22
 \.
 
 
@@ -727,5 +727,5 @@ ALTER TABLE ONLY public.orders
 -- PostgreSQL database dump complete
 --
 
-\unrestrict jKn7t09WW5MiLZnJauLtfWJX9LIt25YtXnrgQj0aSHIk6UtcdTfFwY3E0FvgPW3
+\unrestrict TUOg8ICZeI9DkJjvyXQu1T5oyNTeT7UDfaJ3grYCtkh8QqUTsu7QHHvnPPHMGMv
 
