@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict yHa5xqdCeJu1kea5di3LEH4MsnZDs3WBy8Q88sneCylhcpUGN8Yqo23IYeB2HTi
+\restrict XDgvPWKYjUTyBKZ5haoYoNbqXLoMQvFQ2fnw6AFrj6AERVSfo9UBG172ffbHCOK
 
 -- Dumped from database version 15.15
 -- Dumped by pg_dump version 15.15
@@ -312,6 +312,7 @@ COPY public.order_products (id, quantity, unit_price, created_at, deleted_at, de
 31	2	10.00	2026-02-25 09:15:22	\N	f	27	129
 32	2	10.00	2026-02-25 09:15:22	\N	f	28	167
 33	5	25.00	2026-02-25 09:42:23	\N	f	29	156
+34	4	35.00	2026-02-27 10:28:07	\N	f	30	97
 \.
 
 
@@ -332,6 +333,7 @@ COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) 
 27	38.00	PENDING	2026-02-25 09:15:22	\N	f	10
 28	161.00	PAID	2026-02-25 09:15:22	\N	f	10
 29	125.00	CANCELLED	2026-02-25 09:42:23	\N	f	9
+30	140.00	PENDING	2026-02-27 10:28:07	\N	f	9
 \.
 
 
@@ -340,7 +342,6 @@ COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) 
 --
 
 COPY public.products (id, name, description, price, stock, picture, created_at, deleted_at, deleted, category_id) FROM stdin;
-97	Northern Lights Auto (5 uds)	Variedad autofloreciente clásica, ideal para principiantes.	35.00	50	/products/69a1571934057.webp	2026-02-27 08:34:34	\N	f	13
 98	OG Kush Feminizada	La leyenda californiana, potente y resinosa.	28.00	80	/products/69a1573b4a213.jpg	2026-02-27 08:35:08	\N	f	13
 99	Semillas Genérico #4	Descripción del producto genérico de la categoría Semillas.	32.00	18	/products/69a1575fee7a9.webp	2026-02-27 08:35:45	\N	f	13
 106	Armario de Cultivo 100x100	Armario robusto y reflectante para interior.	120.00	20	/products/69a1578d69ddb.webp	2026-02-27 08:36:31	\N	f	14
@@ -380,6 +381,7 @@ COPY public.products (id, name, description, price, stock, picture, created_at, 
 134	Iluminación Genérico #9	Descripción del producto genérico de la categoría Iluminación.	6.00	6	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:37	t	16
 135	Iluminación Genérico #10	Descripción del producto genérico de la categoría Iluminación.	88.00	35	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:39	t	16
 140	Fertilizantes Genérico #5	Descripción del producto genérico de la categoría Fertilizantes.	42.00	40	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:36	t	17
+97	Northern Lights Auto (5 uds)	Variedad autofloreciente clásica, ideal para principiantes.	35.00	46	/products/69a1571934057.webp	2026-02-27 08:34:34	\N	f	13
 146	Sustrato All Mix 50L	Tierra pre-abonada de alta calidad.	18.50	40	/products/69a15a8fdd109.jpg	2026-02-27 08:49:20	\N	f	18
 147	Coco Mix 50L	Fibra de coco lavada y tamponada.	14.00	35	/products/69a15aa6658ee.png	2026-02-27 08:49:43	\N	f	18
 148	Perlita 10L	Mejora el drenaje y la aireación.	5.00	80	/products/69a15ac3c035f.webp	2026-02-27 08:50:12	\N	f	18
@@ -510,14 +512,14 @@ SELECT pg_catalog.setval('public.messenger_messages_id_seq', 1, false);
 -- Name: order_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_user
 --
 
-SELECT pg_catalog.setval('public.order_products_id_seq', 33, true);
+SELECT pg_catalog.setval('public.order_products_id_seq', 34, true);
 
 
 --
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_user
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 29, true);
+SELECT pg_catalog.setval('public.orders_id_seq', 30, true);
 
 
 --
@@ -727,5 +729,5 @@ ALTER TABLE ONLY public.orders
 -- PostgreSQL database dump complete
 --
 
-\unrestrict yHa5xqdCeJu1kea5di3LEH4MsnZDs3WBy8Q88sneCylhcpUGN8Yqo23IYeB2HTi
+\unrestrict XDgvPWKYjUTyBKZ5haoYoNbqXLoMQvFQ2fnw6AFrj6AERVSfo9UBG172ffbHCOK
 
