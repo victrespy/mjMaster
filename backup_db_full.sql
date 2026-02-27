@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict TUOg8ICZeI9DkJjvyXQu1T5oyNTeT7UDfaJ3grYCtkh8QqUTsu7QHHvnPPHMGMv
+\restrict yHa5xqdCeJu1kea5di3LEH4MsnZDs3WBy8Q88sneCylhcpUGN8Yqo23IYeB2HTi
 
--- Dumped from database version 15.16
--- Dumped by pg_dump version 15.16
+-- Dumped from database version 15.15
+-- Dumped by pg_dump version 15.15
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -340,30 +340,6 @@ COPY public.orders (id, total, state, created_at, deleted_at, deleted, user_id) 
 --
 
 COPY public.products (id, name, description, price, stock, picture, created_at, deleted_at, deleted, category_id) FROM stdin;
-100	Semillas Genérico #5	Descripción del producto genérico de la categoría Semillas.	73.00	49	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-101	Semillas Genérico #6	Descripción del producto genérico de la categoría Semillas.	91.00	16	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-102	Semillas Genérico #7	Descripción del producto genérico de la categoría Semillas.	22.00	25	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-103	Semillas Genérico #8	Descripción del producto genérico de la categoría Semillas.	11.00	5	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-104	Semillas Genérico #9	Descripción del producto genérico de la categoría Semillas.	74.00	0	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-105	Semillas Genérico #10	Descripción del producto genérico de la categoría Semillas.	34.00	36	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	13
-110	Cultivo Genérico #5	Descripción del producto genérico de la categoría Cultivo.	50.00	16	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-111	Cultivo Genérico #6	Descripción del producto genérico de la categoría Cultivo.	12.00	47	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-112	Cultivo Genérico #7	Descripción del producto genérico de la categoría Cultivo.	11.00	9	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-113	Cultivo Genérico #8	Descripción del producto genérico de la categoría Cultivo.	51.00	46	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-114	Cultivo Genérico #9	Descripción del producto genérico de la categoría Cultivo.	69.00	28	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-115	Cultivo Genérico #10	Descripción del producto genérico de la categoría Cultivo.	70.00	22	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	14
-120	Parafernalia Genérico #5	Descripción del producto genérico de la categoría Parafernalia.	73.00	9	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-121	Parafernalia Genérico #6	Descripción del producto genérico de la categoría Parafernalia.	33.00	39	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-122	Parafernalia Genérico #7	Descripción del producto genérico de la categoría Parafernalia.	90.00	41	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-123	Parafernalia Genérico #8	Descripción del producto genérico de la categoría Parafernalia.	73.00	1	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-124	Parafernalia Genérico #9	Descripción del producto genérico de la categoría Parafernalia.	17.00	7	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-125	Parafernalia Genérico #10	Descripción del producto genérico de la categoría Parafernalia.	83.00	10	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	15
-130	Iluminación Genérico #5	Descripción del producto genérico de la categoría Iluminación.	60.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-131	Iluminación Genérico #6	Descripción del producto genérico de la categoría Iluminación.	52.00	0	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-132	Iluminación Genérico #7	Descripción del producto genérico de la categoría Iluminación.	24.00	36	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-133	Iluminación Genérico #8	Descripción del producto genérico de la categoría Iluminación.	96.00	14	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-134	Iluminación Genérico #9	Descripción del producto genérico de la categoría Iluminación.	6.00	6	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
-135	Iluminación Genérico #10	Descripción del producto genérico de la categoría Iluminación.	88.00	35	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	16
 97	Northern Lights Auto (5 uds)	Variedad autofloreciente clásica, ideal para principiantes.	35.00	50	/products/69a1571934057.webp	2026-02-27 08:34:34	\N	f	13
 98	OG Kush Feminizada	La leyenda californiana, potente y resinosa.	28.00	80	/products/69a1573b4a213.jpg	2026-02-27 08:35:08	\N	f	13
 99	Semillas Genérico #4	Descripción del producto genérico de la categoría Semillas.	32.00	18	/products/69a1575fee7a9.webp	2026-02-27 08:35:45	\N	f	13
@@ -381,32 +357,29 @@ COPY public.products (id, name, description, price, stock, picture, created_at, 
 129	Iluminación Genérico #4	Descripción del producto genérico de la categoría Iluminación.	11.00	19	/products/69a1599ed27a5.jpg	2026-02-27 08:45:20	\N	f	16
 136	Kit Fertilizantes Orgánicos	Pack completo para crecimiento y floración.	29.95	30	/products/69a159f6c00bd.webp	2026-02-27 08:46:48	\N	f	17
 137	Estimulador de Raíces 500ml	Potencia el sistema radicular.	15.00	50	/products/69a15a1343407.jpg	2026-02-27 08:47:16	\N	f	17
-140	Fertilizantes Genérico #5	Descripción del producto genérico de la categoría Fertilizantes.	42.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-141	Fertilizantes Genérico #6	Descripción del producto genérico de la categoría Fertilizantes.	88.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-142	Fertilizantes Genérico #7	Descripción del producto genérico de la categoría Fertilizantes.	13.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-143	Fertilizantes Genérico #8	Descripción del producto genérico de la categoría Fertilizantes.	93.00	28	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-144	Fertilizantes Genérico #9	Descripción del producto genérico de la categoría Fertilizantes.	25.00	49	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-145	Fertilizantes Genérico #10	Descripción del producto genérico de la categoría Fertilizantes.	22.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	17
-150	Sustratos Genérico #5	Descripción del producto genérico de la categoría Sustratos.	77.00	41	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-151	Sustratos Genérico #6	Descripción del producto genérico de la categoría Sustratos.	72.00	40	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-152	Sustratos Genérico #7	Descripción del producto genérico de la categoría Sustratos.	73.00	9	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-153	Sustratos Genérico #8	Descripción del producto genérico de la categoría Sustratos.	83.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-154	Sustratos Genérico #9	Descripción del producto genérico de la categoría Sustratos.	37.00	44	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-155	Sustratos Genérico #10	Descripción del producto genérico de la categoría Sustratos.	38.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	18
-160	Control de Clima Genérico #5	Descripción del producto genérico de la categoría Control de Clima.	51.00	26	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-161	Control de Clima Genérico #6	Descripción del producto genérico de la categoría Control de Clima.	80.00	32	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-162	Control de Clima Genérico #7	Descripción del producto genérico de la categoría Control de Clima.	99.00	41	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-163	Control de Clima Genérico #8	Descripción del producto genérico de la categoría Control de Clima.	62.00	6	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-164	Control de Clima Genérico #9	Descripción del producto genérico de la categoría Control de Clima.	68.00	25	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-165	Control de Clima Genérico #10	Descripción del producto genérico de la categoría Control de Clima.	81.00	47	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	19
-169	Cosecha y Secado Genérico #4	Descripción del producto genérico de la categoría Cosecha y Secado.	21.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-170	Cosecha y Secado Genérico #5	Descripción del producto genérico de la categoría Cosecha y Secado.	80.00	24	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-171	Cosecha y Secado Genérico #6	Descripción del producto genérico de la categoría Cosecha y Secado.	66.00	28	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-172	Cosecha y Secado Genérico #7	Descripción del producto genérico de la categoría Cosecha y Secado.	21.00	1	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-173	Cosecha y Secado Genérico #8	Descripción del producto genérico de la categoría Cosecha y Secado.	68.00	5	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-174	Cosecha y Secado Genérico #9	Descripción del producto genérico de la categoría Cosecha y Secado.	81.00	3	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-175	Cosecha y Secado Genérico #10	Descripción del producto genérico de la categoría Cosecha y Secado.	86.00	15	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	20
-179	Vaporizadores Genérico #4	Descripción del producto genérico de la categoría Vaporizadores.	15.00	46	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
+101	Semillas Genérico #6	Descripción del producto genérico de la categoría Semillas.	91.00	16	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:20:54	t	13
+102	Semillas Genérico #7	Descripción del producto genérico de la categoría Semillas.	22.00	25	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:20:56	t	13
+103	Semillas Genérico #8	Descripción del producto genérico de la categoría Semillas.	11.00	5	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:20:58	t	13
+104	Semillas Genérico #9	Descripción del producto genérico de la categoría Semillas.	74.00	0	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:20:59	t	13
+105	Semillas Genérico #10	Descripción del producto genérico de la categoría Semillas.	34.00	36	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:01	t	13
+110	Cultivo Genérico #5	Descripción del producto genérico de la categoría Cultivo.	50.00	16	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:07	t	14
+111	Cultivo Genérico #6	Descripción del producto genérico de la categoría Cultivo.	12.00	47	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:08	t	14
+112	Cultivo Genérico #7	Descripción del producto genérico de la categoría Cultivo.	11.00	9	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:10	t	14
+113	Cultivo Genérico #8	Descripción del producto genérico de la categoría Cultivo.	51.00	46	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:11	t	14
+114	Cultivo Genérico #9	Descripción del producto genérico de la categoría Cultivo.	69.00	28	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:13	t	14
+115	Cultivo Genérico #10	Descripción del producto genérico de la categoría Cultivo.	70.00	22	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:14	t	14
+120	Parafernalia Genérico #5	Descripción del producto genérico de la categoría Parafernalia.	73.00	9	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:16	t	15
+121	Parafernalia Genérico #6	Descripción del producto genérico de la categoría Parafernalia.	33.00	39	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:18	t	15
+122	Parafernalia Genérico #7	Descripción del producto genérico de la categoría Parafernalia.	90.00	41	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:20	t	15
+123	Parafernalia Genérico #8	Descripción del producto genérico de la categoría Parafernalia.	73.00	1	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:21	t	15
+124	Parafernalia Genérico #9	Descripción del producto genérico de la categoría Parafernalia.	17.00	7	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:23	t	15
+130	Iluminación Genérico #5	Descripción del producto genérico de la categoría Iluminación.	60.00	50	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:32	t	16
+131	Iluminación Genérico #6	Descripción del producto genérico de la categoría Iluminación.	52.00	0	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:34	t	16
+132	Iluminación Genérico #7	Descripción del producto genérico de la categoría Iluminación.	24.00	36	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:35	t	16
+133	Iluminación Genérico #8	Descripción del producto genérico de la categoría Iluminación.	96.00	14	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:36	t	16
+134	Iluminación Genérico #9	Descripción del producto genérico de la categoría Iluminación.	6.00	6	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:37	t	16
+135	Iluminación Genérico #10	Descripción del producto genérico de la categoría Iluminación.	88.00	35	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:39	t	16
+140	Fertilizantes Genérico #5	Descripción del producto genérico de la categoría Fertilizantes.	42.00	40	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:36	t	17
 146	Sustrato All Mix 50L	Tierra pre-abonada de alta calidad.	18.50	40	/products/69a15a8fdd109.jpg	2026-02-27 08:49:20	\N	f	18
 147	Coco Mix 50L	Fibra de coco lavada y tamponada.	14.00	35	/products/69a15aa6658ee.png	2026-02-27 08:49:43	\N	f	18
 148	Perlita 10L	Mejora el drenaje y la aireación.	5.00	80	/products/69a15ac3c035f.webp	2026-02-27 08:50:12	\N	f	18
@@ -421,25 +394,52 @@ COPY public.products (id, name, description, price, stock, picture, created_at, 
 176	Vaporizador Portátil Pro	Vaporización por convección, sabor puro.	99.00	15	/products/69a15e0e219f4.jpg	2026-02-27 09:04:15	\N	f	21
 177	Vaporizador de Mesa	Potencia y precisión para sesiones largas.	250.00	5	/products/69a15e2667a60.webp	2026-02-27 09:04:39	\N	f	21
 178	Bolsas de Recambio	Pack de 5 bolsas para vaporizador.	15.00	40	/products/69a15e40198d1.jpg	2026-02-27 09:05:05	\N	f	21
-180	Vaporizadores Genérico #5	Descripción del producto genérico de la categoría Vaporizadores.	46.00	6	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-181	Vaporizadores Genérico #6	Descripción del producto genérico de la categoría Vaporizadores.	33.00	1	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-182	Vaporizadores Genérico #7	Descripción del producto genérico de la categoría Vaporizadores.	40.00	30	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-183	Vaporizadores Genérico #8	Descripción del producto genérico de la categoría Vaporizadores.	84.00	26	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-184	Vaporizadores Genérico #9	Descripción del producto genérico de la categoría Vaporizadores.	24.00	36	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-185	Vaporizadores Genérico #10	Descripción del producto genérico de la categoría Vaporizadores.	86.00	0	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	21
-189	CBD y Cosmética Genérico #4	Descripción del producto genérico de la categoría CBD y Cosmética.	50.00	50	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-190	CBD y Cosmética Genérico #5	Descripción del producto genérico de la categoría CBD y Cosmética.	13.00	37	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-191	CBD y Cosmética Genérico #6	Descripción del producto genérico de la categoría CBD y Cosmética.	56.00	14	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-192	CBD y Cosmética Genérico #7	Descripción del producto genérico de la categoría CBD y Cosmética.	92.00	47	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-193	CBD y Cosmética Genérico #8	Descripción del producto genérico de la categoría CBD y Cosmética.	30.00	18	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-194	CBD y Cosmética Genérico #9	Descripción del producto genérico de la categoría CBD y Cosmética.	79.00	22	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
-195	CBD y Cosmética Genérico #10	Descripción del producto genérico de la categoría CBD y Cosmética.	17.00	22	/products/placeholder.avif	2026-02-25 09:15:22	\N	f	22
+142	Fertilizantes Genérico #7	Descripción del producto genérico de la categoría Fertilizantes.	13.00	40	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:45	t	17
+143	Fertilizantes Genérico #8	Descripción del producto genérico de la categoría Fertilizantes.	93.00	28	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:46	t	17
+144	Fertilizantes Genérico #9	Descripción del producto genérico de la categoría Fertilizantes.	25.00	49	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:48	t	17
+145	Fertilizantes Genérico #10	Descripción del producto genérico de la categoría Fertilizantes.	22.00	40	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:50	t	17
+150	Sustratos Genérico #5	Descripción del producto genérico de la categoría Sustratos.	77.00	41	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:54	t	18
+151	Sustratos Genérico #6	Descripción del producto genérico de la categoría Sustratos.	72.00	40	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:55	t	18
+152	Sustratos Genérico #7	Descripción del producto genérico de la categoría Sustratos.	73.00	9	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:57	t	18
+153	Sustratos Genérico #8	Descripción del producto genérico de la categoría Sustratos.	83.00	30	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:58	t	18
+154	Sustratos Genérico #9	Descripción del producto genérico de la categoría Sustratos.	37.00	44	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:00	t	18
+155	Sustratos Genérico #10	Descripción del producto genérico de la categoría Sustratos.	38.00	30	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:02	t	18
+160	Control de Clima Genérico #5	Descripción del producto genérico de la categoría Control de Clima.	51.00	26	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:42	t	19
+161	Control de Clima Genérico #6	Descripción del producto genérico de la categoría Control de Clima.	80.00	32	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:43	t	19
+162	Control de Clima Genérico #7	Descripción del producto genérico de la categoría Control de Clima.	99.00	41	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:45	t	19
+163	Control de Clima Genérico #8	Descripción del producto genérico de la categoría Control de Clima.	62.00	6	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:47	t	19
+164	Control de Clima Genérico #9	Descripción del producto genérico de la categoría Control de Clima.	68.00	25	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:48	t	19
+165	Control de Clima Genérico #10	Descripción del producto genérico de la categoría Control de Clima.	81.00	47	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:49	t	19
+169	Cosecha y Secado Genérico #4	Descripción del producto genérico de la categoría Cosecha y Secado.	21.00	18	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:52	t	20
+170	Cosecha y Secado Genérico #5	Descripción del producto genérico de la categoría Cosecha y Secado.	80.00	24	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:53	t	20
+171	Cosecha y Secado Genérico #6	Descripción del producto genérico de la categoría Cosecha y Secado.	66.00	28	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:55	t	20
+172	Cosecha y Secado Genérico #7	Descripción del producto genérico de la categoría Cosecha y Secado.	21.00	1	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:57	t	20
+173	Cosecha y Secado Genérico #8	Descripción del producto genérico de la categoría Cosecha y Secado.	68.00	5	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:58	t	20
+174	Cosecha y Secado Genérico #9	Descripción del producto genérico de la categoría Cosecha y Secado.	81.00	3	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:22:59	t	20
+175	Cosecha y Secado Genérico #10	Descripción del producto genérico de la categoría Cosecha y Secado.	86.00	15	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:00	t	20
+180	Vaporizadores Genérico #5	Descripción del producto genérico de la categoría Vaporizadores.	46.00	6	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:04	t	21
+181	Vaporizadores Genérico #6	Descripción del producto genérico de la categoría Vaporizadores.	33.00	1	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:05	t	21
+179	Vaporizadores Genérico #4	Descripción del producto genérico de la categoría Vaporizadores.	15.00	46	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:29	t	21
 96	Amnesia Haze (3 uds)	Semillas feminizadas de alta calidad con sabor cítrico.	25.50	100	/products/69a156e4646d7.jpg	2026-02-27 08:33:44	\N	f	13
 138	PK 13/14 1L	Potenciador de floración mineral.	12.50	45	/products/69a15a3014080.jpg	2026-02-27 08:47:45	\N	f	17
 139	Fertilizantes Genérico #4	Descripción del producto genérico de la categoría Fertilizantes.	65.00	16	/products/69a15a51c1326.webp	2026-02-27 08:48:19	\N	f	17
 186	Aceite CBD 10% 10ml	Aceite Full Spectrum de alta calidad.	35.00	50	/products/69a15e5c07d15.jpg	2026-02-27 09:05:32	\N	f	22
 187	Crema Alivio Muscular CBD	Bálsamo recuperador con efecto frío/calor.	22.00	30	/products/69a15e772d3f8.jpg	2026-02-27 09:06:03	\N	f	22
 188	Flores CBD Amnesia 2g	Cogollos aromáticos sin THC.	10.00	100	/products/69a15e8f5b93c.png	2026-02-27 09:06:38	\N	f	22
+100	Semillas Genérico #5	Descripción del producto genérico de la categoría Semillas.	73.00	49	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:20:53	t	13
+125	Parafernalia Genérico #10	Descripción del producto genérico de la categoría Parafernalia.	83.00	10	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:24	t	15
+141	Fertilizantes Genérico #6	Descripción del producto genérico de la categoría Fertilizantes.	88.00	18	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:21:43	t	17
+182	Vaporizadores Genérico #7	Descripción del producto genérico de la categoría Vaporizadores.	40.00	30	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:07	t	21
+183	Vaporizadores Genérico #8	Descripción del producto genérico de la categoría Vaporizadores.	84.00	26	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:08	t	21
+184	Vaporizadores Genérico #9	Descripción del producto genérico de la categoría Vaporizadores.	24.00	36	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:09	t	21
+185	Vaporizadores Genérico #10	Descripción del producto genérico de la categoría Vaporizadores.	86.00	0	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:11	t	21
+189	CBD y Cosmética Genérico #4	Descripción del producto genérico de la categoría CBD y Cosmética.	50.00	50	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:13	t	22
+190	CBD y Cosmética Genérico #5	Descripción del producto genérico de la categoría CBD y Cosmética.	13.00	37	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:15	t	22
+191	CBD y Cosmética Genérico #6	Descripción del producto genérico de la categoría CBD y Cosmética.	56.00	14	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:16	t	22
+192	CBD y Cosmética Genérico #7	Descripción del producto genérico de la categoría CBD y Cosmética.	92.00	47	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:19	t	22
+193	CBD y Cosmética Genérico #8	Descripción del producto genérico de la categoría CBD y Cosmética.	30.00	18	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:20	t	22
+194	CBD y Cosmética Genérico #9	Descripción del producto genérico de la categoría CBD y Cosmética.	79.00	22	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:21	t	22
+195	CBD y Cosmética Genérico #10	Descripción del producto genérico de la categoría CBD y Cosmética.	17.00	22	/products/placeholder.avif	2026-02-25 09:15:22	2026-02-27 09:23:23	t	22
 \.
 
 
@@ -727,5 +727,5 @@ ALTER TABLE ONLY public.orders
 -- PostgreSQL database dump complete
 --
 
-\unrestrict TUOg8ICZeI9DkJjvyXQu1T5oyNTeT7UDfaJ3grYCtkh8QqUTsu7QHHvnPPHMGMv
+\unrestrict yHa5xqdCeJu1kea5di3LEH4MsnZDs3WBy8Q88sneCylhcpUGN8Yqo23IYeB2HTi
 
