@@ -29,17 +29,17 @@ class OrderProduct
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(name: 'product_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    #[Groups(['order_product:read', 'order:read', 'order_product:write'])]
+    #[Groups(['order_product:read', 'order:read', 'order_product:write', 'order:write'])]
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Groups(['order_product:read', 'order:read', 'order_product:write'])]
+    #[Groups(['order_product:read', 'order:read', 'order_product:write', 'order:write'])]
     #[Assert\NotBlank]
     #[Assert\Positive]
     private ?int $quantity = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(['order_product:read', 'order:read', 'order_product:write'])]
+    #[Groups(['order_product:read', 'order:read', 'order_product:write', 'order:write'])]
     #[Assert\NotBlank]
     #[Assert\PositiveOrZero]
     private ?string $unitPrice = null;

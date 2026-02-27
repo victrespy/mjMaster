@@ -1,9 +1,35 @@
 {
     local_certs
 }
-localhost {
-    reverse_proxy frontend:5173
+
+(app_routes) {
+    # Redirigir peticiones API al backend
+    handle /api/* {
+        reverse_proxy backend:80
+    }
+
+    # Redirigir peticiones de archivos subidos al backend
+    handle /products/* {
+        reverse_proxy backend:80
+    }
+
+    # El resto va al frontend (Vite)
+    handle {
+        reverse_proxy frontend:5173
+    }
 }
+
+# Bloque para Ngrok (vía puerto 8888 -> 80)
+:80 {
+    import app_routes
+}
+
+# Bloque para Localhost HTTPS (vía puerto 8443 -> 443)
+localhost {
+    import app_routes
+}
+
+# Bloque para Localhost API directa (vía puerto 9443 -> 8443)
 localhost:8443 {
-    reverse_proxy backend:80
+    import app_routes
 }

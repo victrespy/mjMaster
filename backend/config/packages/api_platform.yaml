@@ -1,7 +1,6 @@
 api_platform:
     title: 'Hello API Platform'
     version: '1.0.0'
-    # Hemos movido 'json' al principio para que sea el formato preferido
     formats:
         json: ['application/json']
         jsonld: ['application/ld+json']
@@ -16,6 +15,14 @@ api_platform:
         extra_properties:
             standard_put: true
             rfc_7807_compliant_errors: true
+
+        # Configuración de Paginación Global
+        pagination_enabled: true
+        pagination_client_enabled: true
+        pagination_client_items_per_page: true
+        pagination_items_per_page: 30
+        pagination_maximum_items_per_page: 100
+
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:

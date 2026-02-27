@@ -2,7 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\State\ReviewProcessor;
+use App\State\SoftDeleteProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -12,9 +23,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'reviews')]
 #[ORM\UniqueConstraint(name: 'unique_user_product_review', fields: ['user', 'product'])]
 #[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(processor: ReviewProcessor::class),
+        new Put(),
+        new Patch(),
+        new Delete(processor: SoftDeleteProcessor::class)
+    ],
     normalizationContext: ['groups' => ['review:read']],
     denormalizationContext: ['groups' => ['review:write']]
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'product.name' => 'ipartial',
+    'user.name' => 'ipartial'
+])]
+#[ApiFilter(NumericFilter::class, properties: ['rating'])]
 class Review
 {
     #[ORM\Id]
@@ -34,17 +58,17 @@ class Review
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Groups(['review:read', 'review:write'])]
+    #[Groups(['review:read', 'review:write', 'product:read'])]
     #[Assert\NotBlank]
     #[Assert\Range(min: 1, max: 5)]
     private ?int $rating = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['review:read', 'review:write'])]
+    #[Groups(['review:read', 'review:write', 'product:read'])]
     private ?string $comment = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    #[Groups(['review:read'])]
+    #[Groups(['review:read', 'product:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -134,5 +158,11 @@ class Review
     {
         $this->deleted = $deleted;
         return $this;
+    }
+
+    #[Groups(['review:read', 'product:read'])]
+    public function getAuthorName(): ?string
+    {
+        return $this->user ? $this->user->getName() : 'Anónimo';
     }
 }

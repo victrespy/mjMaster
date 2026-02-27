@@ -14,6 +14,14 @@ docker compose up -d --build
 echo "Instalando/Actualizando dependencias de Symfony (Composer)..."
 docker compose exec backend composer update
 
+# Instalar JWT Bundle si no está presente (necesario para el login)
+echo "Verificando instalación de JWT Bundle..."
+docker compose exec backend composer require lexik/jwt-authentication-bundle --no-interaction
+
+# Generar claves JWT si no existen
+echo "Generando claves JWT (si no existen)..."
+docker compose exec backend php bin/console lexik:jwt:generate-keypair --skip-if-exists
+
 # 3. Instalar dependencias Frontend
 echo "Instalando dependencias de React (NPM)..."
 # Forzamos la instalación para asegurar que paquetes como tailwindcss se registren bien

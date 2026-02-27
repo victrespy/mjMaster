@@ -7,11 +7,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Permitir cualquier host (ngrok, etc.)
+    allowedHosts: true,
     hmr: {
-      // El cliente se conecta a Caddy en el puerto externo 8443
-      host: 'localhost',
-      clientPort: 8443,
-      protocol: 'wss'
+      // Al no definir host ni port, el cliente HMR usará 
+      // automáticamente la URL del navegador (ngrok o localhost)
     },
     watch: {
       usePolling: true

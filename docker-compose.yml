@@ -40,7 +40,7 @@ services:
       - database
     environment:
       DATABASE_URL: "postgresql://app_user:app_password@database:5432/app_db?serverVersion=15&charset=utf8"
-      CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+      CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1|.*\.ngrok-free\.app|.*\.ngrok\.io)(:[0-9]+)?$'
     security_opt:
       - apparmor:unconfined
 
@@ -54,8 +54,7 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - HMR_HOST=localhost
-      - HMR_PORT=8443
+      # Eliminamos HMR_HOST y HMR_PORT para que Vite los infiera de la URL del navegador
     depends_on:
       - backend
     security_opt:

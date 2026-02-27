@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MJ Master Shop Catalog - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8cf425",
+                        "dark-bg": "#121212",
+                        "card-bg": "#1e1e1e",
+                        "sage": {
+                            50: "#1e241a",
+                            100: "#2a3325",
+                            200: "#3d4a36",
+                            500: "#8a9a7d",
+                            900: "#0a0c08",
+                        }
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #121212;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-dark-bg text-gray-200 font-display">
+<div class="relative mx-auto min-h-screen max-w-[430px] bg-dark-bg shadow-2xl flex flex-col">
+<header class="sticky top-0 z-30 bg-dark-bg/95 backdrop-blur-md px-4 pt-6 pb-2 border-b border-white/5">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">leaf_spark</span>
+<h1 class="text-xl font-bold tracking-tight text-white">MJ Master</h1>
+</div>
+<button class="relative p-2 text-gray-400">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-black">3</span>
+</button>
+</div>
+<div class="flex gap-2">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl">search</span>
+<input class="w-full h-11 pl-10 pr-4 bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/50 placeholder-gray-500 text-white" placeholder="Search products, seeds..." type="text"/>
+</div>
+<button class="flex items-center justify-center w-11 h-11 bg-white/5 rounded-xl text-primary">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<div class="flex gap-3 overflow-x-auto py-4 hide-scrollbar">
+<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-primary px-4">
+<span class="text-black text-xs font-bold">All</span>
+</button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white/5 px-4 border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">potted_plant</span>
+<span class="text-gray-300 text-xs font-medium">Seeds</span>
+</button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white/5 px-4 border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">science</span>
+<span class="text-gray-300 text-xs font-medium">Nutrients</span>
+</button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white/5 px-4 border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">light_mode</span>
+<span class="text-gray-300 text-xs font-medium">Lighting</span>
+</button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white/5 px-4 border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">inventory_2</span>
+<span class="text-gray-300 text-xs font-medium">Tents</span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto bg-dark-bg px-4 pb-32">
+<div class="flex items-center justify-between py-5">
+<h2 class="text-lg font-bold text-white">New Arrivals</h2>
+<span class="text-xs font-medium text-gray-500 uppercase tracking-wider">24 Products</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="group flex flex-col bg-card-bg rounded-2xl p-2 shadow-lg border border-white/5">
+<div class="relative aspect-square w-full rounded-xl bg-black/40 overflow-hidden mb-3">
+<img alt="Premium Cannabis Seed" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdTH4iBO18SFyqT8DUglDrgtooeyDhp5rHFvtjEoBeRGErMgIGZg6GWk59qqi0IL2msI1D3IR3h-UgAKRXox0NxmWmnK5uu-JdVxLiNnf1kwyJjCz7Od5tYZEfIl1Zq8JsOzIN20U8dhJHvgnSjU96Ae1k8doIarQ0VVMj-1mBdoWBARxPGAtaroLSu9R1Rr2CbdwwEvEgx5orNKHsDTRoyd9D49IxaDf6DDCsTwPC0Gl0SWlfKjqkqdNeLGMuoJh96xvhmI_f-Lz1"/>
+<div class="absolute top-2 left-2 px-2 py-0.5 bg-primary text-black text-[10px] font-bold rounded uppercase tracking-wider">New</div>
+<button class="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/40 backdrop-blur flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">favorite</span>
+</button>
+</div>
+<div class="px-1 flex-1">
+<p class="text-[10px] font-semibold text-primary uppercase tracking-widest mb-1">Hybrid</p>
+<h3 class="text-sm font-bold text-white line-clamp-1 mb-2">Amnesia Haze</h3>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-base font-bold text-white">€25.50</span>
+<button class="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-black hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-xl font-bold">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-card-bg rounded-2xl p-2 shadow-lg border border-white/5">
+<div class="relative aspect-square w-full rounded-xl bg-black/40 overflow-hidden mb-3">
+<img alt="Organic Nutrients" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlSSt-O6aJJBvKfgPpBoyjOfhNUpgl67iEbOLw8IB2c-gcrVBdaerTcT2G6oRXs0on8DSP7ApwCXgnbm0c8RtL91pPrUxoj4qeMclY2SCloboAghP8Z5om7sMrRQSJhKGw6imDi4CsVJwTTRYeeXtM5wcioAeL0eTzRXLGAmC4OIK_ildTAuWG-EhxA2pFsRxXS4mt4fVYW31IdyLhg1GXql2J_BSGk9yuyEby8tY5z7dzkAm2N9O2TCLpoqpL0zkGEfY4i86-w8bs"/>
+<div class="absolute top-2 left-2 px-2 py-0.5 bg-primary text-black text-[10px] font-bold rounded uppercase tracking-wider">New</div>
+<button class="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/40 backdrop-blur flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">favorite</span>
+</button>
+</div>
+<div class="px-1 flex-1">
+<p class="text-[10px] font-semibold text-primary uppercase tracking-widest mb-1">Organic</p>
+<h3 class="text-sm font-bold text-white line-clamp-1 mb-2">Bloom Booster X</h3>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-base font-bold text-white">€19.99</span>
+<button class="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-black hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-xl font-bold">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-card-bg rounded-2xl p-2 shadow-lg border border-white/5">
+<div class="relative aspect-square w-full rounded-xl bg-black/40 overflow-hidden mb-3">
+<img alt="LED Grow Light" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMSo_V6UeWjpBQcYFzXXXEnnY9U1zNomgnMSIrs2te3AOjPrwEk9AZIw5waN2wJfcPuD5-cEkPM4im2cwTE-z1Qv2l0DcqEcjmqbRL6LsTn0eEi_-cg8KRHnMbN0EFSoygQspBPob9laPTEJd9wzptYomu9WsQ1eM79mQNtFt3KR1NPqi_gCWs9v7xJEeM0DZwlzuZbxWTNqk0kcsikYBBucVcdMtw-dd3wrJrbvtPncILVN43vUTOm1p_WH9LsCKJiTK2kUcUdm5p"/>
+<button class="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/40 backdrop-blur flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">favorite</span>
+</button>
+</div>
+<div class="px-1 flex-1">
+<p class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-1">Equipment</p>
+<h3 class="text-sm font-bold text-white line-clamp-1 mb-2">SunPro LED 600</h3>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-base font-bold text-white">€450.00</span>
+<button class="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-black hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-xl font-bold">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-card-bg rounded-2xl p-2 shadow-lg border border-white/5">
+<div class="relative aspect-square w-full rounded-xl bg-black/40 overflow-hidden mb-3">
+<img alt="Gorilla Glue Seeds" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2dWRfXaYWaAWfUWyeoG0PsCa6ZHp5a5RHkoDnxtl7AOQjbD1w3aDro5kZqmhjkKUdI5LQptEEYcshRyKgWjR_20aXhDnufQ8RhzFzTZqorR4U8SCQ8hYzExH9ZnnarsJ8Sa9zfAeCKXx2wTHBO1LxbArwiVxdl6pSgg75agkn3JaoIxOpI8CB4PPMOGgUDnSEcXKGWQE0aW46iqrDT9FQTpb2hBWrNnP7rSmXdgPqOmy5D14752uF6PryfJCSVUp4bkix43IjgXK3"/>
+<div class="absolute top-2 left-2 px-2 py-0.5 bg-primary text-black text-[10px] font-bold rounded uppercase tracking-wider">New</div>
+<button class="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/40 backdrop-blur flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-sm text-gray-400">favorite</span>
+</button>
+</div>
+<div class="px-1 flex-1">
+<p class="text-[10px] font-semibold text-primary uppercase tracking-widest mb-1">Indica</p>
+<h3 class="text-sm font-bold text-white line-clamp-1 mb-2">Gorilla Glue #4</h3>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-base font-bold text-white">€32.00</span>
+<button class="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-black hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-xl font-bold">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-dark-bg/90 backdrop-blur-xl border-t border-white/5 px-4 pb-8 pt-3">
+<div class="flex justify-between items-center">
+<a class="flex flex-1 flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">storefront</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Shop</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-gray-500" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Explore</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-gray-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Saved</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-gray-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Account</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

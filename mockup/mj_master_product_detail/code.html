@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MJ Master Product Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8cf425",
+                        "background-light": "#f7f8f5",
+                        "background-dark": "#192210",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen pb-32">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-3 flex items-center justify-between">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-200/50 dark:bg-white/10 text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h2 class="text-sm font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">MJ Master Detail</h2>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-200/50 dark:bg-white/10 text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">share</span>
+</button>
+</header>
+<main class="max-w-md mx-auto">
+<!-- Image Gallery -->
+<div class="relative w-full aspect-square overflow-hidden bg-slate-200 dark:bg-slate-800">
+<div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar h-full">
+<div class="flex-none w-full h-full snap-center">
+<img alt="Amnesia Haze Cannabis Plant Close-up" class="w-full h-full object-cover" data-alt="High quality close up of Amnesia Haze plant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPjKgdxPbK3_kgGHQnD3NZcJPAA2vQK_rs0doGxmAmbYzITT8PdRBk2momfYAiqiodMBvwIhshNHo9tooqZ6L5Lge40omn3Qdork6pEehd9V3lYOZJ_Z8gvorqSrkUvQA2owKD97aUnt0ati0hvwapKxXoofddfbU79bvvdZuV_SGnydmnBXrDW6YPn4UV5F8lPa6ZePlm23eUC732R--7CQ835TKwXpeqqxsoAKLGMOOh0HdnCkxASQhk36q5WGtWoLYzlFGp76Nj"/>
+</div>
+<div class="flex-none w-full h-full snap-center">
+<img alt="Cannabis Seeds in a Jar" class="w-full h-full object-cover" data-alt="Premium cannabis seeds in professional packaging" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArHaOei7YcbrCsk54qYK5r_7VpFjCbytqkEqVd8exP-iQUuH0V4u4Nlza0cGiwCRqO9aGOOvV3VGXjR0mTnmROnY3TDo_RUNaHIMFpJcNcdN5m0_NmCU-0uFXnlFVHHBygG7RWRBA6hi41Stdsfyh6JleVOC2B_S2PA4XkuBQ3sGB6cFvmAFG9-MzroeloVkVXXlU6G0s2o27nl03XaXcKrOnIaJYQCZLIouBfSz8ybcUMzjKBqafDjEhgoPnYUp4MKHzEQUeC8TRx"/>
+</div>
+</div>
+<!-- Pagination Dots -->
+<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 px-3 py-1.5 bg-black/30 backdrop-blur-sm rounded-full">
+<div class="size-2 rounded-full bg-primary"></div>
+<div class="size-2 rounded-full bg-white/40"></div>
+<div class="size-2 rounded-full bg-white/40"></div>
+</div>
+<!-- Badge -->
+<div class="absolute top-4 right-4 bg-primary text-background-dark text-[10px] font-black uppercase px-2 py-1 rounded tracking-tighter">
+                Premium Grade
+            </div>
+</div>
+<!-- Product Core Info -->
+<div class="px-6 pt-8 pb-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h1 class="text-3xl font-black leading-tight tracking-tight dark:text-white">Amnesia Haze</h1>
+<p class="text-primary font-semibold text-sm uppercase tracking-wider">Feminized Seeds</p>
+</div>
+<div class="text-right">
+<p class="text-2xl font-black dark:text-white">€25.50</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">5 Seeds Pack</p>
+</div>
+</div>
+<!-- Rating Row -->
+<div class="flex items-center gap-3 mt-4 mb-6">
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-lg fill-1">star</span>
+<span class="material-symbols-outlined text-lg fill-1">star</span>
+<span class="material-symbols-outlined text-lg fill-1">star</span>
+<span class="material-symbols-outlined text-lg fill-1">star</span>
+<span class="material-symbols-outlined text-lg">star_half</span>
+</div>
+<span class="text-sm font-bold dark:text-slate-200">4.8</span>
+<span class="text-sm text-slate-500 dark:text-slate-400 underline decoration-slate-400">(124 reviews)</span>
+</div>
+<!-- Description -->
+<div class="prose prose-sm dark:prose-invert">
+<p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                    A multi-award-winning classic known for its powerful cerebral high and fresh, lemony aroma. A staple in Amsterdam coffee shops, this strain offers an uplifting experience perfect for creative days.
+                </p>
+</div>
+</div>
+<!-- Accordion Sections -->
+<div class="px-6 space-y-3 mt-4">
+<!-- Grow Info -->
+<div class="bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">eco</span>
+<span class="font-bold">Grow Info</span>
+</div>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+<div class="px-4 pb-4 grid grid-cols-2 gap-4">
+<div class="bg-white/50 dark:bg-white/5 p-3 rounded-lg border border-slate-200 dark:border-white/5">
+<p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Flowering Time</p>
+<p class="text-sm font-bold">10-12 Weeks</p>
+</div>
+<div class="bg-white/50 dark:bg-white/5 p-3 rounded-lg border border-slate-200 dark:border-white/5">
+<p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Difficulty</p>
+<p class="text-sm font-bold">Intermediate</p>
+</div>
+<div class="bg-white/50 dark:bg-white/5 p-3 rounded-lg border border-slate-200 dark:border-white/5">
+<p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Yield Indoor</p>
+<p class="text-sm font-bold">600g / m²</p>
+</div>
+<div class="bg-white/50 dark:bg-white/5 p-3 rounded-lg border border-slate-200 dark:border-white/5">
+<p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Plant Height</p>
+<p class="text-sm font-bold">80 - 140 cm</p>
+</div>
+</div>
+</div>
+<!-- Specs -->
+<div class="bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<span class="font-bold">Specs</span>
+</div>
+<span class="material-symbols-outlined text-slate-400">keyboard_arrow_right</span>
+</button>
+</div>
+<!-- Genetics -->
+<div class="bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">biotech</span>
+<span class="font-bold">Genetics</span>
+</div>
+<span class="material-symbols-outlined text-slate-400">keyboard_arrow_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark/95 backdrop-blur-xl border-t border-slate-200 dark:border-white/10 p-6 z-50">
+<div class="max-w-md mx-auto flex items-center gap-4">
+<!-- Quantity Selector -->
+<div class="flex items-center bg-slate-100 dark:bg-white/5 rounded-full p-1 border border-slate-200 dark:border-white/10">
+<button class="size-10 flex items-center justify-center rounded-full text-slate-500 hover:text-primary">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="w-8 text-center font-bold">1</span>
+<button class="size-10 flex items-center justify-center rounded-full text-slate-500 hover:text-primary">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Add to Cart Button -->
+<button class="flex-1 bg-primary text-background-dark font-black text-lg py-4 rounded-full shadow-[0_8px_30px_rgb(140,244,37,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined fill-1">shopping_bag</span>
+                ADD TO CART
+            </button>
+</div>
+<!-- Safe Area Home Indicator -->
+<div class="h-4 w-32 bg-slate-300 dark:bg-white/10 mx-auto mt-6 rounded-full opacity-20"></div>
+</div>
+</body></html>

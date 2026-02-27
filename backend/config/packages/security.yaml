@@ -13,13 +13,26 @@ security:
 
     firewalls:
         dev:
-            # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                username_path: email  # <--- AÑADIDO: Usar 'email' en lugar de 'username'
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
+
         main:
             lazy: true
             provider: app_user_provider
-            stateless: true
 
     # Jerarquía: El de la izquierda TIENE los permisos del de la derecha
     role_hierarchy:
@@ -28,8 +41,10 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [POST] } # Registro
+        - { path: ^/api/users/me, roles: IS_AUTHENTICATED_FULLY }      # Perfil
+        - { path: ^/api,       roles: PUBLIC_ACCESS }                  # Por defecto público (catálogo)
 
 when@test:
     security:

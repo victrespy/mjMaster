@@ -1,23 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 
 const NotFound = () => {
   return (
-    <div className="max-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[70vh] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 text-center">
-        <h1 className="text-9xl font-extrabold text-indigo-600">404</h1>
-        <h2 className="mt-6 text-3xl font-bold text-gray-900">Página no encontrada</h2>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="text-9xl font-extrabold text-primary animate-pulse">404</h1>
+        <h2 className="mt-6 text-3xl font-bold text-gray-100">Página no encontrada</h2>
+        <p className="mt-2 text-lg text-gray-400">
           Lo sentimos, la página que estás buscando no existe o ha sido movida.
         </p>
         
-        <div className="mt-6">
-          <Link to="/" className="no-underline">
-            <Button variant="primary">
-              Volver al Inicio
-            </Button>
-          </Link>
+        <div className="mt-8">
+          <Button to="/" variant="primary" className="px-8 py-3 text-base">
+            Volver al Inicio
+          </Button>
         </div>
       </div>
     </div>
